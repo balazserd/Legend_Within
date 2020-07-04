@@ -36,6 +36,8 @@
 		56F353BF24AF440300E21EB4 /* LeagueApi+LeagueEntries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F353BE24AF440300E21EB4 /* LeagueApi+LeagueEntries.swift */; };
 		56F353C124AF66B600E21EB4 /* AssetPaths.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F353C024AF66B600E21EB4 /* AssetPaths.swift */; };
 		56F353C624AF7A2800E21EB4 /* MiddleAlignedText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F353C524AF7A2800E21EB4 /* MiddleAlignedText.swift */; };
+		56F353CA24B0AC3900E21EB4 /* League.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F353C924B0AC3900E21EB4 /* League.swift */; };
+		56F353CC24B0B56700E21EB4 /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F353CB24B0B56700E21EB4 /* Color+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +82,8 @@
 		56F353BE24AF440300E21EB4 /* LeagueApi+LeagueEntries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeagueApi+LeagueEntries.swift"; sourceTree = "<group>"; };
 		56F353C024AF66B600E21EB4 /* AssetPaths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetPaths.swift; sourceTree = "<group>"; };
 		56F353C524AF7A2800E21EB4 /* MiddleAlignedText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiddleAlignedText.swift; sourceTree = "<group>"; };
+		56F353C924B0AC3900E21EB4 /* League.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = League.swift; sourceTree = "<group>"; };
+		56F353CB24B0B56700E21EB4 /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +186,7 @@
 				567528F224AA2FCC009057C8 /* Region.swift */,
 				567528F424AA30B8009057C8 /* Summoner.swift */,
 				567528F624AA30C0009057C8 /* LeagueEntry.swift */,
+				56F353C924B0AC3900E21EB4 /* League.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -203,8 +208,9 @@
 			isa = PBXGroup;
 			children = (
 				5675295824AB46BE009057C8 /* ActivityIndicator.swift */,
-				5648A74424AF3CD40074B550 /* ViewModifiers */,
+				56F353CB24B0B56700E21EB4 /* Color+Extensions.swift */,
 				56F353C524AF7A2800E21EB4 /* MiddleAlignedText.swift */,
+				5648A74424AF3CD40074B550 /* ViewModifiers */,
 			);
 			path = "Custom Views";
 			sourceTree = "<group>";
@@ -341,11 +347,13 @@
 				567528F024AA2EBA009057C8 /* AccountLookupModel.swift in Sources */,
 				56F353B924AF3EE700E21EB4 /* CustomViewModifiers.swift in Sources */,
 				567528EE24AA2E76009057C8 /* AccountLookupPage.swift in Sources */,
+				56F353CC24B0B56700E21EB4 /* Color+Extensions.swift in Sources */,
 				56F353C124AF66B600E21EB4 /* AssetPaths.swift in Sources */,
 				567528F524AA30B8009057C8 /* Summoner.swift in Sources */,
 				5675290024AA489C009057C8 /* MoyaPublisher.swift in Sources */,
 				567528FC24AA3776009057C8 /* LeagueApi+ApiKey.swift in Sources */,
 				5675295E24AB9593009057C8 /* UrlConstants.swift in Sources */,
+				56F353CA24B0AC3900E21EB4 /* League.swift in Sources */,
 				567528EC24AA2C62009057C8 /* WelcomePage.swift in Sources */,
 				567528F324AA2FCC009057C8 /* Region.swift in Sources */,
 				567528C724AA29B8009057C8 /* ViewController.swift in Sources */,

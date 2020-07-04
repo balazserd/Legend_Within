@@ -17,6 +17,7 @@ public class AccountLookupModel : ObservableObject {
     @Published public var errorCode: Int? = nil
     @Published public var isQuerying: Bool = false
     @Published public var soloQueueEntry: LeagueEntry? = nil
+    @Published public var soloQueueDivision: League? = nil //if soloQueueEntry is not nil, it is fatal that this results in nil.
 
     private var cancellableBag = Set<AnyCancellable>()
 
@@ -26,6 +27,7 @@ public class AccountLookupModel : ObservableObject {
     init() {
         self.setupSummonerQuerySubscription()
         self.setupSoloQueueEntryQuerySubscription()
+        self.setupSoloQueueDivisionQuerySubscription()
     }
 
     private func setupSummonerQuerySubscription() {
@@ -84,7 +86,6 @@ public class AccountLookupModel : ObservableObject {
                 cancellable = self.leagueEntrySearchProvider.requestPublisher(.byEncryptedSummonerId(region: self.region, encryptedSummonerId: newSummoner.id))
                     .receive(on: DispatchQueue.main)
                     .sink(receiveCompletion: { [weak self] completion in
-
                         self?.cancellableBag.remove(cancellable!)
                     }, receiveValue: { [weak self] response in
                         guard let self = self else { return }
@@ -92,6 +93,29 @@ public class AccountLookupModel : ObservableObject {
                         let entries = try! response.map([LeagueEntry].self)
                         let soloQueueEntry = entries.first { $0.queueType == .rankedSolo }
                         self.soloQueueEntry = soloQueueEntry
+                    })
+                cancellable!.store(in: &self.cancellableBag)
+            }
+            .store(in: &cancellableBag)
+    }
+
+    private func setupSoloQueueDivisionQuerySubscription() {
+        $soloQueueEntry
+            .sink { [weak self] newLeagueEntry in
+                guard
+                    let self = self,
+                    let newLeagueEntry = newLeagueEntry
+                else { return }
+
+                var cancellable: AnyCancellable? = nil
+                cancellable = self.leagueEntrySearchProvider.requestPublisher(.leagues(region: self.region, leagueId: newLeagueEntry.leagueId))
+                    .receive(on: DispatchQueue.main)
+                    .sink(receiveCompletion: { [weak self] completion in
+                        self?.cancellableBag.remove(cancellable!)
+                    }, receiveValue: { [weak self] response in
+                        guard let self = self else { return }
+                        let division = try! response.map(League.self)
+                        self.soloQueueDivision = division
                     })
                 cancellable!.store(in: &self.cancellableBag)
             }

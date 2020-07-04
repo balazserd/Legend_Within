@@ -53,31 +53,34 @@ struct AccountLookupPage: View {
 
         var body: some View {
             let soloQueueEntry = accountLookupModel.soloQueueEntry
+            let soloQueueDivision = accountLookupModel.soloQueueDivision
             
             return ZStack(alignment: .center) {
                 VStack {
                     Text("Is this your account?")
                         .bold()
-                        .font(.system(size: 17))
+                        .font(.system(size: 22))
                         .foregroundColor(.blue)
-                        .padding(.bottom, 15)
+                        .padding(.bottom, 5)
 
                     HStack {
-                        Spacer()
                         KFImage(UrlConstants.profileIcons(iconId: accountLookupModel.summoner!.profileIconId).url)
                             .resizable()
                             .frame(width: 40, height: 40)
                             .cornerRadius(8)
-                            .shadow(color: Color.gray.opacity(0.8), radius: 4, x: 0, y: 2)
-                            .padding(.trailing, 5)
+                            .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
+                            .padding(5)
                         Text(accountLookupModel.summoner!.name)
                             .bold()
                             .font(.system(size: 17))
                         Spacer()
                     }
-                    .padding(.bottom, 10)
+                    .background(Color.white)
+                    .cornerRadius(8)
+                    .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
+                    .padding(.bottom, 5)
 
-                    if soloQueueEntry != nil {
+                    if soloQueueEntry != nil && soloQueueDivision != nil {
                         HStack {
                             ZStack(alignment: .bottom) {
                                 Image(AssetPaths.rankedEmblem(tier: soloQueueEntry!.tier).path)
@@ -96,45 +99,80 @@ struct AccountLookupPage: View {
                                     .cornerRadius(11)
                                     .shadow(color: Color.gray.opacity(0.8), radius: 4, x: 0, y: 2)
                             }
+                            .padding(.trailing, 10).padding(.bottom, 5)
 
-                            VStack {
+                            VStack(alignment: .leading) {
+                                VStack() {
+                                    Text(soloQueueDivision!.name)
+                                        .font(.system(size: 20))
+                                        .bold().italic()
+                                        .foregroundColor(Color.blue.opacity(0.6))
+
+                                    Text("\(soloQueueEntry!.leaguePoints) LP")
+                                        .font(.system(size: 22))
+                                        .bold()
+                                        .foregroundColor(Color.blue)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 5)
+                                .background(Color.white)
+                                .cornerRadius(8)
+                                .shadow(color: Color.blue.opacity(0.15), radius: 4, x: 0, y: 2)
+
+                                Spacer()
+
                                 HStack {
                                     VStack {
                                         MiddleAlignedView {
-                                            Text("Wins")
-                                                .bold()
-                                                .font(.system(size: 17))
-                                                .foregroundColor(.purple)
-                                        }
-                                        MiddleAlignedView {
                                             Text("\(soloQueueEntry!.wins)")
                                                 .bold()
-                                                .font(.system(size: 22))
+                                                .font(.system(size: 25))
+                                                .foregroundColor(Color.green5)
+                                        }
+
+                                        MiddleAlignedView {
+                                            Text("WINS")
+                                                .bold()
+                                                .font(.system(size: 14))
+                                                .foregroundColor(.darkGreen5)
                                         }
                                     }
 
+                                    Spacer()
+
                                     Text("\(soloQueueEntry!.winRatePercent)%")
-                                        .foregroundColor(soloQueueEntry!.winRatePercent >= 50 ? .green : .red)
                                         .bold()
                                         .font(.system(size: 25))
 
+                                    Spacer()
+
                                     VStack {
-                                        MiddleAlignedView {
-                                            Text("Losses")
-                                                .bold()
-                                                .font(.system(size: 17))
-                                                .foregroundColor(.purple)
-                                        }
                                         MiddleAlignedView {
                                             Text("\(soloQueueEntry!.losses)")
                                                 .bold()
-                                                .font(.system(size: 22))
+                                                .font(.system(size: 25))
+                                                .foregroundColor(Color.red5)
+                                        }
+
+                                        MiddleAlignedView {
+                                            Text("LOSSES")
+                                                .bold()
+                                                .font(.system(size: 14))
+                                                .foregroundColor(.darkRed5)
                                         }
                                     }
                                 }
+                                .padding(.vertical, 7)
+                                .background(Color.white)
+                                .cornerRadius(8)
+                                .shadow(color: Color.blue.opacity(0.15), radius: 4, x: 0, y: 2)
                             }
-                            .frame(maxWidth: .infinity)
                         }
+                        .frame(maxHeight: 130)
+                        .padding(10)
+                        .background(Color.white)
+                        .cornerRadius(8)
+                        .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
                         .padding(.bottom, 15)
                     }
 
@@ -158,7 +196,7 @@ struct AccountLookupPage: View {
                 .background(Color.white)
                 .cornerRadius(8)
                 .padding(.horizontal, 10)
-                .shadow(color: Color.gray, radius: 6, x: 0, y: 3)
+                .shadow(color: Color.gray, radius: 6, x: 0, y: 0)
                 .modifier(CustomViewModifiers.FloatIn(whenTrue: $isShown))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
