@@ -1,5 +1,5 @@
 //
-//  MiddleAlignedText.swift
+//  MiddleAlignedView.swift
 //  Legend Within
 //
 //  Created by Balazs Erdesz on 2020. 07. 03..
