@@ -34,6 +34,12 @@ struct WelcomePage: View {
     }
 }
 
+extension WelcomePage : Equatable {
+    static func ==(lhs: WelcomePage, rhs: WelcomePage) -> Bool {
+        return true
+    }
+}
+
 struct WelcomePage_Previews: PreviewProvider {
     static var previews: some View {
         WelcomePage()

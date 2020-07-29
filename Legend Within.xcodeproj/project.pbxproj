@@ -8,11 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		5631470124AE0FD5000CC418 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5631470024AE0FD5000CC418 /* Settings.swift */; };
+		56477ED824CADC6F00495535 /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56477ED724CADC6F00495535 /* OnboardingModel.swift */; };
+		56477EE024CAFAA800495535 /* OnboardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56477EDF24CAFAA800495535 /* OnboardingPage.swift */; };
+		56477EE224CB24ED00495535 /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56477EE124CB24ED00495535 /* PageView.swift */; };
 		5648A74324AF3CCF0074B550 /* FloatIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5648A74224AF3CCF0074B550 /* FloatIn.swift */; };
+		5657F31A24D1D2CF00A7F437 /* SupportEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5657F31924D1D2CF00A7F437 /* SupportEmailView.swift */; };
+		5657F31C24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5657F31B24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift */; };
 		567528C324AA29B8009057C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567528C224AA29B8009057C8 /* AppDelegate.swift */; };
 		567528C524AA29B8009057C8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567528C424AA29B8009057C8 /* SceneDelegate.swift */; };
-		567528C724AA29B8009057C8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567528C624AA29B8009057C8 /* ViewController.swift */; };
-		567528CA24AA29B8009057C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 567528C824AA29B8009057C8 /* Main.storyboard */; };
 		567528CD24AA29B8009057C8 /* Legend_Within.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 567528CB24AA29B8009057C8 /* Legend_Within.xcdatamodeld */; };
 		567528CF24AA29BB009057C8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 567528CE24AA29BB009057C8 /* Assets.xcassets */; };
 		567528D224AA29BB009057C8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 567528D024AA29BB009057C8 /* LaunchScreen.storyboard */; };
@@ -59,12 +62,15 @@
 
 /* Begin PBXFileReference section */
 		5631470024AE0FD5000CC418 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		56477ED724CADC6F00495535 /* OnboardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
+		56477EDF24CAFAA800495535 /* OnboardingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPage.swift; sourceTree = "<group>"; };
+		56477EE124CB24ED00495535 /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
 		5648A74224AF3CCF0074B550 /* FloatIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatIn.swift; sourceTree = "<group>"; };
+		5657F31924D1D2CF00A7F437 /* SupportEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportEmailView.swift; sourceTree = "<group>"; };
+		5657F31B24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnknownErrorOverlayModel.swift; sourceTree = "<group>"; };
 		567528BF24AA29B8009057C8 /* Legend Within.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Legend Within.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		567528C224AA29B8009057C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		567528C424AA29B8009057C8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		567528C624AA29B8009057C8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		567528C924AA29B8009057C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		567528CC24AA29B8009057C8 /* Legend_Within.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Legend_Within.xcdatamodel; sourceTree = "<group>"; };
 		567528CE24AA29BB009057C8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		567528D124AA29BB009057C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -165,8 +171,6 @@
 				567528E724AA29E2009057C8 /* Onboarding */,
 				567528C224AA29B8009057C8 /* AppDelegate.swift */,
 				567528C424AA29B8009057C8 /* SceneDelegate.swift */,
-				567528C624AA29B8009057C8 /* ViewController.swift */,
-				567528C824AA29B8009057C8 /* Main.storyboard */,
 				567528CE24AA29BB009057C8 /* Assets.xcassets */,
 				567528D024AA29BB009057C8 /* LaunchScreen.storyboard */,
 				567528D324AA29BB009057C8 /* Info.plist */,
@@ -187,6 +191,8 @@
 		567528E724AA29E2009057C8 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				56477EDF24CAFAA800495535 /* OnboardingPage.swift */,
+				56477ED724CADC6F00495535 /* OnboardingModel.swift */,
 				567528EB24AA2C62009057C8 /* WelcomePage.swift */,
 				56BC228124C23F0F0072D5E8 /* AccountLookupPage */,
 			);
@@ -224,6 +230,8 @@
 				56F353CB24B0B56700E21EB4 /* Color+Extensions.swift */,
 				56F353C524AF7A2800E21EB4 /* MiddleAlignedView.swift */,
 				56BC227F24C1E2090072D5E8 /* GlowingView.swift */,
+				56477EE124CB24ED00495535 /* PageView.swift */,
+				5657F31924D1D2CF00A7F437 /* SupportEmailView.swift */,
 				5648A74424AF3CD40074B550 /* ViewModifiers */,
 			);
 			path = "Custom Views";
@@ -237,6 +245,7 @@
 				56BC228224C23F2C0072D5E8 /* SummonerFoundOverlay.swift */,
 				56BC228424C23F8C0072D5E8 /* SummonerNotFoundOverlay.swift */,
 				56BC228624C23FB10072D5E8 /* UnknownErrorOverlay.swift */,
+				5657F31B24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift */,
 				56BC228A24C242650072D5E8 /* SummonerFoundExampleLeagueEntry.json */,
 				56BC228C24C244090072D5E8 /* SummonerFoundExampleSoloQueueDivision.json */,
 				56BC228D24C244090072D5E8 /* SummonerFoundExampleSummoner.json */,
@@ -355,7 +364,6 @@
 				56BC228F24C244090072D5E8 /* SummonerFoundExampleSummoner.json in Resources */,
 				567528D224AA29BB009057C8 /* LaunchScreen.storyboard in Resources */,
 				567528CF24AA29BB009057C8 /* Assets.xcassets in Resources */,
-				567528CA24AA29B8009057C8 /* Main.storyboard in Resources */,
 				56BC228B24C242650072D5E8 /* SummonerFoundExampleLeagueEntry.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -385,13 +393,16 @@
 				56F353C124AF66B600E21EB4 /* AssetPaths.swift in Sources */,
 				567528F524AA30B8009057C8 /* Summoner.swift in Sources */,
 				5675290024AA489C009057C8 /* MoyaPublisher.swift in Sources */,
+				5657F31C24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift in Sources */,
 				567528FC24AA3776009057C8 /* LeagueApi+ApiKey.swift in Sources */,
 				5675295E24AB9593009057C8 /* UrlConstants.swift in Sources */,
 				56F353CA24B0AC3900E21EB4 /* League.swift in Sources */,
 				567528EC24AA2C62009057C8 /* WelcomePage.swift in Sources */,
 				56BC228324C23F2C0072D5E8 /* SummonerFoundOverlay.swift in Sources */,
 				567528F324AA2FCC009057C8 /* Region.swift in Sources */,
-				567528C724AA29B8009057C8 /* ViewController.swift in Sources */,
+				5657F31A24D1D2CF00A7F437 /* SupportEmailView.swift in Sources */,
+				56477EE024CAFAA800495535 /* OnboardingPage.swift in Sources */,
+				56477EE224CB24ED00495535 /* PageView.swift in Sources */,
 				567528C324AA29B8009057C8 /* AppDelegate.swift in Sources */,
 				56BC228024C1E2090072D5E8 /* GlowingView.swift in Sources */,
 				567528F724AA30C0009057C8 /* LeagueEntry.swift in Sources */,
@@ -400,6 +411,7 @@
 				5631470124AE0FD5000CC418 /* Settings.swift in Sources */,
 				567528C524AA29B8009057C8 /* SceneDelegate.swift in Sources */,
 				567528CD24AA29B8009057C8 /* Legend_Within.xcdatamodeld in Sources */,
+				56477ED824CADC6F00495535 /* OnboardingModel.swift in Sources */,
 				5648A74324AF3CCF0074B550 /* FloatIn.swift in Sources */,
 				56F353BD24AF43EF00E21EB4 /* LeagueApi+Summoners.swift in Sources */,
 				56F353BF24AF440300E21EB4 /* LeagueApi+LeagueEntries.swift in Sources */,
@@ -425,14 +437,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		567528C824AA29B8009057C8 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				567528C924AA29B8009057C8 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		567528D024AA29BB009057C8 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

@@ -14,42 +14,34 @@ extension AccountLookupPage {
         @State private var isShown: Bool = false
 
         var body: some View {
-            ZStack(alignment: .center) {
-                VStack {
-                    Text("Could not find summoner!")
-                        .foregroundColor(.blue)
-                        .bold()
-                        .font(.system(size: 17))
-                        .padding(.vertical, 15)
+            VStack {
+                VStack(spacing: 10) {
+                    HStack {
+                        Text("Account not found!")
+                            .bold()
+                            .font(.system(size: 17))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 13).padding(.vertical, 7)
+                        Spacer()
+                    }
+                    .background(Color.red)
+                    .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
 
                     Text("Please check that you have no typos and you selected the correct region.")
-                        .font(.system(size: 13))
-                        .foregroundColor(.secondary)
-                        .padding(.bottom, 30)
+                        .font(.system(size: 14))
+                        .minimumScaleFactor(0.01)
+                        .lineLimit(2)
+                        .foregroundColor(.primary)
+                        .padding(.vertical, 5).padding(.horizontal, 13)
 
-                    Button(action: {
-                        self.accountLookupModel.summoner = nil
-                        self.accountLookupModel.errorCode = nil
-                    }, label: {
-                        HStack {
-                            Spacer()
-                            Text("OK").font(.system(size: 17)).bold()
-                            Spacer()
-                        }
-                    })
-                        .padding(.vertical, 10)
-                        .background(Color.blue.opacity(0.4))
-                        .foregroundColor(Color.white)
-                        .frame(maxWidth: .infinity)
                 }
-                .background(Color.white)
+                .padding(.bottom, 10)
+                .background(Color.lightRed5)
                 .cornerRadius(8)
-                .padding(.horizontal, 12).padding(.top, 12)
-                .shadow(color: Color.gray, radius: 6, x: 0, y: 3)
-                .modifier(CustomViewModifiers.FloatIn(whenTrue: $isShown))
+                .shadow(color: Color.gray.opacity(0.4), radius: 6, x: 0, y: 3)
+                .padding(.bottom, 3)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black.opacity(0.3))
+            .modifier(CustomViewModifiers.FloatIn(whenTrue: $isShown))
             .onAppear {
                 self.isShown = true
             }

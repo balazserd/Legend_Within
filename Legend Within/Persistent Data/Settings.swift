@@ -9,6 +9,12 @@
 import Foundation
 
 struct Settings {
-    static let summoner = "settings.summoner"
-    static let region = "settings.region"
+    //MARK: Persistent Store keys
+    static let summonerKey = "settings.summoner"
+    static let regionKey = "settings.region"
+    
+    static let onboardingStatusKey = "settings.onboarding.status"
+
+    //MARK: Constants used throughout the app
+    static let supportEmailAddress = "ebuniapps@gmail.com"
 }

@@ -32,7 +32,7 @@ public class AccountLookupModel : ObservableObject {
 
     private func setupSummonerQuerySubscription() {
         Publishers.CombineLatest($summonerName, $region)
-            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .debounce(for: .milliseconds(1500), scheduler: RunLoop.main)
             .sink { [weak self] newValues in
                 let newSummonerName = newValues.0
                 let newRegion = newValues.1
@@ -42,7 +42,7 @@ public class AccountLookupModel : ObservableObject {
                     newSummonerName != ""
                 else { return }
 
-                UserDefaults.standard.set(newRegion.rawValue, forKey: Settings.region)
+                UserDefaults.standard.set(newRegion.rawValue, forKey: Settings.regionKey)
 
                 self.isQuerying = true
 
@@ -67,7 +67,7 @@ public class AccountLookupModel : ObservableObject {
                         let summoner = try! response.map(Summoner.self)
                         self.summoner = summoner
                         let summonerJson = try? JSONEncoder().encode(summoner)
-                        UserDefaults.standard.set(summonerJson, forKey: Settings.summoner)
+                        UserDefaults.standard.set(summonerJson, forKey: Settings.summonerKey)
                     })
                 cancellable!.store(in: &self.cancellableBag)
             }

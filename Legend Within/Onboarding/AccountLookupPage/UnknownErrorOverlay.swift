@@ -7,40 +7,71 @@
 //
 
 import SwiftUI
+import MessageUI
 
 extension AccountLookupPage {
     struct UnknownErrorOverlay: View {
         @ObservedObject var accountLookupModel: AccountLookupModel
+        @ObservedObject var model = UnknownErrorOverlayModel()
         @State private var isShown: Bool = false
+        @State private var supportEmailStatus: MFMailComposeResult? = nil
 
         var body: some View {
-            ZStack(alignment: .center) {
-                VStack {
-                    Text("An unknown error occurred.")
-                        .foregroundColor(.blue)
-                        .bold()
-                        .font(.system(size: 17))
-                        .padding(.bottom, 8)
-                    Text("Please try again later.")
-                        .font(.system(size: 13))
-                        .foregroundColor(.secondary)
+            VStack {
+                VStack(spacing: 10) {
+                    HStack {
+                        Text("An unknown error occurred")
+                            .bold()
+                            .font(.system(size: 17))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 13).padding(.vertical, 7)
+                        Spacer()
+                    }
+                    .background(Color.red)
+                    .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
 
-                    Button(action: {
-                        self.accountLookupModel.summoner = nil
-                        self.accountLookupModel.errorCode = nil
-                    }, label: {
-                        Text("OK")
-                    })
+                    Text("Please try again later or contact support.")
+                        .font(.system(size: 16))
+                        .minimumScaleFactor(0.01)
+                        .lineLimit(2)
+                        .foregroundColor(.primary)
+                        .padding(.vertical, 10).padding(.horizontal, 13)
                 }
-                .padding()
-                .background(Color.white)
+                .padding(.bottom, 10)
+                .background(Color.lightRed5)
                 .cornerRadius(8)
-                .modifier(CustomViewModifiers.FloatIn(whenTrue: $isShown))
+                .shadow(color: Color.gray.opacity(0.4), radius: 6, x: 0, y: 3)
+                .padding(.bottom, 15)
+
+                if MFMailComposeViewController.canSendMail() {
+                    Button(action: { self.model.shouldShowSupportEmailView = true }) {
+                        Text("Contact support").bold()
+                            .padding(.vertical, 12)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .background(Color.lightRed1)
+                    .cornerRadius(8)
+                    .shadow(color: Color.gray.opacity(0.8), radius: 6, x: 0, y: 3)
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.black.opacity(0.3))
+            .modifier(CustomViewModifiers.FloatIn(whenTrue: $isShown))
             .onAppear {
                 self.isShown = true
+            }
+            .onDisappear {
+                self.isShown = false
+            }
+            .sheet(isPresented: self.$model.shouldShowSupportEmailView) {
+                SupportEmailView(mailComposeResult: self.$model.supportEmailStatus)
+                    .alert(isPresented: self.$model.shouldShowAlertAfterEmailView) {
+                        Alert(title: Text("Status update"),
+                              message: Text(self.model.alertMessage),
+                              dismissButton: .default(Text("OK")) {
+                                self.model.shouldShowAlertAfterEmailView = false
+                                self.model.shouldShowSupportEmailView = false
+                              })
+                    }
             }
         }
     }
