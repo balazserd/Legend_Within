@@ -15,12 +15,12 @@ enum AssetPaths {
 
     var path: String {
         switch self {
-        case .positionIcon(let tier, let position):
-            return "Position_\(tier.normalizedString.capitalized)-\(position.normalizedString.capitalized)"
-        case .rankedEmblem(let tier):
-            return "Emblem_\(tier.normalizedString.capitalized)"
-        case .tabIcon(let tabName, let selected):
-            return selected ? "TabIcon_\(tabName.iconName)_Selected" : "TabIcon_\(tabName.iconName)"
+            case .positionIcon(let tier, let position):
+                return "Position_\(tier.normalizedString.capitalized)-\(position.normalizedString.capitalized)"
+            case .rankedEmblem(let tier):
+                return "Emblem_\(tier.normalizedString.capitalized)"
+            case .tabIcon(let tabName, let selected):
+                return selected ? "TabIcon_\(tabName.iconName)_Selected" : "TabIcon_\(tabName.iconName)"
         }
     }
 }

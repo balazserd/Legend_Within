@@ -26,11 +26,15 @@ extension Color {
     static let lightRed1 = Color(239, 107, 107)
 
     static let lightBlue5 = Color(236, 249, 253)
+    static let lightBlue3 = Color(220, 231, 247)
 
     static let darkBlue2 = Color(0, 117, 143)
 
     static let blue5 = Color(0, 163, 199)
     static let blue2 = Color(66, 149, 247)
+
+    static let greenishBlue3 = Color(61, 175, 206)
+    static let greenishBlue1 = Color(183, 213, 216)
 
     static let gold = Color(255, 215, 0)
 }

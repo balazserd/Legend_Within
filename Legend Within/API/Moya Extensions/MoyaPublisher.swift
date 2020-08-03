@@ -2,8 +2,8 @@
 //  MoyaPublisher.swift
 //  Legend Within
 //
-//  Created by Balazs Erdesz on 2020. 06. 29..
-//  Copyright © 2020. EBUniApps. All rights reserved.
+//  This was copied from Moya's github page where they started implementing combine publishers.
+//  As this functionality is not yet officially out, I took it and used it in my own implementation.
 //
 
 import Foundation

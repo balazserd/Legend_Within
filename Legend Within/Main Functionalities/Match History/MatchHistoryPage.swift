@@ -9,12 +9,16 @@
 import SwiftUI
 
 struct MatchHistoryPage: View {
+    @ObservedObject var model = MatchHistoryModel()
+
     var body: some View {
         NavigationView {
             VStack {
                 List {
-                    NavigationLink(destination: MatchDetailsPage()) {
-                        MatchHistoryItem()
+                    ForEach(model.matchHistory?.matches ?? [], id: \.gameId) { match in
+                        NavigationLink(destination: MatchDetailsPage()) {
+                            MatchHistoryItem(match: match)
+                        }
                     }
 
                     HStack {
@@ -28,12 +32,14 @@ struct MatchHistoryPage: View {
             }
             .navigationBarItems(trailing:
                 HStack {
-                    Button(action: { /*TODO */ }) {
+                    Button(action: {
+                        self.model.requestMatches()
+                    }) {
                         Text("Filter")
                     }
                 }
             )
-            .navigationBarTitle("Match History")
+            .navigationBarTitle(Text("Match History"))
         }
     }
 }
