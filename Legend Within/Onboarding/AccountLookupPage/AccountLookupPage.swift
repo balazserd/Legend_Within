@@ -14,11 +14,14 @@ struct AccountLookupPage: View {
 
     var body: some View {
         ZStack {
+            LinearGradient(gradient: Gradient(colors: [.blue2, .blue5]),
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+                .edgesIgnoringSafeArea(.all)
+
             VStack {
                 VStack {
                     HStack {
                         Text("Let's begin by specifying the region you play in and your summoner name.")
-//                            .foregroundColor(.secondary)
                             .italic()
                             .font(.system(size: 14))
                         Spacer()
@@ -30,11 +33,12 @@ struct AccountLookupPage: View {
                             .resizable()
                             .frame(width: 35, height: 35)
 
-                        Picker("", selection: $accountLookupModel.region) {
-                            ForEach(Region.allCases, id: \.self.rawValue) { region in
-                                Text(region.shortName).tag(region)
-                            }
-                        }.pickerStyle(SegmentedPickerStyle())
+                        FlatSegmentedPicker(selectedItem: $accountLookupModel.region,
+                                            items: Region.allCases,
+                                            color: .blue2,
+                                            cell: { Text("\($0.shortName)").font(.system(size: 15)).bold() })
+                            .frame(height: 32)
+                            .shadow(color: Color.gray.opacity(0.2), radius: 4, x: 0, y: 2)
                     }
                     .padding(.bottom, 15)
 
@@ -43,16 +47,25 @@ struct AccountLookupPage: View {
                             .resizable()
                             .frame(width: 35, height: 35)
 
-                        TextField("Summoner name", text: $accountLookupModel.summonerName) {
-                            self.dismissKeyboard()
+                        ZStack {
+                            TextField("Summoner name", text: $accountLookupModel.summonerName) {
+                                self.dismissKeyboard()
+                            }
+                            .foregroundColor(.blue)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .frame(height: 32)
+
+                            RoundedRectangle(cornerRadius: 4)
+                                .stroke(Color.blue2)
+                                .frame(height: 32)
                         }
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .shadow(color: Color.gray.opacity(0.2), radius: 4, x: 0, y: 2)
                     }
                 }
                 .padding()
-                .background(Color.white)
+                .background(Color.lightBlue5)
                 .cornerRadius(8)
-                .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
+                .shadow(color: Color.black.opacity(0.8), radius: 4, x: 0, y: 2)
                 .padding(.bottom, 8)
 
                 VStack {
@@ -78,11 +91,13 @@ struct AccountLookupPage: View {
                 .shadow(color: Color.gray.opacity(0.4), radius: 6, x: 0, y: 3)
                 .offset(x: 0,
                         y: accountLookupModel.errorCode == nil && accountLookupModel.summoner != nil
-                            ? -20 : 120)
+                            ? -60 : 120)
                     .animation(.easeOut(duration: 0.5))
             }
+
+            loadingOverlay
         }
-        .overlay(loadingOverlay)
+        .frame(maxWidth: .infinity)
     }
 
     private func dismissKeyboard() {
@@ -103,7 +118,7 @@ struct AccountLookupPage: View {
         } else {
             if accountLookupModel.errorCode == 404 {
                 SummonerNotFoundOverlay(accountLookupModel: self.accountLookupModel)
-            } else if accountLookupModel.errorCode != nil {
+            } else if accountLookupModel.localizedErrorDescription != nil {
                 UnknownErrorOverlay(accountLookupModel: self.accountLookupModel)
             }
         }
@@ -123,6 +138,7 @@ struct AccountLookupPage: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.black.opacity(0.3))
+            .edgesIgnoringSafeArea(.all)
         }
     }
 }

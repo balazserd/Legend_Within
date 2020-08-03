@@ -9,12 +9,14 @@
 import Foundation
 import Moya
 import Combine
+import Alamofire
 
 public class AccountLookupModel : ObservableObject {
     @Published public var region: Region = .euw
     @Published public var summonerName: String = ""
     @Published public var summoner: Summoner? = nil
     @Published public var errorCode: Int? = nil
+    @Published public var localizedErrorDescription: String? = nil
     @Published public var isQuerying: Bool = false
     @Published public var soloQueueEntry: LeagueEntry? = nil
     @Published public var soloQueueDivision: League? = nil //if soloQueueEntry is not nil, it is fatal that this results in nil.
@@ -55,6 +57,20 @@ public class AccountLookupModel : ObservableObject {
                         switch completion {
                             case .failure(let error):
                                 self.errorCode = error.response?.statusCode
+
+                                switch error {
+                                    case .underlying(let underlyingError, _):
+                                        let afError = underlyingError.asAFError
+                                        switch afError {
+                                            case .sessionTaskFailed(let sessionError):
+                                                self.localizedErrorDescription = sessionError.localizedDescription
+                                            default:
+                                                self.localizedErrorDescription = afError?.localizedDescription
+                                                    ?? Texts.unknownErrorDescription
+                                        }
+                                    default: break
+                                }
+
                             case .finished:
                                 self.errorCode = nil
                         }

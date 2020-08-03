@@ -27,7 +27,7 @@ struct SupportEmailView : UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {
-        
+        //No update is necessary
     }
 
     func makeCoordinator() -> Coordinator {
@@ -47,5 +47,11 @@ struct SupportEmailView : UIViewControllerRepresentable {
             self.mailViewController.mailComposeResult?.wrappedValue = result
             self.mailViewController.sendingError?.wrappedValue = error
         }
+    }
+}
+
+struct SupportEmailView_Previews: PreviewProvider {
+    static var previews: some View {
+        SupportEmailView()
     }
 }

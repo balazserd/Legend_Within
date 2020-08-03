@@ -27,7 +27,10 @@ extension Color {
 
     static let lightBlue5 = Color(236, 249, 253)
 
+    static let darkBlue2 = Color(0, 117, 143)
+
     static let blue5 = Color(0, 163, 199)
+    static let blue2 = Color(66, 149, 247)
 
     static let gold = Color(255, 215, 0)
 }

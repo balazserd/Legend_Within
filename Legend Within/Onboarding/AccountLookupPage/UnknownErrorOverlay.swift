@@ -20,7 +20,7 @@ extension AccountLookupPage {
             VStack {
                 VStack(spacing: 10) {
                     HStack {
-                        Text("An unknown error occurred")
+                        Text("An error occurred")
                             .bold()
                             .font(.system(size: 17))
                             .foregroundColor(.white)
@@ -30,7 +30,7 @@ extension AccountLookupPage {
                     .background(Color.red)
                     .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
 
-                    Text("Please try again later or contact support.")
+                    Text(accountLookupModel.localizedErrorDescription ?? Texts.unknownErrorDescription)
                         .font(.system(size: 16))
                         .minimumScaleFactor(0.01)
                         .lineLimit(2)
@@ -40,7 +40,7 @@ extension AccountLookupPage {
                 .padding(.bottom, 10)
                 .background(Color.lightRed5)
                 .cornerRadius(8)
-                .shadow(color: Color.gray.opacity(0.4), radius: 6, x: 0, y: 3)
+                .shadow(color: Color.black.opacity(0.8), radius: 6, x: 0, y: 3)
                 .padding(.bottom, 15)
 
                 if MFMailComposeViewController.canSendMail() {
@@ -52,7 +52,7 @@ extension AccountLookupPage {
                     }
                     .background(Color.lightRed1)
                     .cornerRadius(8)
-                    .shadow(color: Color.gray.opacity(0.8), radius: 6, x: 0, y: 3)
+                    .shadow(color: Color.black.opacity(0.8), radius: 6, x: 0, y: 3)
                 }
             }
             .modifier(CustomViewModifiers.FloatIn(whenTrue: $isShown))

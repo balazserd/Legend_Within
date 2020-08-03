@@ -19,7 +19,6 @@ extension AccountLookupPage {
             let soloQueueDivision = accountLookupModel.soloQueueDivision
 
             return
-//                ZStack(alignment: .center) {
                 VStack {
                     VStack(spacing: 10) {
                         HStack {
@@ -30,7 +29,7 @@ extension AccountLookupPage {
                                 .padding(.horizontal, 13).padding(.vertical, 7)
                             Spacer()
                         }
-                        .background(Color.blue)
+                        .background(Color.darkBlue2)
                         .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
 
                         HStack {
@@ -67,14 +66,10 @@ extension AccountLookupPage {
                     .padding(.bottom, 10)
                     .background(Color.lightBlue5)
                     .cornerRadius(8)
-                    .shadow(color: Color.gray.opacity(0.4), radius: 6, x: 0, y: 3)
+                    .shadow(color: Color.black.opacity(0.8), radius: 6, x: 0, y: 3)
                     .padding(.bottom, 3)
                 }
                 .modifier(CustomViewModifiers.FloatIn(whenTrue: $isShown))
-//            }
-//            .frame(maxWidth: .infinity, maxHeight: .infinity)
-//            .background(Color.black.opacity(0.2))
-//            .edgesIgnoringSafeArea(.all)
                 .onAppear {
                     self.isShown = true
                 }

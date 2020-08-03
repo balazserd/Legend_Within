@@ -27,12 +27,14 @@ struct OnboardingPage: View {
                     ForEach(0..<pages.count, id: \.self) { pageNumber in
                         Circle()
                             .fill(pageNumber == self.currentPage ? Color.blue : Color.gray)
-                            .frame(width: 10, height: 10)
+                            .frame(width: 8, height: 8)
                     }
                     Spacer()
                 }
+                .padding(.bottom, 25)
             }
         }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 
