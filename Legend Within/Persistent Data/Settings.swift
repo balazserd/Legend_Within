@@ -15,6 +15,9 @@ struct Settings {
     
     static let onboardingStatusKey = "settings.onboarding.status"
 
+    //MARK: League Api stuff
+    static let currentDownloadedVersion = "leagueApi.currentDownloadedVersion"
+
     //MARK: Constants used throughout the app
     static let supportEmailAddress = "ebuniapps@gmail.com"
 }

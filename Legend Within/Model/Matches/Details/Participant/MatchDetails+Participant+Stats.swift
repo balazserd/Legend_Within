@@ -12,20 +12,20 @@ extension MatchDetails.Participant {
     final class Stats: Codable {
         let participantId: Int
         let win: Bool
-        let item0: Int
-        let item1: Int
-        let item2: Int
-        let item3: Int
-        let item4: Int
-        let item5: Int
-        let item6: Int
+        let item0: Int?
+        let item1: Int?
+        let item2: Int?
+        let item3: Int?
+        let item4: Int?
+        let item5: Int?
+        let item6: Int?
         let kills: Int
         let deaths: Int
         let assists: Int
         let largestKillingSpree: Int
         let largestMultiKill: Int
         let killingSprees: Int
-        let longestTimeSpentLiving: Int
+        let longestTimeSpentLiving: Int?
         let doubleKills: Int
         let tripleKills: Int
         let quadraKills: Int
@@ -45,7 +45,7 @@ extension MatchDetails.Participant {
         let damageSelfMitigated: Int
         let damageDealtToObjectives: Int
         let damageDealtToTurrets: Int
-        let visionScore: Int
+        let visionScore: Int?
         let timeCCingOthers: Int
         let totalDamageTaken: Int
         let magicalDamageTaken: Int
@@ -56,35 +56,35 @@ extension MatchDetails.Participant {
         let turretKills: Int
         let inhibitorKills: Int
         let totalMinionsKilled: Int
-        let neutralMinionsKilled: Int
-        let neutralMinionsKilledTeamJungle: Int
-        let neutralMinionsKilledEnemyJungle: Int
+        let neutralMinionsKilled: Int?
+        let neutralMinionsKilledTeamJungle: Int?
+        let neutralMinionsKilledEnemyJungle: Int?
         let totalTimeCrowdControlDealt: Int
         let champLevel: Int
-        let visionWardsBoughtInGame: Int
-        let sightWardsBoughtInGame: Int
-        let wardsPlaced: Int
-        let wardsKilled: Int
-        let firstBloodKill: Bool
-        let firstBloodAssist: Bool
-        let firstTowerKill: Bool
-        let firstTowerAssist: Bool
-        let firstInhibitorKill: Bool
-        let firstInhibitorAssist: Bool
+        let visionWardsBoughtInGame: Int?
+        let sightWardsBoughtInGame: Int?
+        let wardsPlaced: Int?
+        let wardsKilled: Int?
+        let firstBloodKill: Bool?
+        let firstBloodAssist: Bool?
+        let firstTowerKill: Bool?
+        let firstTowerAssist: Bool?
+        let firstInhibitorKill: Bool?
+        let firstInhibitorAssist: Bool?
         let combatPlayerScore: Int
         let objectivePlayerScore: Int
         let totalPlayerScore: Int
         let totalScoreRank: Int
-        let playerScore0: Int
-        let playerScore1: Int
-        let playerScore2: Int
-        let playerScore3: Int
-        let playerScore4: Int
-        let playerScore5: Int
-        let playerScore6: Int
-        let playerScore7: Int
-        let playerScore8: Int
-        let playerScore9: Int
+        let playerScore0: Int?
+        let playerScore1: Int?
+        let playerScore2: Int?
+        let playerScore3: Int?
+        let playerScore4: Int?
+        let playerScore5: Int?
+        let playerScore6: Int?
+        let playerScore7: Int?
+        let playerScore8: Int?
+        let playerScore9: Int?
         let perk0: Int
         let perk0Var1: Int
         let perk0Var2: Int
@@ -226,20 +226,20 @@ extension MatchDetails.Participant {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             participantId = try values.decode(Int.self, forKey: .participantId)
             win = try values.decode(Bool.self, forKey: .win)
-            item0 = try values.decode(Int.self, forKey: .item0)
-            item1 = try values.decode(Int.self, forKey: .item1)
-            item2 = try values.decode(Int.self, forKey: .item2)
-            item3 = try values.decode(Int.self, forKey: .item3)
-            item4 = try values.decode(Int.self, forKey: .item4)
-            item5 = try values.decode(Int.self, forKey: .item5)
-            item6 = try values.decode(Int.self, forKey: .item6)
+            item0 = try values.decodeIfPresent(Int.self, forKey: .item0)
+            item1 = try values.decodeIfPresent(Int.self, forKey: .item1)
+            item2 = try values.decodeIfPresent(Int.self, forKey: .item2)
+            item3 = try values.decodeIfPresent(Int.self, forKey: .item3)
+            item4 = try values.decodeIfPresent(Int.self, forKey: .item4)
+            item5 = try values.decodeIfPresent(Int.self, forKey: .item5)
+            item6 = try values.decodeIfPresent(Int.self, forKey: .item6)
             kills = try values.decode(Int.self, forKey: .kills)
             deaths = try values.decode(Int.self, forKey: .deaths)
             assists = try values.decode(Int.self, forKey: .assists)
             largestKillingSpree = try values.decode(Int.self, forKey: .largestKillingSpree)
             largestMultiKill = try values.decode(Int.self, forKey: .largestMultiKill)
             killingSprees = try values.decode(Int.self, forKey: .killingSprees)
-            longestTimeSpentLiving = try values.decode(Int.self, forKey: .longestTimeSpentLiving)
+            longestTimeSpentLiving = try values.decodeIfPresent(Int.self, forKey: .longestTimeSpentLiving)
             doubleKills = try values.decode(Int.self, forKey: .doubleKills)
             tripleKills = try values.decode(Int.self, forKey: .tripleKills)
             quadraKills = try values.decode(Int.self, forKey: .quadraKills)
@@ -259,7 +259,7 @@ extension MatchDetails.Participant {
             damageSelfMitigated = try values.decode(Int.self, forKey: .damageSelfMitigated)
             damageDealtToObjectives = try values.decode(Int.self, forKey: .damageDealtToObjectives)
             damageDealtToTurrets = try values.decode(Int.self, forKey: .damageDealtToTurrets)
-            visionScore = try values.decode(Int.self, forKey: .visionScore)
+            visionScore = try values.decodeIfPresent(Int.self, forKey: .visionScore)
             timeCCingOthers = try values.decode(Int.self, forKey: .timeCCingOthers)
             totalDamageTaken = try values.decode(Int.self, forKey: .totalDamageTaken)
             magicalDamageTaken = try values.decode(Int.self, forKey: .magicalDamageTaken)
@@ -270,35 +270,35 @@ extension MatchDetails.Participant {
             turretKills = try values.decode(Int.self, forKey: .turretKills)
             inhibitorKills = try values.decode(Int.self, forKey: .inhibitorKills)
             totalMinionsKilled = try values.decode(Int.self, forKey: .totalMinionsKilled)
-            neutralMinionsKilled = try values.decode(Int.self, forKey: .neutralMinionsKilled)
-            neutralMinionsKilledTeamJungle = try values.decode(Int.self, forKey: .neutralMinionsKilledTeamJungle)
-            neutralMinionsKilledEnemyJungle = try values.decode(Int.self, forKey: .neutralMinionsKilledEnemyJungle)
+            neutralMinionsKilled = try values.decodeIfPresent(Int.self, forKey: .neutralMinionsKilled)
+            neutralMinionsKilledTeamJungle = try values.decodeIfPresent(Int.self, forKey: .neutralMinionsKilledTeamJungle)
+            neutralMinionsKilledEnemyJungle = try values.decodeIfPresent(Int.self, forKey: .neutralMinionsKilledEnemyJungle)
             totalTimeCrowdControlDealt = try values.decode(Int.self, forKey: .totalTimeCrowdControlDealt)
             champLevel = try values.decode(Int.self, forKey: .champLevel)
-            visionWardsBoughtInGame = try values.decode(Int.self, forKey: .visionWardsBoughtInGame)
-            sightWardsBoughtInGame = try values.decode(Int.self, forKey: .sightWardsBoughtInGame)
-            wardsPlaced = try values.decode(Int.self, forKey: .wardsPlaced)
-            wardsKilled = try values.decode(Int.self, forKey: .wardsKilled)
-            firstBloodKill = try values.decode(Bool.self, forKey: .firstBloodKill)
-            firstBloodAssist = try values.decode(Bool.self, forKey: .firstBloodAssist)
-            firstTowerKill = try values.decode(Bool.self, forKey: .firstTowerKill)
-            firstTowerAssist = try values.decode(Bool.self, forKey: .firstTowerAssist)
-            firstInhibitorKill = try values.decode(Bool.self, forKey: .firstInhibitorKill)
-            firstInhibitorAssist = try values.decode(Bool.self, forKey: .firstInhibitorAssist)
+            visionWardsBoughtInGame = try values.decodeIfPresent(Int.self, forKey: .visionWardsBoughtInGame)
+            sightWardsBoughtInGame = try values.decodeIfPresent(Int.self, forKey: .sightWardsBoughtInGame)
+            wardsPlaced = try values.decodeIfPresent(Int.self, forKey: .wardsPlaced)
+            wardsKilled = try values.decodeIfPresent(Int.self, forKey: .wardsKilled)
+            firstBloodKill = try values.decodeIfPresent(Bool.self, forKey: .firstBloodKill)
+            firstBloodAssist = try values.decodeIfPresent(Bool.self, forKey: .firstBloodAssist)
+            firstTowerKill = try values.decodeIfPresent(Bool.self, forKey: .firstTowerKill)
+            firstTowerAssist = try values.decodeIfPresent(Bool.self, forKey: .firstTowerAssist)
+            firstInhibitorKill = try values.decodeIfPresent(Bool.self, forKey: .firstInhibitorKill)
+            firstInhibitorAssist = try values.decodeIfPresent(Bool.self, forKey: .firstInhibitorAssist)
             combatPlayerScore = try values.decode(Int.self, forKey: .combatPlayerScore)
             objectivePlayerScore = try values.decode(Int.self, forKey: .objectivePlayerScore)
             totalPlayerScore = try values.decode(Int.self, forKey: .totalPlayerScore)
             totalScoreRank = try values.decode(Int.self, forKey: .totalScoreRank)
-            playerScore0 = try values.decode(Int.self, forKey: .playerScore0)
-            playerScore1 = try values.decode(Int.self, forKey: .playerScore1)
-            playerScore2 = try values.decode(Int.self, forKey: .playerScore2)
-            playerScore3 = try values.decode(Int.self, forKey: .playerScore3)
-            playerScore4 = try values.decode(Int.self, forKey: .playerScore4)
-            playerScore5 = try values.decode(Int.self, forKey: .playerScore5)
-            playerScore6 = try values.decode(Int.self, forKey: .playerScore6)
-            playerScore7 = try values.decode(Int.self, forKey: .playerScore7)
-            playerScore8 = try values.decode(Int.self, forKey: .playerScore8)
-            playerScore9 = try values.decode(Int.self, forKey: .playerScore9)
+            playerScore0 = try values.decodeIfPresent(Int.self, forKey: .playerScore0)
+            playerScore1 = try values.decodeIfPresent(Int.self, forKey: .playerScore1)
+            playerScore2 = try values.decodeIfPresent(Int.self, forKey: .playerScore2)
+            playerScore3 = try values.decodeIfPresent(Int.self, forKey: .playerScore3)
+            playerScore4 = try values.decodeIfPresent(Int.self, forKey: .playerScore4)
+            playerScore5 = try values.decodeIfPresent(Int.self, forKey: .playerScore5)
+            playerScore6 = try values.decodeIfPresent(Int.self, forKey: .playerScore6)
+            playerScore7 = try values.decodeIfPresent(Int.self, forKey: .playerScore7)
+            playerScore8 = try values.decodeIfPresent(Int.self, forKey: .playerScore8)
+            playerScore9 = try values.decodeIfPresent(Int.self, forKey: .playerScore9)
             perk0 = try values.decode(Int.self, forKey: .perk0)
             perk0Var1 = try values.decode(Int.self, forKey: .perk0Var1)
             perk0Var2 = try values.decode(Int.self, forKey: .perk0Var2)
@@ -334,20 +334,20 @@ extension MatchDetails.Participant {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(participantId, forKey: .participantId)
             try container.encode(win, forKey: .win)
-            try container.encode(item0, forKey: .item0)
-            try container.encode(item1, forKey: .item1)
-            try container.encode(item2, forKey: .item2)
-            try container.encode(item3, forKey: .item3)
-            try container.encode(item4, forKey: .item4)
-            try container.encode(item5, forKey: .item5)
-            try container.encode(item6, forKey: .item6)
+            try container.encodeIfPresent(item0, forKey: .item0)
+            try container.encodeIfPresent(item1, forKey: .item1)
+            try container.encodeIfPresent(item2, forKey: .item2)
+            try container.encodeIfPresent(item3, forKey: .item3)
+            try container.encodeIfPresent(item4, forKey: .item4)
+            try container.encodeIfPresent(item5, forKey: .item5)
+            try container.encodeIfPresent(item6, forKey: .item6)
             try container.encode(kills, forKey: .kills)
             try container.encode(deaths, forKey: .deaths)
             try container.encode(assists, forKey: .assists)
             try container.encode(largestKillingSpree, forKey: .largestKillingSpree)
             try container.encode(largestMultiKill, forKey: .largestMultiKill)
             try container.encode(killingSprees, forKey: .killingSprees)
-            try container.encode(longestTimeSpentLiving, forKey: .longestTimeSpentLiving)
+            try container.encodeIfPresent(longestTimeSpentLiving, forKey: .longestTimeSpentLiving)
             try container.encode(doubleKills, forKey: .doubleKills)
             try container.encode(tripleKills, forKey: .tripleKills)
             try container.encode(quadraKills, forKey: .quadraKills)
@@ -367,7 +367,7 @@ extension MatchDetails.Participant {
             try container.encode(damageSelfMitigated, forKey: .damageSelfMitigated)
             try container.encode(damageDealtToObjectives, forKey: .damageDealtToObjectives)
             try container.encode(damageDealtToTurrets, forKey: .damageDealtToTurrets)
-            try container.encode(visionScore, forKey: .visionScore)
+            try container.encodeIfPresent(visionScore, forKey: .visionScore)
             try container.encode(timeCCingOthers, forKey: .timeCCingOthers)
             try container.encode(totalDamageTaken, forKey: .totalDamageTaken)
             try container.encode(magicalDamageTaken, forKey: .magicalDamageTaken)
@@ -378,35 +378,35 @@ extension MatchDetails.Participant {
             try container.encode(turretKills, forKey: .turretKills)
             try container.encode(inhibitorKills, forKey: .inhibitorKills)
             try container.encode(totalMinionsKilled, forKey: .totalMinionsKilled)
-            try container.encode(neutralMinionsKilled, forKey: .neutralMinionsKilled)
-            try container.encode(neutralMinionsKilledTeamJungle, forKey: .neutralMinionsKilledTeamJungle)
-            try container.encode(neutralMinionsKilledEnemyJungle, forKey: .neutralMinionsKilledEnemyJungle)
+            try container.encodeIfPresent(neutralMinionsKilled, forKey: .neutralMinionsKilled)
+            try container.encodeIfPresent(neutralMinionsKilledTeamJungle, forKey: .neutralMinionsKilledTeamJungle)
+            try container.encodeIfPresent(neutralMinionsKilledEnemyJungle, forKey: .neutralMinionsKilledEnemyJungle)
             try container.encode(totalTimeCrowdControlDealt, forKey: .totalTimeCrowdControlDealt)
             try container.encode(champLevel, forKey: .champLevel)
-            try container.encode(visionWardsBoughtInGame, forKey: .visionWardsBoughtInGame)
-            try container.encode(sightWardsBoughtInGame, forKey: .sightWardsBoughtInGame)
-            try container.encode(wardsPlaced, forKey: .wardsPlaced)
-            try container.encode(wardsKilled, forKey: .wardsKilled)
-            try container.encode(firstBloodKill, forKey: .firstBloodKill)
-            try container.encode(firstBloodAssist, forKey: .firstBloodAssist)
-            try container.encode(firstTowerKill, forKey: .firstTowerKill)
-            try container.encode(firstTowerAssist, forKey: .firstTowerAssist)
-            try container.encode(firstInhibitorKill, forKey: .firstInhibitorKill)
-            try container.encode(firstInhibitorAssist, forKey: .firstInhibitorAssist)
+            try container.encodeIfPresent(visionWardsBoughtInGame, forKey: .visionWardsBoughtInGame)
+            try container.encodeIfPresent(sightWardsBoughtInGame, forKey: .sightWardsBoughtInGame)
+            try container.encodeIfPresent(wardsPlaced, forKey: .wardsPlaced)
+            try container.encodeIfPresent(wardsKilled, forKey: .wardsKilled)
+            try container.encodeIfPresent(firstBloodKill, forKey: .firstBloodKill)
+            try container.encodeIfPresent(firstBloodAssist, forKey: .firstBloodAssist)
+            try container.encodeIfPresent(firstTowerKill, forKey: .firstTowerKill)
+            try container.encodeIfPresent(firstTowerAssist, forKey: .firstTowerAssist)
+            try container.encodeIfPresent(firstInhibitorKill, forKey: .firstInhibitorKill)
+            try container.encodeIfPresent(firstInhibitorAssist, forKey: .firstInhibitorAssist)
             try container.encode(combatPlayerScore, forKey: .combatPlayerScore)
             try container.encode(objectivePlayerScore, forKey: .objectivePlayerScore)
             try container.encode(totalPlayerScore, forKey: .totalPlayerScore)
             try container.encode(totalScoreRank, forKey: .totalScoreRank)
-            try container.encode(playerScore0, forKey: .playerScore0)
-            try container.encode(playerScore1, forKey: .playerScore1)
-            try container.encode(playerScore2, forKey: .playerScore2)
-            try container.encode(playerScore3, forKey: .playerScore3)
-            try container.encode(playerScore4, forKey: .playerScore4)
-            try container.encode(playerScore5, forKey: .playerScore5)
-            try container.encode(playerScore6, forKey: .playerScore6)
-            try container.encode(playerScore7, forKey: .playerScore7)
-            try container.encode(playerScore8, forKey: .playerScore8)
-            try container.encode(playerScore9, forKey: .playerScore9)
+            try container.encodeIfPresent(playerScore0, forKey: .playerScore0)
+            try container.encodeIfPresent(playerScore1, forKey: .playerScore1)
+            try container.encodeIfPresent(playerScore2, forKey: .playerScore2)
+            try container.encodeIfPresent(playerScore3, forKey: .playerScore3)
+            try container.encodeIfPresent(playerScore4, forKey: .playerScore4)
+            try container.encodeIfPresent(playerScore5, forKey: .playerScore5)
+            try container.encodeIfPresent(playerScore6, forKey: .playerScore6)
+            try container.encodeIfPresent(playerScore7, forKey: .playerScore7)
+            try container.encodeIfPresent(playerScore8, forKey: .playerScore8)
+            try container.encodeIfPresent(playerScore9, forKey: .playerScore9)
             try container.encode(perk0, forKey: .perk0)
             try container.encode(perk0Var1, forKey: .perk0Var1)
             try container.encode(perk0Var2, forKey: .perk0Var2)

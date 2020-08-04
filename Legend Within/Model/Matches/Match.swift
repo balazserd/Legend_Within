@@ -8,7 +8,7 @@
 
 import Foundation
 
-public final class Match: Codable {
+public final class Match: Codable, ObservableObject {
     let platformId: String
     let gameId: Int
     let champion: Int
@@ -17,7 +17,30 @@ public final class Match: Codable {
     let timestamp: Int
     let role: String
     let lane: String
-    var details: MatchDetails?
+    @Published var details: MatchDetails?
+
+    func kdaForUser() -> [String : Int] {
+        guard
+            let user = Summoner.getCurrent(),
+            let details = self.details
+        else { return [:] }
+
+        let usersParticipantIdentity = details.participantIdentities.first { $0.player.summonerId == user.id }!
+        let usersParticipant = details.participants.first { $0.participantId == usersParticipantIdentity.participantId }!
+        let kills = usersParticipant.stats.kills
+        let deaths = usersParticipant.stats.deaths
+        let assists = usersParticipant.stats.assists
+
+        return ["k" : kills, "d" : deaths, "a" : assists]
+    }
+
+    func kda(for participant: MatchDetails.Participant) -> [String : Int] {
+        let kills = participant.stats.kills
+        let deaths = participant.stats.deaths
+        let assists = participant.stats.assists
+
+        return ["k" : kills, "d" : deaths, "a" : assists]
+    }
 
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)

@@ -33,7 +33,7 @@ struct MatchHistoryPage: View {
             .navigationBarItems(trailing:
                 HStack {
                     Button(action: {
-                        self.model.requestMatches()
+                        self.model.requestMatches(beginIndex: 0, endIndex: 20)
                     }) {
                         Text("Filter")
                     }

@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MainWindow: View {
     @State private var selectedTab: Int = 0
+    @ObservedObject private var gameData = GameData.shared
 
     private let pages = [
         AnyView(LiveAssistantPage()),
@@ -26,6 +27,7 @@ struct MainWindow: View {
 
             VStack(spacing: 0) {
                 pages[selectedTab]
+                    .environmentObject(gameData)
 
                 GeometryReader { proxy in
                     self.getTabsRow(with: proxy)

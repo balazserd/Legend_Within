@@ -10,11 +10,19 @@ import Foundation
 
 enum UrlConstants {
     case profileIcons(iconId: Int)
+    case championIcons(iconName: String)
+    case itemIcons(itemId: Int)
 
     var url: URL? {
+        let currentVersion = UserDefaults.standard.string(forKey: Settings.currentDownloadedVersion) ?? "10.13.1"
+
         switch self {
             case .profileIcons(let iconId):
-                return URL(string: "https://ddragon.leagueoflegends.com/cdn/10.13.1/img/profileicon/\(iconId).png")
+                return URL(string: "https://ddragon.leagueoflegends.com/cdn/\(currentVersion)/img/profileicon/\(iconId).png")
+            case .championIcons(let iconName):
+                return URL(string: "https://ddragon.leagueoflegends.com/cdn/\(currentVersion)/img/champion/\(iconName)")
+            case .itemIcons(let itemId):
+                return URL(string: "https://ddragon.leagueoflegends.com/cdn/\(currentVersion)/img/item/\(itemId).png")
         }
     }
 }

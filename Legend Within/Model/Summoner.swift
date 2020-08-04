@@ -42,6 +42,13 @@ public final class Summoner : NSObject, Codable {
         try container.encode(self.revisionDate, forKey: .revisionDate)
         try container.encode(self.summonerLevel, forKey: .summonerLevel)
     }
+
+    class func getCurrent() -> Summoner? {
+        guard let summonerJSON = UserDefaults.standard.data(forKey: Settings.summonerKey) else { return nil }
+
+        let summoner = try? JSONDecoder().decode(Summoner.self, from: summonerJSON)
+        return summoner
+    }
 }
 
 //MARK: - CodingKeys extension

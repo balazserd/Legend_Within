@@ -7,12 +7,27 @@
 //
 
 import SwiftUI
+import KingfisherSwiftUI
 
 struct MatchHistoryItem: View {
-    var match: Match
+    @EnvironmentObject var gameData: GameData
+    @ObservedObject var match: Match
 
     var body: some View {
-        Text("Match History Item TBD")
+        let kdaForUser = match.kdaForUser()
+        let iconName = gameData.champions["\(match.champion)"]!.onlyData().image.full
+
+        return HStack {
+            KFImage(UrlConstants.championIcons(iconName: iconName).url)
+                .resizable()
+                .frame(width: 50, height: 50)
+
+            VStack {
+                if kdaForUser.count != 0 {
+                    Text("\(kdaForUser["k"]!) / \(kdaForUser["d"]!) / \(kdaForUser["a"]!)")
+                }
+            }
+        }
     }
 }
 
