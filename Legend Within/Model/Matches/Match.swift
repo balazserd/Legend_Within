@@ -19,27 +19,16 @@ public final class Match: Codable, ObservableObject {
     let lane: String
     @Published var details: MatchDetails?
 
-    func kdaForUser() -> [String : Int] {
+    func details(for summoner: Summoner?) -> MatchDetails.Participant? {
         guard
-            let user = Summoner.getCurrent(),
+            let summoner = summoner,
             let details = self.details
-        else { return [:] }
+        else { return nil }
 
-        let usersParticipantIdentity = details.participantIdentities.first { $0.player.summonerId == user.id }!
+        let usersParticipantIdentity = details.participantIdentities.first { $0.player.summonerId == summoner.id }!
         let usersParticipant = details.participants.first { $0.participantId == usersParticipantIdentity.participantId }!
-        let kills = usersParticipant.stats.kills
-        let deaths = usersParticipant.stats.deaths
-        let assists = usersParticipant.stats.assists
 
-        return ["k" : kills, "d" : deaths, "a" : assists]
-    }
-
-    func kda(for participant: MatchDetails.Participant) -> [String : Int] {
-        let kills = participant.stats.kills
-        let deaths = participant.stats.deaths
-        let assists = participant.stats.assists
-
-        return ["k" : kills, "d" : deaths, "a" : assists]
+        return usersParticipant
     }
 
     public init(from decoder: Decoder) throws {

@@ -16,10 +16,11 @@ public class LeagueApi : ObservableObject {
         self.setupUpdateCycleSubscription()
     }
 
-    @Published var newVersionExists: Bool = false
+    @Published var newVersionExists: Bool? = nil
     @Published var updateProgress = UpdateProgress()
     private var versionToDownload: String? = nil
     private var cancellableBag = Set<AnyCancellable>()
+    private let bagSafetyQueue = DispatchQueue(label: "leagueApi.bagSafetyQueue", qos: .userInteractive)
 
     private let ddProvider = MoyaProvider<DataDragon>()
 
@@ -36,21 +37,24 @@ public class LeagueApi : ObservableObject {
     private func setupUpdateCycleSubscription() {
         $newVersionExists
             .sink { [weak self] exists in
-                guard exists else { return }
+                guard exists != nil && exists! else { return }
                 self?.beginUpdateData()
             }
             .store(in: &cancellableBag)
 
         Publishers.CombineLatest3(updateProgress.$championsJSONProgress,
-                                  updateProgress.$championUniqueJSONsProgress,
-                                  updateProgress.$itemsJSONProgress)
+                                  updateProgress.$itemsJSONProgress,
+                                  updateProgress.$championUniqueJSONsProgress)
             .sink { [weak self] progress in
                 guard let self = self else { return }
 
-                if self.updateProgress.finished() {
+                if self.updateProgress.willFinishWithValues(championsProgress: progress.0,
+                                                            itemsProgress: progress.1,
+                                                            uniqueChampionsProgress: progress.2) {
                     UserDefaults.standard.set(self.versionToDownload, forKey: Settings.currentDownloadedVersion)
                     self.updateProgress = UpdateProgress()
                     self.versionToDownload = nil
+                    self.newVersionExists = false
                 }
             }
             .store(in: &cancellableBag)
@@ -85,6 +89,8 @@ public class LeagueApi : ObservableObject {
                     DispatchQueue.main.async {
                         self.newVersionExists = true
                     }
+                } else {
+                    self?.newVersionExists = false
                 }
 
                 self?.cancellableBag.remove(cancellable!)
@@ -98,8 +104,8 @@ public class LeagueApi : ObservableObject {
         let championsPath = documentsDirectory.appendingPathComponent("champion.json")
         let itemsPath = documentsDirectory.appendingPathComponent("item.json")
 
-        self.downloadJson(targetType: .champions(downloadPath: championsPath), progressRatio: 0.025)
-        self.downloadJson(targetType: .items(downloadPath: itemsPath), progressRatio: 0.025)
+        self.downloadJson(targetType: .champions(downloadPath: championsPath), progressRatio: 1.0)
+        self.downloadJson(targetType: .items(downloadPath: itemsPath), progressRatio: 1.0)
     }
 
     private func updateUniqueChampionJSONs() {
@@ -107,7 +113,7 @@ public class LeagueApi : ObservableObject {
         for championName in championNames {
             self.downloadJson(targetType: .champion(downloadPath: FilePaths.championJson(name: championName).path,
                                                     name: championName),
-                              progressRatio: 0.95 / Double(championNames.count))
+                              progressRatio: 1.0 / Double(championNames.count))
         }
     }
 
@@ -115,16 +121,14 @@ public class LeagueApi : ObservableObject {
         var cancellable: AnyCancellable? = nil
         cancellable = self.ddProvider.requestWithProgressPublisher(targetType)
             .receive(on: DispatchQueue.global(qos: .utility))
-            .sink(receiveCompletion: { completionType in
+            .sink(receiveCompletion: { [weak self] completionType in
                 print(completionType)
+                self?.updateProgress.increaseProgress(forPhase: targetType, by: progressRatio)
             }) { [weak self] progressResponse in
-                DispatchQueue.main.async {
-                    self?.updateProgress.setProgress(forPhase: targetType, to: progressResponse.progress * progressRatio)
-                }
-
                 if progressResponse.completed {
-                    self?.cancellableBag.remove(cancellable!)
-                    self?.updateProgress.setProgress(forPhase: targetType, to: 1.0)
+                    self?.bagSafetyQueue.async(flags: .barrier) {
+                        self?.cancellableBag.remove(cancellable!)
+                    }
                 }
             }
 
@@ -145,19 +149,28 @@ extension LeagueApi {
         @Published var itemsJSONProgress: Double = 0.0
         @Published var championUniqueJSONsProgress: Double = 0.0
 
-        func setProgress(forPhase targetType: MoyaProvider<DataDragon>.Target, to value: Double) {
-            switch targetType {
-                case .champion: self.championUniqueJSONsProgress = value
-                case .items: self.itemsJSONProgress = value
-                case .champions: self.championsJSONProgress = value
-                default: break
+        func increaseProgress(forPhase targetType: MoyaProvider<DataDragon>.Target, by value: Double) {
+            DispatchQueue.main.async {
+                switch targetType {
+                    case .champion: self.championUniqueJSONsProgress += value
+                    case .items: self.itemsJSONProgress += value
+                    case .champions: self.championsJSONProgress += value
+                    default: break
+                }
             }
         }
 
         func finished() -> Bool {
-            return championsJSONProgress.isEqual(to: 1.0)
-                && itemsJSONProgress.isEqual(to: 1.0)
-                && championUniqueJSONsProgress.isEqual(to: 1.0)
+            return !championsJSONProgress.isLessThanOrEqualTo(0.9999)
+                && !itemsJSONProgress.isLessThanOrEqualTo(0.9999)
+                && !championUniqueJSONsProgress.isLessThanOrEqualTo(0.9999)
+        }
+
+        func willFinishWithValues(championsProgress: Double, itemsProgress: Double, uniqueChampionsProgress: Double) -> Bool {
+            //This is needed because publishers are called in WillChange, not in DidChange.
+            return !championsProgress.isLessThanOrEqualTo(0.9999)
+                && !itemsProgress.isLessThanOrEqualTo(0.9999)
+                && !uniqueChampionsProgress.isLessThanOrEqualTo(0.9999)
         }
     }
 }

@@ -16,6 +16,8 @@
 		562C9A3624D71A820061EB38 /* KnowledgeBasePage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562C9A3524D71A820061EB38 /* KnowledgeBasePage.swift */; };
 		562C9A3824D71A9A0061EB38 /* LiveAssistantPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562C9A3724D71A9A0061EB38 /* LiveAssistantPage.swift */; };
 		5631470124AE0FD5000CC418 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5631470024AE0FD5000CC418 /* Settings.swift */; };
+		56328D0324D9F0CE00319CD9 /* StartScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56328D0224D9F0CE00319CD9 /* StartScreen.swift */; };
+		56328D0524D9F11100319CD9 /* NewVersionDownloadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56328D0424D9F11100319CD9 /* NewVersionDownloadingView.swift */; };
 		5639762224D8735C003388C0 /* MatchExample.json in Resources */ = {isa = PBXBuildFile; fileRef = 5639762124D8735C003388C0 /* MatchExample.json */; };
 		5639762424D873CC003388C0 /* MatchDetailsExample.json in Resources */ = {isa = PBXBuildFile; fileRef = 5639762324D873CC003388C0 /* MatchDetailsExample.json */; };
 		56477ED824CADC6F00495535 /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56477ED724CADC6F00495535 /* OnboardingModel.swift */; };
@@ -122,6 +124,8 @@
 		562C9A3524D71A820061EB38 /* KnowledgeBasePage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeBasePage.swift; sourceTree = "<group>"; };
 		562C9A3724D71A9A0061EB38 /* LiveAssistantPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveAssistantPage.swift; sourceTree = "<group>"; };
 		5631470024AE0FD5000CC418 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		56328D0224D9F0CE00319CD9 /* StartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartScreen.swift; sourceTree = "<group>"; };
+		56328D0424D9F11100319CD9 /* NewVersionDownloadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewVersionDownloadingView.swift; sourceTree = "<group>"; };
 		5639762124D8735C003388C0 /* MatchExample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MatchExample.json; sourceTree = "<group>"; };
 		5639762324D873CC003388C0 /* MatchDetailsExample.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = MatchDetailsExample.json; sourceTree = "<group>"; };
 		56477ED724CADC6F00495535 /* OnboardingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingModel.swift; sourceTree = "<group>"; };
@@ -233,7 +237,9 @@
 		562C9A2C24D7197A0061EB38 /* Main Functionalities */ = {
 			isa = PBXGroup;
 			children = (
+				56328D0224D9F0CE00319CD9 /* StartScreen.swift */,
 				562C9A2D24D719A20061EB38 /* MainWindow.swift */,
+				56328D0424D9F11100319CD9 /* NewVersionDownloadingView.swift */,
 				562C9A3D24D71ABD0061EB38 /* Statistics */,
 				562C9A3C24D71AB60061EB38 /* Knowledge Base */,
 				562C9A3B24D71AAF0061EB38 /* Settings */,
@@ -703,6 +709,7 @@
 				5657F31C24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift in Sources */,
 				56C96DC324D9508400685F76 /* ChampionDetails+Data+Skin.swift in Sources */,
 				567528FC24AA3776009057C8 /* LeagueApi+ApiKey.swift in Sources */,
+				56328D0524D9F11100319CD9 /* NewVersionDownloadingView.swift in Sources */,
 				56C96DC924D950CF00685F76 /* ChampionDetails+Data+Spell.swift in Sources */,
 				5675295E24AB9593009057C8 /* UrlConstants.swift in Sources */,
 				562C9A3224D71A2E0061EB38 /* SettingsPage.swift in Sources */,
@@ -714,6 +721,7 @@
 				56ED282924D9560E00016178 /* ChampionDetails+Data+Spell+DataValues.swift in Sources */,
 				56D318AD24D8630E002F4FAB /* MatchDetails+ParticipantIdentity.swift in Sources */,
 				562C9A3024D71A1B0061EB38 /* MatchHistoryPage.swift in Sources */,
+				56328D0324D9F0CE00319CD9 /* StartScreen.swift in Sources */,
 				56BC228324C23F2C0072D5E8 /* SummonerFoundOverlay.swift in Sources */,
 				56C96DB924D94A0200685F76 /* ChampionDetails.swift in Sources */,
 				56ED282E24D9572A00016178 /* ChampionDetails+Data+Recommended+Block+Item.swift in Sources */,

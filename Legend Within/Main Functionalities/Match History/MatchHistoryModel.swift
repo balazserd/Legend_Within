@@ -66,11 +66,8 @@ final class MatchHistoryModel : ObservableObject {
                     cancellable = self.matchesProvider.requestPublisher(.singleMatch(region: .euw, matchId: matchesToGetDetailsFor[i].gameId))
                         .receive(on: DispatchQueue.global(qos: .userInteractive))
                         .sink(receiveCompletion: { [weak self] completionType in
-                            print(completionType)
                             self?.cancellableBag.remove(cancellable!)
-                        }) { [weak self] matchResponse in
-                            guard let self = self else { return }
-
+                        }) { matchResponse in
                             let matchDetails = try! matchResponse.map(MatchDetails.self)
                             DispatchQueue.main.async {
                                 matchesToGetDetailsFor[i].details = matchDetails

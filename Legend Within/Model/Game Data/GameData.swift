@@ -22,13 +22,9 @@ final class GameData : ObservableObject {
         self.champions = [:]
         self.items = [:]
 
-        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-            self?.loadData()
-        }
-
         leagueApi.$newVersionExists
             .sink { [weak self] exists in
-                guard exists else { return }
+                if exists == nil || exists! { return }
                 DispatchQueue.global(qos: .userInteractive).async {
                     self?.loadData()
                 }
@@ -43,13 +39,15 @@ final class GameData : ObservableObject {
         let champListData = try! Data(contentsOf: FilePaths.championsJson.path)
         let champListObject = try! decoder.decode(ChampionsJSON.self, from: champListData)
 
-        for champion in champListObject.data {
-            //TODO: this task could be very long. What to do?
-            let champData = try! Data(contentsOf: FilePaths.championJson(name: champion.key).path)
+        let keyArray = champListObject.data.map { $0.key }
+        let champArray = champListObject.data.map { $0.value }
+
+        DispatchQueue.concurrentPerform(iterations: champArray.count) { i in
+            let champData = try! Data(contentsOf: FilePaths.championJson(name: keyArray[i]).path)
             let champObject = try! decoder.decode(ChampionDetails.self, from: champData)
 
             DispatchQueue.main.async {
-                self.champions[champObject.data[champion.key]!.key] = champObject
+                self.champions[champObject.data[keyArray[i]]!.key] = champObject
             }
         }
 

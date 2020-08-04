@@ -14,17 +14,49 @@ struct MatchHistoryItem: View {
     @ObservedObject var match: Match
 
     var body: some View {
-        let kdaForUser = match.kdaForUser()
-        let iconName = gameData.champions["\(match.champion)"]!.onlyData().image.full
+        let participant = match.details(for: Summoner.getCurrent())
+
+        let itemIdsFirstRow = [participant?.stats.item1, participant?.stats.item2, participant?.stats.item3]
+        let itemIdsSecondRow = [participant?.stats.item4, participant?.stats.item5, participant?.stats.item6]
+
+        let championIconName = gameData.champions["\(match.champion)"]!.onlyData().image.full
 
         return HStack {
-            KFImage(UrlConstants.championIcons(iconName: iconName).url)
-                .resizable()
-                .frame(width: 50, height: 50)
+            if gameData.champions.count == 0 || gameData.items.count == 0 {
+                EmptyView()
+            } else {
+                KFImage(UrlConstants.championIcons(iconName: championIconName).url)
+                    .resizable()
+                    .frame(width: 50, height: 50)
 
-            VStack {
-                if kdaForUser.count != 0 {
-                    Text("\(kdaForUser["k"]!) / \(kdaForUser["d"]!) / \(kdaForUser["a"]!)")
+                VStack {
+                    if participant != nil {
+                        Text("\(participant!.stats.kills) / \(participant!.stats.deaths) / \(participant!.stats.assists)")
+                    }
+                }
+
+                Spacer()
+
+                VStack {
+                    HStack {
+                        ForEach(0..<3) { i in
+                            if itemIdsFirstRow[i] != nil {
+                                KFImage(UrlConstants.itemIcons(itemId: itemIdsFirstRow[i]!).url)
+                                    .resizable()
+                                    .frame(width: 25, height: 25)
+                            }
+                        }
+                    }
+
+                    HStack {
+                        ForEach(0..<3) { i in
+                            if itemIdsSecondRow[i] != nil {
+                                KFImage(UrlConstants.itemIcons(itemId: itemIdsSecondRow[i]!).url)
+                                    .resizable()
+                                    .frame(width: 25, height: 25)
+                            }
+                        }
+                    }
                 }
             }
         }

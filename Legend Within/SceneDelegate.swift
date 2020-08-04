@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Create the SwiftUI view and set the context as the value for the managedObjectContext environment keyPath.
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
-        let contentView = MainWindow().environment(\.managedObjectContext, context)
+        let contentView = StartScreen().environment(\.managedObjectContext, context)
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {
@@ -33,7 +33,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window.makeKeyAndVisible()
         }
 
-        self.leagueApi.checkForUpdates()
+        self.leagueApi.checkForUpdates() //Immediately begin update check.
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
