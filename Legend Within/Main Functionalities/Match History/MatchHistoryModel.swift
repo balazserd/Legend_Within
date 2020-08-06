@@ -22,7 +22,7 @@ final class MatchHistoryModel : ObservableObject {
         setupMatchDetailsSubcription()
     }
 
-    public func requestMatches(shouldOverwriteCurrentInstance: Bool = false, beginIndex: Int, endIndex: Int) {
+    public func requestMatches(beginIndex: Int, endIndex: Int, shouldOverwriteCurrentInstance: Bool = false) {
         let queryParams: LeagueApi.Matches.ByAccountQueryParameters = {
             var params = LeagueApi.Matches.ByAccountQueryParameters()
             params.beginIndex = beginIndex
@@ -34,18 +34,23 @@ final class MatchHistoryModel : ObservableObject {
         matchesProvider.requestPublisher(.byAccount(region: .euw,
                                                     encryptedAccountId: "nnK1yvPQltAH9yNP81T9R_iT0hhdt2fk8RBHSEQtEnmubS4",
                                                     queryParams: queryParams))
-            .sink(receiveCompletion: { [weak self] completionType in
-                guard let self = self else { return }
-
+            .receive(on: DispatchQueue.global(qos: .userInteractive))
+            .map { $0.data }
+            .decode(type: MatchHistory.self, decoder: JSONDecoder())
+            .mapError(NetworkRequestError.transformDecodableNetworkErrorStream(error:))
+            .sink(receiveCompletion: { completionType in
+                //TODO error handling
                 print(completionType)
-            }) { [weak self] response in
+            }) { [weak self] newMatchHistory in
                 guard let self = self else { return }
 
-                let history = try! response.map(MatchHistory.self)
-                if self.matchHistory == nil || shouldOverwriteCurrentInstance {
-                    self.matchHistory = history
-                } else {
-                    self.matchHistory!.matches.insert(contentsOf: history.matches, at: history.startIndex)
+                DispatchQueue.main.async {
+                    if self.matchHistory == nil || shouldOverwriteCurrentInstance {
+                        self.matchHistory = newMatchHistory
+                    } else {
+                        self.matchHistory!.matches.insert(contentsOf: newMatchHistory.matches,
+                                                          at: newMatchHistory.startIndex)
+                    }
                 }
             }
             .store(in: &self.cancellableBag)
@@ -65,12 +70,15 @@ final class MatchHistoryModel : ObservableObject {
                     var cancellable: AnyCancellable? = nil
                     cancellable = self.matchesProvider.requestPublisher(.singleMatch(region: .euw, matchId: matchesToGetDetailsFor[i].gameId))
                         .receive(on: DispatchQueue.global(qos: .userInteractive))
+                        .map { $0.data }
+                        .decode(type: MatchDetails.self, decoder: JSONDecoder())
+                        .mapError(NetworkRequestError.transformDecodableNetworkErrorStream(error:))
                         .sink(receiveCompletion: { [weak self] completionType in
                             self?.cancellableBag.remove(cancellable!)
-                        }) { matchResponse in
-                            let matchDetails = try! matchResponse.map(MatchDetails.self)
+                            //TODO error handling
+                        }) { newMatchDetails in
                             DispatchQueue.main.async {
-                                matchesToGetDetailsFor[i].details = matchDetails
+                                matchesToGetDetailsFor[i].details = newMatchDetails
                             }
                         }
 

@@ -9,13 +9,13 @@
 import Foundation
 
 extension MatchDetails {
-    final class Participant: Codable {
+    struct Participant: Codable {
         let participantId: Int
         let teamId: Int
         let championId: Int
         let spell1Id: Int
         let spell2Id: Int
-        let stats: Stats
+        var stats: Stats
         let timeline: Timeline
 
         private enum CodingKeys: String, CodingKey {
@@ -26,6 +26,14 @@ extension MatchDetails {
             case spell2Id = "spell2Id"
             case stats = "stats"
             case timeline = "timeline"
+        }
+
+        var firstThreeItemIds: [Int?] {
+            [self.stats.item0, self.stats.item1, self.stats.item2]
+        }
+
+        var secondThreeItemIds: [Int?] {
+            [self.stats.item3, self.stats.item4, self.stats.item5]
         }
 
         init(from decoder: Decoder) throws {

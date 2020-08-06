@@ -11,7 +11,7 @@ import Foundation
 extension ChampionDetails {
     final class Data : Codable {
         let id: String
-        let key: String
+        let key: Int
         let name: String
         let title: String
         let image: Image
@@ -51,7 +51,8 @@ extension ChampionDetails {
         init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             id = try values.decode(String.self, forKey: .id)
-            key = try values.decode(String.self, forKey: .key)
+            //Inconsistent keycoding on Riot's side. API returns these values as Int, they are string in the data json.
+            key = Int(try values.decode(String.self, forKey: .key))!
             name = try values.decode(String.self, forKey: .name)
             title = try values.decode(String.self, forKey: .title)
             image = try values.decode(Image.self, forKey: .image)
@@ -72,7 +73,8 @@ extension ChampionDetails {
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(id, forKey: .id)
-            try container.encode(key, forKey: .key)
+            //Inconsistent keycoding on Riot's side. API returns these values as Int, they are string in the data json.
+            try container.encode(String(key), forKey: .key)
             try container.encode(name, forKey: .name)
             try container.encode(title, forKey: .title)
             try container.encode(image, forKey: .image)

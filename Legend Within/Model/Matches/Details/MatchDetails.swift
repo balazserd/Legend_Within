@@ -8,7 +8,7 @@
 
 import Foundation
 
-final class MatchDetails: Codable {
+struct MatchDetails: Codable {
 
     let gameId: Int
     let platformId: String
@@ -24,7 +24,7 @@ final class MatchDetails: Codable {
     let participants: [Participant]
     let participantIdentities: [ParticipantIdentity]
 
-    class func getPeriodStringRepresentation(lowerEndOfMinutesOfTens: Int) -> String {
+    static func getPeriodStringRepresentation(lowerEndOfMinutesOfTens: Int) -> String {
         let lowerEndOfMinutesOfTensCorrectedJustToBeSure = lowerEndOfMinutesOfTens - (lowerEndOfMinutesOfTens % 10)
         return "\(lowerEndOfMinutesOfTensCorrectedJustToBeSure)-\(lowerEndOfMinutesOfTensCorrectedJustToBeSure + 10)"
     }

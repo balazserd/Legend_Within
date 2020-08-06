@@ -9,7 +9,7 @@
 import Foundation
 
 extension MatchDetails {
-    final class ParticipantIdentity: Codable {
+    struct ParticipantIdentity: Codable {
         let participantId: Int
         let player: Player
 

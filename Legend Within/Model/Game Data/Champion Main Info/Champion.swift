@@ -12,7 +12,7 @@ final class Champion: Codable {
 
     let version: String
     let id: String
-    let key: String
+    let key: Int
     let name: String
     let title: String
     let blurb: String
@@ -40,7 +40,8 @@ final class Champion: Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         version = try values.decode(String.self, forKey: .version)
         id = try values.decode(String.self, forKey: .id)
-        key = try values.decode(String.self, forKey: .key)
+        //Inconsistent keycoding on Riot's side. API returns these values as Int, they are string in the data json.
+        key = Int(try values.decode(String.self, forKey: .key))!
         name = try values.decode(String.self, forKey: .name)
         title = try values.decode(String.self, forKey: .title)
         blurb = try values.decode(String.self, forKey: .blurb)
@@ -55,7 +56,8 @@ final class Champion: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(version, forKey: .version)
         try container.encode(id, forKey: .id)
-        try container.encode(key, forKey: .key)
+        //Inconsistent keycoding on Riot's side. API returns these values as Int, they are string in the data json.
+        try container.encode(String(key), forKey: .key)
         try container.encode(name, forKey: .name)
         try container.encode(title, forKey: .title)
         try container.encode(blurb, forKey: .blurb)

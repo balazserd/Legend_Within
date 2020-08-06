@@ -11,7 +11,7 @@ import Foundation
 final class ItemsJSON : Codable {
     let type: String
     let version: String
-    let data: [String : Item]
+    let data: [Int : Item]
 
     private enum CodingKeys: String, CodingKey {
         case type = "type"
@@ -24,7 +24,7 @@ final class ItemsJSON : Codable {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         type = try values.decode(String.self, forKey: .type)
         version = try values.decode(String.self, forKey: .version)
-        data = try values.decode([String : Item].self, forKey: .data)
+        data = try values.decode([Int : Item].self, forKey: .data)
     }
 
     func encode(to encoder: Encoder) throws {

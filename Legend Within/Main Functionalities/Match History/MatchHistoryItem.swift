@@ -8,58 +8,105 @@
 
 import SwiftUI
 import KingfisherSwiftUI
+import Combine
 
 struct MatchHistoryItem: View {
     @EnvironmentObject var gameData: GameData
     @ObservedObject var match: Match
 
+    let dateFormatter: DateFormatter = {
+        var formatter = DateFormatter()
+        formatter.dateFormat = "MM/dd/yyyy HH:mm"
+        return formatter
+    }()
+
     var body: some View {
         let participant = match.details(for: Summoner.getCurrent())
 
-        let itemIdsFirstRow = [participant?.stats.item1, participant?.stats.item2, participant?.stats.item3]
-        let itemIdsSecondRow = [participant?.stats.item4, participant?.stats.item5, participant?.stats.item6]
+        let itemIdsFirstRow = participant?.firstThreeItemIds
+        let itemIdsSecondRow = participant?.secondThreeItemIds
+        let trinketItemId = participant?.stats.item6
 
-        let championIconName = gameData.champions["\(match.champion)"]!.onlyData().image.full
+        let gameTime = dateFormatter.string(from: Date(timeIntervalSince1970: Double(match.timestamp / 1000)))
+        let gameDuration = match.details?.gameDuration.toHoursMinutesAndSecondsText()
 
-        return HStack {
+        let championIconName = gameData.champions[(match.champion)]!.onlyData().image.full
+
+        return HStack(spacing: 3) {
             if gameData.champions.count == 0 || gameData.items.count == 0 {
                 EmptyView()
             } else {
-                KFImage(UrlConstants.championIcons(iconName: championIconName).url)
-                    .resizable()
-                    .frame(width: 50, height: 50)
+                VStack {
+                    KFImage(UrlConstants.championIcons(iconName: championIconName).url)
+                        .bigItemImageStyle()
+
+                    if gameDuration != nil {
+                        Text(gameDuration!)
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                    }
+                }
 
                 VStack {
                     if participant != nil {
                         Text("\(participant!.stats.kills) / \(participant!.stats.deaths) / \(participant!.stats.assists)")
+                            .font(.system(size: 19))
+                            .bold()
+
+                        Text(gameTime)
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
                     }
                 }
 
                 Spacer()
 
                 VStack {
-                    HStack {
-                        ForEach(0..<3) { i in
-                            if itemIdsFirstRow[i] != nil {
-                                KFImage(UrlConstants.itemIcons(itemId: itemIdsFirstRow[i]!).url)
-                                    .resizable()
-                                    .frame(width: 25, height: 25)
-                            }
-                        }
+                    Spacer()
+                    if trinketItemId != nil {
+                        KFImage(UrlConstants.itemIcons(itemId: trinketItemId!).url)
+                            .smallItemImageStyle()
                     }
+                    Spacer()
+                }
 
-                    HStack {
-                        ForEach(0..<3) { i in
-                            if itemIdsSecondRow[i] != nil {
-                                KFImage(UrlConstants.itemIcons(itemId: itemIdsSecondRow[i]!).url)
-                                    .resizable()
-                                    .frame(width: 25, height: 25)
-                            }
-                        }
+                VStack(spacing: 3) {
+                    self.getItemRow(withItemIdSet: itemIdsFirstRow)
+                    self.getItemRow(withItemIdSet: itemIdsSecondRow)
+                }
+            }
+        }
+    }
+
+    private func getItemRow(withItemIdSet itemIdSet: [Int?]?) -> some View {
+        HStack(spacing: 3) {
+            //Needs to be tested separately, or it won't update the view. E.g. (itemIdSet?[i] != nil) is not good.
+            if itemIdSet != nil {
+                ForEach(0..<3) { i in
+                    if itemIdSet![i] != nil {
+                        KFImage(UrlConstants.itemIcons(itemId: itemIdSet![i]!).url)
+                            .smallItemImageStyle()
                     }
                 }
             }
         }
+    }
+}
+
+extension KFImage {
+    func smallItemImageStyle() -> some View {
+        self.itemImageStyle(width: 25)
+    }
+
+    func bigItemImageStyle() -> some View {
+        self.itemImageStyle(width: 50)
+    }
+
+    private func itemImageStyle(width w: CGFloat) -> some View {
+        self
+            .resizable()
+            .frame(width: w, height: w)
+            .cornerRadius(3)
     }
 }
 

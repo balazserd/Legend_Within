@@ -9,16 +9,16 @@
 import Foundation
 
 extension MatchDetails.Participant {
-    final class Stats: Codable {
+    struct Stats: Codable {
         let participantId: Int
         let win: Bool
-        let item0: Int?
-        let item1: Int?
-        let item2: Int?
-        let item3: Int?
-        let item4: Int?
-        let item5: Int?
-        let item6: Int?
+        var item0: Int?
+        var item1: Int?
+        var item2: Int?
+        var item3: Int?
+        var item4: Int?
+        var item5: Int?
+        var item6: Int?
         let kills: Int
         let deaths: Int
         let assists: Int

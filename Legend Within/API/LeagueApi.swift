@@ -18,6 +18,7 @@ public class LeagueApi : ObservableObject {
 
     @Published var newVersionExists: Bool? = nil
     @Published var updateProgress = UpdateProgress()
+    @Published var updatedFailedDueToNoSpace: Bool? = nil
     private var versionToDownload: String? = nil
     private var cancellableBag = Set<AnyCancellable>()
     private let bagSafetyQueue = DispatchQueue(label: "leagueApi.bagSafetyQueue", qos: .userInteractive)
@@ -42,15 +43,21 @@ public class LeagueApi : ObservableObject {
             }
             .store(in: &cancellableBag)
 
-        Publishers.CombineLatest3(updateProgress.$championsJSONProgress,
+        Publishers.CombineLatest4(updateProgress.$championsJSONProgress,
                                   updateProgress.$itemsJSONProgress,
-                                  updateProgress.$championUniqueJSONsProgress)
+                                  updateProgress.$championUniqueJSONsProgress,
+                                  updateProgress.$queuesJSONProgress)
+            .combineLatest(Publishers.CombineLatest(updateProgress.$mapsJSONProgress,
+                                                    updateProgress.$runesJSONProgress))
             .sink { [weak self] progress in
                 guard let self = self else { return }
 
-                if self.updateProgress.willFinishWithValues(championsProgress: progress.0,
-                                                            itemsProgress: progress.1,
-                                                            uniqueChampionsProgress: progress.2) {
+                if UpdateProgress.willFinishWithValues(championsProgress: progress.0.0,
+                                                       itemsProgress: progress.0.1,
+                                                       uniqueChampionsProgress: progress.0.2,
+                                                       queuesProgress: progress.0.3,
+                                                       mapsProgress: progress.1.0,
+                                                       runesProgress: progress.1.1) {
                     UserDefaults.standard.set(self.versionToDownload, forKey: Settings.currentDownloadedVersion)
                     self.updateProgress = UpdateProgress()
                     self.versionToDownload = nil
@@ -85,12 +92,10 @@ public class LeagueApi : ObservableObject {
                     guard let self = self else { return }
 
                     self.versionToDownload = latestVersion
+                }
 
-                    DispatchQueue.main.async {
-                        self.newVersionExists = true
-                    }
-                } else {
-                    self?.newVersionExists = false
+                DispatchQueue.main.async {
+                    self?.newVersionExists = true //Overwrite this with true in debug to force update cycle.
                 }
 
                 self?.cancellableBag.remove(cancellable!)
@@ -100,12 +105,16 @@ public class LeagueApi : ObservableObject {
     }
 
     func beginUpdateData() {
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let championsPath = documentsDirectory.appendingPathComponent("champion.json")
-        let itemsPath = documentsDirectory.appendingPathComponent("item.json")
+        guard checkForEnoughSpace() else {
+            self.updatedFailedDueToNoSpace = true
+            return
+        }
 
-        self.downloadJson(targetType: .champions(downloadPath: championsPath), progressRatio: 1.0)
-        self.downloadJson(targetType: .items(downloadPath: itemsPath), progressRatio: 1.0)
+        self.downloadJson(targetType: .champions(downloadPath: FilePaths.championsJson.path), progressRatio: 1.0)
+        self.downloadJson(targetType: .items(downloadPath: FilePaths.itemsJson.path), progressRatio: 1.0)
+        self.downloadJson(targetType: .maps(downloadPath: FilePaths.mapsJson.path), progressRatio: 1.0)
+        self.downloadJson(targetType: .queues(downloadPath: FilePaths.queuesJson.path), progressRatio: 1.0)
+        self.downloadJson(targetType: .runes(downloadPath: FilePaths.runesJson.path), progressRatio: 1.0)
     }
 
     private func updateUniqueChampionJSONs() {
@@ -141,6 +150,17 @@ public class LeagueApi : ObservableObject {
 
         return champListObject.data.map { $0.key }
     }
+
+    private func checkForEnoughSpace() -> Bool {
+        let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let fileSystemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: documentDirectory.path)
+
+        if let freeSpaceInBytes = (fileSystemAttributes?[.systemFreeSize] as? NSNumber)?.doubleValue {
+            return !(freeSpaceInBytes / pow(1024.0, 2)).isLessThanOrEqualTo(10.0)
+        }
+
+        return false
+    }
 }
 
 extension LeagueApi {
@@ -148,6 +168,9 @@ extension LeagueApi {
         @Published var championsJSONProgress: Double = 0.0
         @Published var itemsJSONProgress: Double = 0.0
         @Published var championUniqueJSONsProgress: Double = 0.0
+        @Published var queuesJSONProgress: Double = 0.0
+        @Published var mapsJSONProgress: Double = 0.0
+        @Published var runesJSONProgress: Double = 0.0
 
         func increaseProgress(forPhase targetType: MoyaProvider<DataDragon>.Target, by value: Double) {
             DispatchQueue.main.async {
@@ -155,6 +178,9 @@ extension LeagueApi {
                     case .champion: self.championUniqueJSONsProgress += value
                     case .items: self.itemsJSONProgress += value
                     case .champions: self.championsJSONProgress += value
+                    case .maps: self.mapsJSONProgress += value
+                    case .queues: self.queuesJSONProgress += value
+                    case .runes: self.runesJSONProgress += value
                     default: break
                 }
             }
@@ -164,13 +190,24 @@ extension LeagueApi {
             return !championsJSONProgress.isLessThanOrEqualTo(0.9999)
                 && !itemsJSONProgress.isLessThanOrEqualTo(0.9999)
                 && !championUniqueJSONsProgress.isLessThanOrEqualTo(0.9999)
+                && !queuesJSONProgress.isLessThanOrEqualTo(0.9999)
+                && !mapsJSONProgress.isLessThanOrEqualTo(0.9999)
+                && !runesJSONProgress.isLessThanOrEqualTo(0.9999)
         }
 
-        func willFinishWithValues(championsProgress: Double, itemsProgress: Double, uniqueChampionsProgress: Double) -> Bool {
+        class func willFinishWithValues(championsProgress: Double,
+                                  itemsProgress: Double,
+                                  uniqueChampionsProgress: Double,
+                                  queuesProgress: Double,
+                                  mapsProgress: Double,
+                                  runesProgress: Double) -> Bool {
             //This is needed because publishers are called in WillChange, not in DidChange.
             return !championsProgress.isLessThanOrEqualTo(0.9999)
                 && !itemsProgress.isLessThanOrEqualTo(0.9999)
                 && !uniqueChampionsProgress.isLessThanOrEqualTo(0.9999)
+                && !queuesProgress.isLessThanOrEqualTo(0.9999)
+                && !mapsProgress.isLessThanOrEqualTo(0.9999)
+                && !runesProgress.isLessThanOrEqualTo(0.9999)
         }
     }
 }

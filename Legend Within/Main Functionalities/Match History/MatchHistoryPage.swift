@@ -23,7 +23,9 @@ struct MatchHistoryPage: View {
 
                     HStack {
                         Spacer()
-                        Button(action: { /*TODO*/ }) {
+                        Button(action: {
+                            self.model.requestMatches(beginIndex: 0, endIndex: 20)
+                        }) {
                             Text("Load more")
                         }
                         Spacer()
@@ -33,7 +35,7 @@ struct MatchHistoryPage: View {
             .navigationBarItems(trailing:
                 HStack {
                     Button(action: {
-                        self.model.requestMatches(beginIndex: 0, endIndex: 20)
+                        /* TODO */
                     }) {
                         Text("Filter")
                     }

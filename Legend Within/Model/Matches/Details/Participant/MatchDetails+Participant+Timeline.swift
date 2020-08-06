@@ -9,7 +9,7 @@
 import Foundation
 
 extension MatchDetails.Participant {
-    final class Timeline: Codable {
+    struct Timeline: Codable {
         let participantId: Int
         let creepsPerMinDeltas: [String : Double]?
         let csDiffPerMinDeltas: [String : Double]?
