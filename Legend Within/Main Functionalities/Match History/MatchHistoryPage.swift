@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Introspect
 
 struct MatchHistoryPage: View {
     @ObservedObject var model = MatchHistoryModel()
@@ -16,8 +17,10 @@ struct MatchHistoryPage: View {
             VStack {
                 List {
                     ForEach(model.matchHistory?.matches ?? [], id: \.gameId) { match in
-                        NavigationLink(destination: MatchDetailsPage()) {
-                            MatchHistoryItem(match: match)
+                        ZStack {
+                            NavigationLink(destination: MatchDetailsPage()) {
+                                MatchHistoryItem(match: match)
+                            }
                         }
                     }
 
@@ -31,12 +34,14 @@ struct MatchHistoryPage: View {
                         Spacer()
                     }
                 }
+                .introspectTableView { tableView in
+                    tableView.separatorStyle = .none
+                    tableView.tableFooterView = UIView()
+                }
             }
             .navigationBarItems(trailing:
                 HStack {
-                    Button(action: {
-                        /* TODO */
-                    }) {
+                    NavigationLink(destination: MatchHistoryFilterPage(model: model)) {
                         Text("Filter")
                     }
                 }

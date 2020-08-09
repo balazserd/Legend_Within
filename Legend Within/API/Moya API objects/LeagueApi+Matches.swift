@@ -8,6 +8,7 @@
 
 import Foundation
 import Moya
+import Alamofire
 
 extension LeagueApi {
     enum Matches {
@@ -44,7 +45,7 @@ extension LeagueApi.Matches : TargetType {
             case .singleMatch:
                 return .requestPlain
             case .byAccount(_, _, let queryParams):
-                return .requestParameters(parameters: queryParams.convertToRequestParameters(), encoding: URLEncoding.default)
+                return .requestParameters(parameters: queryParams.convertToRequestParameters(), encoding: SameQueryParameterMultipleTimesEncoding())
         }
     }
 
@@ -70,9 +71,8 @@ extension LeagueApi.Matches {
                 params["champion"] = String(data: championsJson, encoding: .utf8)
             }
 
-            if  self.queues != nil,
-                let queuesJson = try? JSONSerialization.data(withJSONObject: self.queues as Any, options: []) {
-                params["queue"] = String(data: queuesJson, encoding: .utf8)
+            if let queuesUnwrapped = self.queues {
+                params["queue"] = queuesUnwrapped
             }
 
             if let endTimeUnwrapped = self.endTime {
@@ -96,3 +96,42 @@ extension LeagueApi.Matches {
     }
 }
 
+extension LeagueApi.Matches {
+    class SameQueryParameterMultipleTimesEncoding : ParameterEncoding {
+        func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
+            if let originalRequest = try? urlRequest.asURLRequest() {
+                guard
+                    let scheme = originalRequest.url?.scheme,
+                    let host = originalRequest.url?.host,
+                    let path = originalRequest.url?.path
+                else { return urlRequest.urlRequest! }
+
+                var components = URLComponents()
+                components.scheme = scheme
+                components.host = host
+                components.path = path
+
+                var queryItems: [URLQueryItem] = []
+                for param in parameters! {
+                    if param.value is [Int] {
+                        //Need to add the same query parameter as many times as the number of items in the array.
+                        let vals = param.value as! [Int]
+                        for val in vals {
+                            queryItems.append(URLQueryItem(name: param.key, value: String(val)))
+                        }
+                    } else {
+                        queryItems.append(URLQueryItem(name: param.key, value: "\(param.value)"))
+                    }
+                }
+
+                components.queryItems = queryItems
+                var encodedRequest = originalRequest
+                encodedRequest.url = components.url
+
+                return encodedRequest
+            }
+
+            return urlRequest.urlRequest!
+        }
+    }
+}

@@ -18,6 +18,8 @@ extension LeagueApi {
         case maps(downloadPath: URL)
         case queues(downloadPath: URL)
         case runes(downloadPath: URL)
+        case itemIcon(downloadPath: URL, id: Int)
+        case championIcon(downloadPath: URL, name: String)
     }
 }
 
@@ -25,8 +27,17 @@ extension LeagueApi.DataDragon : TargetType {
     
     var baseURL: URL {
         switch self {
-        case .versions, .champions, .champion, .items, .runes: return URL(string: "https://ddragon.leagueoflegends.com")!
-            case .maps, .queues: return URL(string: "https://static.developer.riotgames.com/docs/lol")!
+            case .versions,
+                 .champions,
+                 .champion,
+                 .items,
+                 .runes,
+                 .championIcon,
+                 .itemIcon:
+                return URL(string: "https://ddragon.leagueoflegends.com")!
+            case .maps,
+                 .queues:
+                return URL(string: "https://static.developer.riotgames.com/docs/lol")!
         }
     }
 
@@ -41,6 +52,8 @@ extension LeagueApi.DataDragon : TargetType {
             case .maps: return "/maps.json"
             case .queues: return "/queues.json"
             case .runes: return "/cdn/\(currentVersion)/data/en_US/runesReforged.json"
+            case .championIcon(_, let name): return "/cdn/\(currentVersion)/img/champion/\(name)"
+            case .itemIcon(_, let id): return "/cdn/\(currentVersion)/img/item/\(id).png"
         }
     }
 
@@ -61,7 +74,9 @@ extension LeagueApi.DataDragon : TargetType {
                  .champions(let downloadPath),
                  .maps(let downloadPath),
                  .queues(let downloadPath),
-                 .runes(let downloadPath):
+                 .runes(let downloadPath),
+                 .championIcon(let downloadPath, _),
+                 .itemIcon(let downloadPath, _):
                 return .downloadDestination { _, _ in (downloadPath, [.removePreviousFile, .createIntermediateDirectories]) }
         }
     }

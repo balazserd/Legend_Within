@@ -12,6 +12,9 @@ import Moya
 
 final class MatchHistoryModel : ObservableObject {
     @Published var matchHistory: MatchHistory? = nil
+    @Published var isLoadingFirstSetOfMatches: Bool = false
+    @Published var isLoadingFurtherSetsOfMatches: Bool = false
+    @Published var matchTypesToFetch: MatchTypesToFetch = .all
 
     private let matchesProvider = MoyaProvider<LeagueApi.Matches>()
 
@@ -27,6 +30,7 @@ final class MatchHistoryModel : ObservableObject {
             var params = LeagueApi.Matches.ByAccountQueryParameters()
             params.beginIndex = beginIndex
             params.endIndex = endIndex
+            params.queues = self.matchTypesToFetch.asRequestHeaderValue
 
             return params
         }()
@@ -74,7 +78,9 @@ final class MatchHistoryModel : ObservableObject {
                         .decode(type: MatchDetails.self, decoder: JSONDecoder())
                         .mapError(NetworkRequestError.transformDecodableNetworkErrorStream(error:))
                         .sink(receiveCompletion: { [weak self] completionType in
-                            self?.cancellableBag.remove(cancellable!)
+                            self?.bagSafetyQueue.async(flags: .barrier) {
+                                self?.cancellableBag.remove(cancellable!)
+                            }
                             //TODO error handling
                         }) { newMatchDetails in
                             DispatchQueue.main.async {
@@ -88,5 +94,27 @@ final class MatchHistoryModel : ObservableObject {
                 }
             }
             .store(in: &cancellableBag)
+    }
+
+    enum MatchTypesToFetch : CaseIterable {
+        case all
+        case allRanked
+        case rankedSolo
+
+        var asRequestHeaderValue: [Int]? {
+            switch self {
+                case .all: return nil
+                case .allRanked: return [420, 440, 700]
+                case .rankedSolo: return [420]
+            }
+        }
+
+        var description: String {
+            switch self {
+                case .all: return "All"
+                case .allRanked: return "Ranked only"
+                case .rankedSolo: return "Ranked Solo/Duo only"
+            }
+        }
     }
 }

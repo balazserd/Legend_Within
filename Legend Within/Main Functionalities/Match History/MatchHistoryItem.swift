@@ -16,7 +16,7 @@ struct MatchHistoryItem: View {
 
     let dateFormatter: DateFormatter = {
         var formatter = DateFormatter()
-        formatter.dateFormat = "MM/dd/yyyy HH:mm"
+        formatter.dateFormat = "MMM dd, HH:mm"
         return formatter
     }()
 
@@ -33,11 +33,15 @@ struct MatchHistoryItem: View {
         let championIconName = gameData.champions[(match.champion)]!.onlyData().image.full
 
         return HStack(spacing: 3) {
-            if gameData.champions.count == 0 || gameData.items.count == 0 {
+            if gameData.champions.count == 0
+                || gameData.items.count == 0
+                || gameData.runePaths.count == 0
+                || gameData.maps.count == 0
+                || gameData.queues.count == 0 {
                 EmptyView()
             } else {
                 VStack {
-                    KFImage(UrlConstants.championIcons(iconName: championIconName).url)
+                    KFImage(FilePaths.championIcon(fileName: championIconName).path)
                         .bigItemImageStyle()
 
                     if gameDuration != nil {
@@ -52,54 +56,65 @@ struct MatchHistoryItem: View {
                         Text("\(participant!.stats.kills) / \(participant!.stats.deaths) / \(participant!.stats.assists)")
                             .font(.system(size: 19))
                             .bold()
-
-                        Text(gameTime)
-                            .font(.system(size: 14))
-                            .foregroundColor(.secondary)
                     }
                 }
 
                 Spacer()
 
                 VStack {
-                    Spacer()
-                    if trinketItemId != nil {
-                        KFImage(UrlConstants.itemIcons(itemId: trinketItemId!).url)
-                            .smallItemImageStyle()
-                    }
-                    Spacer()
-                }
+                    HStack(spacing: 3) {
+                        VStack {
+                            Spacer()
+                            if trinketItemId != nil {
+                                KFImage(UrlConstants.itemIcons(itemId: trinketItemId!).url)
+                                    .smallItemImageStyle()
+                            }
+                            Spacer()
+                        }
 
-                VStack(spacing: 3) {
-                    self.getItemRow(withItemIdSet: itemIdsFirstRow)
-                    self.getItemRow(withItemIdSet: itemIdsSecondRow)
+                        VStack(spacing: 3) {
+                            HStack(spacing: 3) {
+                                if itemIdsFirstRow != nil {
+                                    KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![0]!).path).smallItemImageStyle()
+                                    KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![1]!).path).smallItemImageStyle()
+                                    KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![2]!).path).smallItemImageStyle()
+                                }
+                            }
+                            HStack(spacing: 3) {
+                                if itemIdsSecondRow != nil {
+                                    KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![0]!).path).smallItemImageStyle()
+                                    KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![1]!).path).smallItemImageStyle()
+                                    KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![2]!).path).smallItemImageStyle()
+                                }
+                            }
+                        }
+                    }
+
+                    Text(gameTime)
+                        .font(.system(size: 14))
+                        .foregroundColor(.white)
                 }
             }
         }
-    }
+        .padding(8)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(participant?.stats.win ?? false ? Color.green5 : Color.red3)
+                .shadow(color: Color.gray.opacity(0.8), radius: 4, x: 0, y: 2))
+        .padding(.bottom, 2).padding(.top, -2)
 
-    private func getItemRow(withItemIdSet itemIdSet: [Int?]?) -> some View {
-        HStack(spacing: 3) {
-            //Needs to be tested separately, or it won't update the view. E.g. (itemIdSet?[i] != nil) is not good.
-            if itemIdSet != nil {
-                ForEach(0..<3) { i in
-                    if itemIdSet![i] != nil {
-                        KFImage(UrlConstants.itemIcons(itemId: itemIdSet![i]!).url)
-                            .smallItemImageStyle()
-                    }
-                }
-            }
-        }
     }
 }
 
-extension KFImage {
+private extension KFImage {
     func smallItemImageStyle() -> some View {
         self.itemImageStyle(width: 25)
+            .background(RoundedRectangle(cornerRadius: 3).fill(Color.gray).opacity(0.5))
+            .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.black, lineWidth: 1.5))
     }
 
     func bigItemImageStyle() -> some View {
-        self.itemImageStyle(width: 50)
+        self.itemImageStyle(width: 55)
     }
 
     private func itemImageStyle(width w: CGFloat) -> some View {

@@ -14,17 +14,110 @@ struct NewVersionDownloadingView: View {
 
     var body: some View {
         VStack {
-            Text("New version is being downloaded. Please wait...")
+            HStack {
+                Text("New patch is available!")
+                    .font(.system(size: 22))
+                    .bold()
+                    .foregroundColor(.white)
 
-            if !(leagueApi.updatedFailedDueToNoSpace ?? false) {
-                Text("Downloading champion list - \(Int(updateProgress.championsJSONProgress * 100))%")
-                Text("Downloading items list - \(Int(updateProgress.itemsJSONProgress * 100))%")
-                Text("Downloading individual champions' data - \(Int(updateProgress.championUniqueJSONsProgress * 100))%")
-                Text("Downloading maps list - \(Int(updateProgress.mapsJSONProgress * 100))%")
-                Text("Downloading queues list - \(Int(updateProgress.queuesJSONProgress * 100))%")
-                Text("Downloading runes list - \(Int(updateProgress.runesJSONProgress * 100))%")
-            } else {
-                Text("Cannot update to new version. There is not enough space on your device. Make sure you have at least 20 MB of free space.")
+                Spacer()
+            }
+            .padding(.horizontal, 10).padding(.vertical, 5)
+            .background(Color.blue5)
+
+            VStack {
+                if !(leagueApi.updatedFailedDueToNoSpace ?? false) {
+                    HStack {
+                        Text("Please wait until new data is downloaded. This can take a few minutes.")
+                            .bold()
+                            .fixedSize(horizontal: false, vertical: true)
+                            .foregroundColor(.red)
+                        Spacer()
+                    }
+
+                    Divider()
+                        .frame(height: 2)
+                        .background(Color.lightBlue3)
+                        .padding(.horizontal, -10).padding(.bottom, 5)
+
+                    VStack(spacing: 5) {
+                        HStack {
+                            Text("CHAMPIONS")
+                                .font(.system(size: 17)).bold()
+                            Spacer()
+                        }
+                        DownloadRow(downloadingText: "Champion list",
+                                    progress: $updateProgress.championsJSONProgress)
+                        DownloadRow(downloadingText: "Individual champions' data",
+                                    progress: $updateProgress.championUniqueJSONsProgress)
+                        DownloadRow(downloadingText: "Champion icons",
+                                    progress: $updateProgress.championIconsProgress)
+                    }
+
+                    Divider().padding(.bottom, 8)
+
+                    VStack(spacing: 5) {
+                        HStack {
+                            Text("ITEMS")
+                                .font(.system(size: 17)).bold()
+                            Spacer()
+                        }
+                        DownloadRow(downloadingText: "Item list",
+                                    progress: $updateProgress.itemsJSONProgress)
+                        DownloadRow(downloadingText: "Item icons",
+                                    progress: $updateProgress.itemIconsProgress)
+                    }
+
+                    Divider().padding(.bottom, 8)
+
+                    VStack(spacing: 5) {
+                        HStack {
+                            Text("GENERAL DATA")
+                                .font(.system(size: 17)).bold()
+                            Spacer()
+                        }
+                        DownloadRow(downloadingText: "Map list",
+                                    progress: $updateProgress.mapsJSONProgress)
+                        DownloadRow(downloadingText: "Queue list",
+                                    progress: $updateProgress.queuesJSONProgress)
+                        DownloadRow(downloadingText: "Rune list",
+                                    progress: $updateProgress.runesJSONProgress)
+                    }
+
+                } else {
+                    Text("Cannot update to new version. There is not enough space on your device. Make sure you have at least 40 MB of free space.")
+                }
+            }
+            .padding(10)
+        }
+        .cornerRadius(8)
+        .background(RoundedRectangle(cornerRadius: 8)
+            .fill(Color.lightBlue5)
+            .shadow(color: Color.gray.opacity(0.4),
+                    radius: 4, x: 0, y: 2))
+        .padding(.horizontal, 10)
+    }
+
+    private struct DownloadRow : View {
+        var downloadingText: String
+        @Binding var progress: Double
+
+        var body: some View {
+            HStack {
+                Text(downloadingText)
+                    .font(.system(size: 15))
+                Spacer()
+                ZStack {
+                    LoadingCircle(progressRatio: $progress,
+                                  showPercentage: false)
+                        .opacity(progress.isLessThanOrEqualTo(0.99999) ? 1 : 0)
+                        .frame(width: 25, height: 25)
+
+                    Image("NewVersionDownloadingViewIcon_Done")
+                        .resizable()
+                        .frame(width: 25, height: 25)
+                        .opacity(progress.isLessThanOrEqualTo(0.99999) ? 0 : 1)
+                }
             }
         }
     }
