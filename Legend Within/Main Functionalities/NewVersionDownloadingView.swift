@@ -16,7 +16,7 @@ struct NewVersionDownloadingView: View {
         VStack {
             HStack {
                 Text("New patch is available!")
-                    .font(.system(size: 22))
+                    .font(.system(size: 20))
                     .bold()
                     .foregroundColor(.white)
 
@@ -38,7 +38,7 @@ struct NewVersionDownloadingView: View {
                     Divider()
                         .frame(height: 2)
                         .background(Color.lightBlue3)
-                        .padding(.horizontal, -10).padding(.bottom, 5)
+                        .padding(.horizontal, -15).padding(.bottom, 5)
 
                     VStack(spacing: 5) {
                         HStack {
@@ -72,15 +72,29 @@ struct NewVersionDownloadingView: View {
 
                     VStack(spacing: 5) {
                         HStack {
+                            Text("SUMMONER SPELLS")
+                                .font(.system(size: 17)).bold()
+                            Spacer()
+                        }
+                        DownloadRow(downloadingText: "Summoner spell list",
+                                    progress: $updateProgress.summonerSpellsJSONProgress)
+                        DownloadRow(downloadingText: "Summoner spell icons",
+                                    progress: $updateProgress.summonerSpellIconsProgress)
+                    }
+
+                    Divider().padding(.bottom, 8)
+
+                    VStack(spacing: 5) {
+                        HStack {
                             Text("GENERAL DATA")
                                 .font(.system(size: 17)).bold()
                             Spacer()
                         }
-                        DownloadRow(downloadingText: "Map list",
+                        DownloadRow(downloadingText: "Maps",
                                     progress: $updateProgress.mapsJSONProgress)
-                        DownloadRow(downloadingText: "Queue list",
+                        DownloadRow(downloadingText: "Queues",
                                     progress: $updateProgress.queuesJSONProgress)
-                        DownloadRow(downloadingText: "Rune list",
+                        DownloadRow(downloadingText: "Runes",
                                     progress: $updateProgress.runesJSONProgress)
                     }
 
@@ -88,7 +102,7 @@ struct NewVersionDownloadingView: View {
                     Text("Cannot update to new version. There is not enough space on your device. Make sure you have at least 40 MB of free space.")
                 }
             }
-            .padding(10)
+            .padding(.horizontal, 15).padding(.bottom, 10).padding(.top, 15)
         }
         .cornerRadius(8)
         .background(RoundedRectangle(cornerRadius: 8)

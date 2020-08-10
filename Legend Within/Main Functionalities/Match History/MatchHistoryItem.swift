@@ -37,79 +37,153 @@ struct MatchHistoryItem: View {
                 || gameData.items.count == 0
                 || gameData.runePaths.count == 0
                 || gameData.maps.count == 0
-                || gameData.queues.count == 0 {
+                || gameData.queues.count == 0
+                || gameData.summonerSpells.count == 0 {
                 EmptyView()
             } else {
-                VStack {
-                    KFImage(FilePaths.championIcon(fileName: championIconName).path)
-                        .bigItemImageStyle()
+                if participant != nil {
+                    VStack(spacing: 4) {
+                        KFImage(FilePaths.championIcon(fileName: championIconName).path)
+                            .bigItemImageStyle()
 
-                    if gameDuration != nil {
-                        Text(gameDuration!)
-                            .font(.system(size: 14))
-                            .foregroundColor(.secondary)
-                    }
-                }
+                        HStack(spacing: 5) {
+                            KFImage(FilePaths.summonerSpellIcon(fileName: gameData.summonerSpells[participant!.spell1Id]!.image.full).path)
+                                .smallItemImageStyle()
 
-                VStack {
-                    if participant != nil {
-                        Text("\(participant!.stats.kills) / \(participant!.stats.deaths) / \(participant!.stats.assists)")
-                            .font(.system(size: 19))
-                            .bold()
-                    }
-                }
-
-                Spacer()
-
-                VStack {
-                    HStack(spacing: 3) {
-                        VStack {
-                            Spacer()
-                            if trinketItemId != nil {
-                                KFImage(UrlConstants.itemIcons(itemId: trinketItemId!).url)
-                                    .smallItemImageStyle()
-                            }
-                            Spacer()
+                            KFImage(FilePaths.summonerSpellIcon(fileName: gameData.summonerSpells[participant!.spell2Id]!.image.full).path)
+                                .smallItemImageStyle()
                         }
+                    }
+                    .padding(.trailing, 5)
 
-                        VStack(spacing: 3) {
-                            HStack(spacing: 3) {
-                                if itemIdsFirstRow != nil {
-                                    KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![0]!).path).smallItemImageStyle()
-                                    KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![1]!).path).smallItemImageStyle()
-                                    KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![2]!).path).smallItemImageStyle()
-                                }
-                            }
-                            HStack(spacing: 3) {
-                                if itemIdsSecondRow != nil {
-                                    KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![0]!).path).smallItemImageStyle()
-                                    KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![1]!).path).smallItemImageStyle()
-                                    KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![2]!).path).smallItemImageStyle()
+                    VStack(spacing: 0) {
+                        HStack {
+                            HStack(alignment: .bottom, spacing: 3) {
+                                Text(participant!.stats.win ? "VICTORY" : "DEFEAT")
+                                    .font(.system(size: 18))
+                                    .bold()
+                                    .foregroundColor(participant!.stats.win ? Color.green5 : Color.red3)
+
+                                Text("in \(gameDuration!)")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.gray)
+                                    .alignmentGuide(.bottom, computeValue: { d in d[.bottom] + 1 })
+
+                                HStack {
+                                    Spacer()
+                                    Text(gameTime)
+                                        .font(.system(size: 13, design: .monospaced))
                                 }
                             }
                         }
-                    }
 
-                    Text(gameTime)
-                        .font(.system(size: 14))
-                        .foregroundColor(.white)
+                        Divider()
+                            .opacity(0.7)
+                            .padding(.top, 3).padding(.bottom, 5)
+
+                        HStack {
+                            VStack(spacing: 0) {
+                                HStack {
+                                    Text(gameData.queues[match.queue]!.map)
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.gray)
+                                    Spacer()
+                                }
+
+                                HStack {
+                                    Text(gameData.queues[match.queue]!.transformedDescription ?? "")
+                                        .font(.system(size: 15))
+                                    Spacer()
+                                }
+
+                                Spacer(minLength: 6)
+
+                                HStack(spacing: 0) {
+                                    HStack(spacing: 0) {
+                                        Image("MatchHistoryIcon_Kill")
+                                            .resizable()
+                                            .frame(width: 18, height: 18)
+                                            .padding(.trailing, 3)
+                                        Text("\(participant!.stats.kills)")
+                                            .font(.system(size: 15))
+                                            .lineLimit(1)
+                                        Spacer(minLength: 0.5)
+                                    }
+                                    .frame(width: 40)
+                                    .padding(.trailing, 3)
+
+                                    HStack(spacing: 0) {
+                                        Image("MatchHistoryIcon_Death")
+                                            .resizable()
+                                            .frame(width: 18, height: 18)
+                                            .padding(.trailing, 3)
+                                        Text("\(participant!.stats.deaths)")
+                                            .font(.system(size: 15))
+                                            .lineLimit(1)
+                                        Spacer(minLength: 0.5)
+                                    }
+                                    .frame(width: 40)
+                                    .padding(.trailing, 3)
+
+                                    HStack(spacing: 0) {
+                                        Image("MatchHistoryIcon_Assist")
+                                            .resizable()
+                                            .frame(width: 18, height: 18)
+                                            .padding(.trailing, 3)
+                                        Text("\(participant!.stats.assists)")
+                                            .font(.system(size: 15))
+                                            .lineLimit(1)
+                                        Spacer(minLength: 0.5)
+                                    }
+                                    .frame(width: 40)
+
+                                    Spacer()
+                                }
+                            }
+
+                            Spacer()
+
+                            VStack {
+                                HStack(spacing: 3) {
+                                    VStack {
+                                        Spacer()
+                                        if trinketItemId != nil {
+                                            KFImage(FilePaths.itemIcon(id: trinketItemId!).path)
+                                                .smallItemImageStyle()
+                                        }
+                                        Spacer()
+                                    }
+
+                                    VStack(spacing: 3) {
+                                        HStack(spacing: 3) {
+                                            if itemIdsFirstRow != nil {
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![0]!).path).smallItemImageStyle()
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![1]!).path).smallItemImageStyle()
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![2]!).path).smallItemImageStyle()
+                                            }
+                                        }
+                                        HStack(spacing: 3) {
+                                            if itemIdsSecondRow != nil {
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![0]!).path).smallItemImageStyle()
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![1]!).path).smallItemImageStyle()
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![2]!).path).smallItemImageStyle()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-        .padding(8)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(participant?.stats.win ?? false ? Color.green5 : Color.red3)
-                .shadow(color: Color.gray.opacity(0.8), radius: 4, x: 0, y: 2))
-        .padding(.bottom, 2).padding(.top, -2)
-
     }
 }
 
 private extension KFImage {
     func smallItemImageStyle() -> some View {
         self.itemImageStyle(width: 25)
-            .background(RoundedRectangle(cornerRadius: 3).fill(Color.gray).opacity(0.5))
+            .background(RoundedRectangle(cornerRadius: 3).fill(Color.gray).opacity(0.3))
             .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.black, lineWidth: 1.5))
     }
 

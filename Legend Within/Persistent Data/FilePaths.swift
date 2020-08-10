@@ -19,6 +19,8 @@ enum FilePaths {
     case runesJson
     case championIcon(fileName: String)
     case itemIcon(id: Int)
+    case summonerSpellsJson
+    case summonerSpellIcon(fileName: String)
 
     var path: URL {
         let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -40,6 +42,10 @@ enum FilePaths {
                 return documentDirectory.appendingPathComponent("championIcons", isDirectory: true).appendingPathComponent("\(fileName)")
             case .itemIcon(let id):
                 return documentDirectory.appendingPathComponent("itemIcons", isDirectory: true).appendingPathComponent("\(id).png")
+            case .summonerSpellsJson:
+                return documentDirectory.appendingPathComponent("summoner.json")
+            case .summonerSpellIcon(let fileName):
+                return documentDirectory.appendingPathComponent("summonerSpells", isDirectory: true).appendingPathComponent("\(fileName)")
         }
     }
 }

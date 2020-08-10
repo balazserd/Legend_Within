@@ -22,6 +22,10 @@ struct Queue: Codable {
         case notes = "notes"
     }
 
+    var transformedDescription: String? {
+        self.description?.replacingOccurrences(of: " games", with: "")
+    }
+
     init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         queueId = try values.decode(Int.self, forKey: .queueId)

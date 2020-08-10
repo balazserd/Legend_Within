@@ -35,7 +35,7 @@ struct MatchHistoryPage: View {
                     }
                 }
                 .introspectTableView { tableView in
-                    tableView.separatorStyle = .none
+//                    tableView.separatorStyle = .none
                     tableView.tableFooterView = UIView()
                 }
             }

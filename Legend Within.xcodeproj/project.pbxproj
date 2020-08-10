@@ -10,6 +10,11 @@
 		561D466C24E00D7D006786C6 /* LoadingCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D466B24E00D7D006786C6 /* LoadingCircle.swift */; };
 		561D466E24E03575006786C6 /* LeagueApi+UpdateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D466D24E03575006786C6 /* LeagueApi+UpdateProgress.swift */; };
 		561D467024E03821006786C6 /* MatchHistoryFilterPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D466F24E03821006786C6 /* MatchHistoryFilterPage.swift */; };
+		561D467324E186C6006786C6 /* SummonerSpellsJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D467224E186C6006786C6 /* SummonerSpellsJSON.swift */; };
+		561D467524E18700006786C6 /* SummonerSpell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D467424E18700006786C6 /* SummonerSpell.swift */; };
+		561D467724E1885D006786C6 /* SummonerSpell+Var.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D467624E1885D006786C6 /* SummonerSpell+Var.swift */; };
+		561D467924E188E6006786C6 /* SummonerSpell+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D467824E188E6006786C6 /* SummonerSpell+Image.swift */; };
+		561D467B24E196E3006786C6 /* SummonerSpell+DataValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D467A24E196E3006786C6 /* SummonerSpell+DataValues.swift */; };
 		562C9A2924D478600061EB38 /* FlatSegmentedPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562C9A2824D478600061EB38 /* FlatSegmentedPicker.swift */; };
 		562C9A2B24D57B060061EB38 /* Texts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562C9A2A24D57B060061EB38 /* Texts.swift */; };
 		562C9A2E24D719A20061EB38 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562C9A2D24D719A20061EB38 /* MainWindow.swift */; };
@@ -129,6 +134,11 @@
 		561D466B24E00D7D006786C6 /* LoadingCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCircle.swift; sourceTree = "<group>"; };
 		561D466D24E03575006786C6 /* LeagueApi+UpdateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeagueApi+UpdateProgress.swift"; sourceTree = "<group>"; };
 		561D466F24E03821006786C6 /* MatchHistoryFilterPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchHistoryFilterPage.swift; sourceTree = "<group>"; };
+		561D467224E186C6006786C6 /* SummonerSpellsJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummonerSpellsJSON.swift; sourceTree = "<group>"; };
+		561D467424E18700006786C6 /* SummonerSpell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummonerSpell.swift; sourceTree = "<group>"; };
+		561D467624E1885D006786C6 /* SummonerSpell+Var.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SummonerSpell+Var.swift"; sourceTree = "<group>"; };
+		561D467824E188E6006786C6 /* SummonerSpell+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SummonerSpell+Image.swift"; sourceTree = "<group>"; };
+		561D467A24E196E3006786C6 /* SummonerSpell+DataValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SummonerSpell+DataValues.swift"; sourceTree = "<group>"; };
 		562C9A2824D478600061EB38 /* FlatSegmentedPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlatSegmentedPicker.swift; sourceTree = "<group>"; };
 		562C9A2A24D57B060061EB38 /* Texts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Texts.swift; sourceTree = "<group>"; };
 		562C9A2D24D719A20061EB38 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
@@ -256,6 +266,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		561D467124E186B0006786C6 /* Summoner Spells */ = {
+			isa = PBXGroup;
+			children = (
+				561D467424E18700006786C6 /* SummonerSpell.swift */,
+				561D467624E1885D006786C6 /* SummonerSpell+Var.swift */,
+				561D467824E188E6006786C6 /* SummonerSpell+Image.swift */,
+				561D467A24E196E3006786C6 /* SummonerSpell+DataValues.swift */,
+				561D467224E186C6006786C6 /* SummonerSpellsJSON.swift */,
+			);
+			path = "Summoner Spells";
+			sourceTree = "<group>";
+		};
 		562C9A2C24D7197A0061EB38 /* Main Functionalities */ = {
 			isa = PBXGroup;
 			children = (
@@ -284,11 +306,11 @@
 			children = (
 				562C9A2F24D71A1B0061EB38 /* MatchHistoryPage.swift */,
 				56D3187E24D721BA002F4FAB /* MatchHistoryItem.swift */,
+				561D466F24E03821006786C6 /* MatchHistoryFilterPage.swift */,
 				56D3188024D7226E002F4FAB /* MatchDetailsPage.swift */,
 				56D3188224D85560002F4FAB /* MatchHistoryModel.swift */,
 				5639762124D8735C003388C0 /* MatchExample.json */,
 				5639762324D873CC003388C0 /* MatchDetailsExample.json */,
-				561D466F24E03821006786C6 /* MatchHistoryFilterPage.swift */,
 			);
 			path = "Match History";
 			sourceTree = "<group>";
@@ -482,6 +504,7 @@
 		56C96DAD24D946B600685F76 /* Game Data */ = {
 			isa = PBXGroup;
 			children = (
+				561D467124E186B0006786C6 /* Summoner Spells */,
 				56FCBD2924DC483D00D4FABB /* Runes */,
 				56328D1024DC296300319CD9 /* Maps and Queues */,
 				56C96DBA24D94A2000685F76 /* Champion Main Info */,
@@ -784,6 +807,7 @@
 				5675295E24AB9593009057C8 /* UrlConstants.swift in Sources */,
 				562C9A3224D71A2E0061EB38 /* SettingsPage.swift in Sources */,
 				56F353CA24B0AC3900E21EB4 /* League.swift in Sources */,
+				561D467924E188E6006786C6 /* SummonerSpell+Image.swift in Sources */,
 				56ED284124D9694700016178 /* ItemsJSON.swift in Sources */,
 				56D3188524D8558E002F4FAB /* LeagueApi+Matches.swift in Sources */,
 				567528EC24AA2C62009057C8 /* WelcomePage.swift in Sources */,
@@ -791,6 +815,7 @@
 				56ED282924D9560E00016178 /* ChampionDetails+Data+Spell+DataValues.swift in Sources */,
 				56D318AD24D8630E002F4FAB /* MatchDetails+ParticipantIdentity.swift in Sources */,
 				562C9A3024D71A1B0061EB38 /* MatchHistoryPage.swift in Sources */,
+				561D467B24E196E3006786C6 /* SummonerSpell+DataValues.swift in Sources */,
 				56328D0324D9F0CE00319CD9 /* StartScreen.swift in Sources */,
 				56328D0F24DC290000319CD9 /* Queue.swift in Sources */,
 				56BC228324C23F2C0072D5E8 /* SummonerFoundOverlay.swift in Sources */,
@@ -798,6 +823,7 @@
 				56C96DB924D94A0200685F76 /* ChampionDetails.swift in Sources */,
 				56ED282E24D9572A00016178 /* ChampionDetails+Data+Recommended+Block+Item.swift in Sources */,
 				567528F324AA2FCC009057C8 /* Region.swift in Sources */,
+				561D467724E1885D006786C6 /* SummonerSpell+Var.swift in Sources */,
 				5657F31A24D1D2CF00A7F437 /* SupportEmailView.swift in Sources */,
 				56ED283724D9601A00016178 /* Item+Maps.swift in Sources */,
 				56C96DC524D950AA00685F76 /* ChampionDetails+Data+Info.swift in Sources */,
@@ -834,9 +860,11 @@
 				567528C524AA29B8009057C8 /* SceneDelegate.swift in Sources */,
 				56ED283F24D9655200016178 /* ChampionsJSON.swift in Sources */,
 				567528CD24AA29B8009057C8 /* Legend_Within.xcdatamodeld in Sources */,
+				561D467324E186C6006786C6 /* SummonerSpellsJSON.swift in Sources */,
 				56ED283924D9602900016178 /* Item+Stat.swift in Sources */,
 				56C96DB324D9470600685F76 /* Champion+Image.swift in Sources */,
 				56477ED824CADC6F00495535 /* OnboardingModel.swift in Sources */,
+				561D467524E18700006786C6 /* SummonerSpell.swift in Sources */,
 				56C96DBF24D94AE600685F76 /* ChampionDetails+Data.swift in Sources */,
 				5648A74324AF3CCF0074B550 /* FloatIn.swift in Sources */,
 				56ED283524D9600000016178 /* Item+Gold.swift in Sources */,

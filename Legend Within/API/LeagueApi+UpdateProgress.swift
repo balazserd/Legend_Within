@@ -19,6 +19,8 @@ extension LeagueApi {
         @Published var runesJSONProgress: Double = 0.0
         @Published var itemIconsProgress: Double = 0.0
         @Published var championIconsProgress: Double = 0.0
+        @Published var summonerSpellsJSONProgress: Double = 0.0
+        @Published var summonerSpellIconsProgress: Double = 0.0
 
         func increaseProgress(forPhase targetType: MoyaProvider<DataDragon>.Target, by value: Double) {
             DispatchQueue.main.async {
@@ -31,6 +33,8 @@ extension LeagueApi {
                     case .runes: self.runesJSONProgress += value
                     case .championIcon: self.championIconsProgress += value
                     case .itemIcon: self.itemIconsProgress += value
+                    case .summonerSpells: self.summonerSpellsJSONProgress += value
+                    case .summonerSpellIcon: self.summonerSpellIconsProgress += value
                     default: break
                 }
             }
@@ -45,6 +49,8 @@ extension LeagueApi {
                 && !runesJSONProgress.isLessThanOrEqualTo(0.9999)
                 && !itemIconsProgress.isLessThanOrEqualTo(0.9999)
                 && !championIconsProgress.isLessThanOrEqualTo(0.9999)
+                && !summonerSpellsJSONProgress.isLessThanOrEqualTo(0.9999)
+                && !summonerSpellIconsProgress.isLessThanOrEqualTo(0.9999)
         }
 
         class func willFinishWithValues(championsProgress: Double,
@@ -54,7 +60,9 @@ extension LeagueApi {
                                         mapsProgress: Double,
                                         runesProgress: Double,
                                         itemIconsProgress: Double,
-                                        championIconsProgress: Double) -> Bool {
+                                        championIconsProgress: Double,
+                                        summonerSpellsProgress: Double,
+                                        summonerSpellIconsProgress: Double) -> Bool {
             //This is needed because publishers are called in WillChange, not in DidChange.
             return !championsProgress.isLessThanOrEqualTo(0.9999)
                 && !itemsProgress.isLessThanOrEqualTo(0.9999)
@@ -64,6 +72,8 @@ extension LeagueApi {
                 && !runesProgress.isLessThanOrEqualTo(0.9999)
                 && !itemIconsProgress.isLessThanOrEqualTo(0.9999)
                 && !championIconsProgress.isLessThanOrEqualTo(0.9999)
+                && !summonerSpellsProgress.isLessThanOrEqualTo(0.9999)
+                && !summonerSpellIconsProgress.isLessThanOrEqualTo(0.9999)
         }
     }
 }

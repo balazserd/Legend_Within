@@ -20,6 +20,8 @@ extension LeagueApi {
         case runes(downloadPath: URL)
         case itemIcon(downloadPath: URL, id: Int)
         case championIcon(downloadPath: URL, name: String)
+        case summonerSpells(downloadPath: URL)
+        case summonerSpellIcon(downloadPath: URL, name: String)
     }
 }
 
@@ -33,7 +35,9 @@ extension LeagueApi.DataDragon : TargetType {
                  .items,
                  .runes,
                  .championIcon,
-                 .itemIcon:
+                 .itemIcon,
+                 .summonerSpells,
+                 .summonerSpellIcon:
                 return URL(string: "https://ddragon.leagueoflegends.com")!
             case .maps,
                  .queues:
@@ -54,6 +58,8 @@ extension LeagueApi.DataDragon : TargetType {
             case .runes: return "/cdn/\(currentVersion)/data/en_US/runesReforged.json"
             case .championIcon(_, let name): return "/cdn/\(currentVersion)/img/champion/\(name)"
             case .itemIcon(_, let id): return "/cdn/\(currentVersion)/img/item/\(id).png"
+            case .summonerSpells: return "/cdn/\(currentVersion)/data/en_US/summoner.json"
+            case .summonerSpellIcon(_, let name): return "/cdn/\(currentVersion)/img/spell/\(name)"
         }
     }
 
@@ -76,7 +82,9 @@ extension LeagueApi.DataDragon : TargetType {
                  .queues(let downloadPath),
                  .runes(let downloadPath),
                  .championIcon(let downloadPath, _),
-                 .itemIcon(let downloadPath, _):
+                 .itemIcon(let downloadPath, _),
+                 .summonerSpells(let downloadPath),
+                 .summonerSpellIcon(let downloadPath, _):
                 return .downloadDestination { _, _ in (downloadPath, [.removePreviousFile, .createIntermediateDirectories]) }
         }
     }

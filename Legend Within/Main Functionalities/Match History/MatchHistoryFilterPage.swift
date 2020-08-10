@@ -19,7 +19,6 @@ struct MatchHistoryFilterPage: View {
                     ForEach(MatchHistoryModel.MatchTypesToFetch.allCases, id: \.hashValue) { option in
                         Text(option.description).tag(option)
                     }
-                    .navigationBarTitle("Match types", displayMode: .inline)
                 }
             }
         }

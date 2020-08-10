@@ -18,6 +18,7 @@ final class GameData : ObservableObject {
     @Published private(set) var queues: [Int : Queue]
     @Published private(set) var maps: [Int : Map]
     @Published private(set) var runePaths: [Int : RunePath]
+    @Published private(set) var summonerSpells: [Int : SummonerSpell]
 
     private var cancellableBag = Set<AnyCancellable>()
 
@@ -29,6 +30,7 @@ final class GameData : ObservableObject {
         self.queues = [:]
         self.maps = [:]
         self.runePaths = [:]
+        self.summonerSpells = [:]
 
         leagueApi.$newVersionExists
             .sink { [weak self] exists in
@@ -99,6 +101,16 @@ final class GameData : ObservableObject {
 
             DispatchQueue.main.async {
                 self.runePaths = Dictionary(uniqueKeysWithValues: runePathListObject.map { ($0.id, $0) })
+            }
+        }
+
+        //MARK: summoner spells
+        self.dedicatedConcurrentQueue.async {
+            let summonerSpellListData = try! Data(contentsOf: FilePaths.summonerSpellsJson.path)
+            let summonerSpellListObject = try! decoder.decode(SummonerSpellsJSON.self, from: summonerSpellListData)
+
+            DispatchQueue.main.async {
+                self.summonerSpells = Dictionary(uniqueKeysWithValues: summonerSpellListObject.data.map { (Int($0.value.key)!, $0.value) })
             }
         }
     }

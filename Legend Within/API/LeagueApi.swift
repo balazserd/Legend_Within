@@ -49,25 +49,29 @@ public class LeagueApi : ObservableObject {
             .store(in: &cancellableBag)
 
         //Track progress. When all done, mark new downloaded version and return update cycle to initial state.
-        Publishers.CombineLatest4(updateProgress.$championsJSONProgress,
-                                  updateProgress.$itemsJSONProgress,
-                                  updateProgress.$championUniqueJSONsProgress,
-                                  updateProgress.$queuesJSONProgress)
-            .combineLatest(Publishers.CombineLatest4(updateProgress.$mapsJSONProgress,
-                                                     updateProgress.$runesJSONProgress,
-                                                     updateProgress.$itemIconsProgress,
-                                                     updateProgress.$championIconsProgress))
+        Publishers.CombineLatest3(Publishers.CombineLatest4(updateProgress.$championsJSONProgress,
+                                                            updateProgress.$itemsJSONProgress,
+                                                            updateProgress.$championUniqueJSONsProgress,
+                                                            updateProgress.$queuesJSONProgress),
+                                  Publishers.CombineLatest4(updateProgress.$mapsJSONProgress,
+                                                            updateProgress.$runesJSONProgress,
+                                                            updateProgress.$itemIconsProgress,
+                                                            updateProgress.$championIconsProgress),
+                                  Publishers.CombineLatest(updateProgress.$summonerSpellsJSONProgress,
+                                                           updateProgress.$summonerSpellIconsProgress))
             .sink { [weak self] progress in
                 guard let self = self else { return }
 
-                if UpdateProgress.willFinishWithValues(championsProgress: progress.0.0,
+                if UpdateProgress.willFinishWithValues(championsProgress: progress.0.1,
                                                        itemsProgress: progress.0.1,
                                                        uniqueChampionsProgress: progress.0.2,
                                                        queuesProgress: progress.0.3,
                                                        mapsProgress: progress.1.0,
                                                        runesProgress: progress.1.1,
                                                        itemIconsProgress: progress.1.2,
-                                                       championIconsProgress: progress.1.3) {
+                                                       championIconsProgress: progress.1.3,
+                                                       summonerSpellsProgress: progress.2.0,
+                                                       summonerSpellIconsProgress: progress.2.1) {
                     UserDefaults.standard.set(self.versionToDownload, forKey: Settings.currentDownloadedVersion)
                     self.updateProgress = UpdateProgress()
                     self.versionToDownload = nil
@@ -91,6 +95,15 @@ public class LeagueApi : ObservableObject {
             .sink { [weak self] progress in
                 if progress.isEqual(to: 1.0) {
                     self?.updateItemIcons()
+                }
+            }
+            .store(in: &cancellableBag)
+
+        //When the summoner spells JSON is downloaded, begin downloading all summoner spell icons.
+        updateProgress.$summonerSpellsJSONProgress
+            .sink { [weak self] progress in
+                if progress.isEqual(to: 1.0) {
+                    self?.updateSummonerSpellIcons()
                 }
             }
             .store(in: &cancellableBag)
@@ -131,11 +144,48 @@ public class LeagueApi : ObservableObject {
             return
         }
 
-        self.downloadJson(targetType: .champions(downloadPath: FilePaths.championsJson.path), progressRatio: 1.0) //will download champion icons and individual jsons
-        self.downloadJson(targetType: .items(downloadPath: FilePaths.itemsJson.path), progressRatio: 1.0) //will download item icons
-        self.downloadJson(targetType: .maps(downloadPath: FilePaths.mapsJson.path), progressRatio: 1.0)
-        self.downloadJson(targetType: .queues(downloadPath: FilePaths.queuesJson.path), progressRatio: 1.0)
-        self.downloadJson(targetType: .runes(downloadPath: FilePaths.runesJson.path), progressRatio: 1.0)
+        let dpGroup = DispatchGroup()
+
+        //will download champion icons and individual jsons
+        self.downloadJson(targetType: .champions(downloadPath: FilePaths.championsJson.path), progressRatio: 1.0, groupedIn: dpGroup)
+        //will download item icons
+        self.downloadJson(targetType: .items(downloadPath: FilePaths.itemsJson.path), progressRatio: 1.0, groupedIn: dpGroup)
+        self.downloadJson(targetType: .maps(downloadPath: FilePaths.mapsJson.path), progressRatio: 1.0, groupedIn: dpGroup)
+        self.downloadJson(targetType: .queues(downloadPath: FilePaths.queuesJson.path), progressRatio: 1.0, groupedIn: dpGroup)
+        self.downloadJson(targetType: .runes(downloadPath: FilePaths.runesJson.path), progressRatio: 1.0, groupedIn: dpGroup)
+        //will download summoner spell icons
+        self.downloadJson(targetType: .summonerSpells(downloadPath: FilePaths.summonerSpellsJson.path), progressRatio: 1.0, groupedIn: dpGroup)
+    }
+
+    //MARK: JSON downloads
+    /* Downloads the corresponding JSON file for the specified target. */
+    private func downloadJson(targetType: MoyaProvider<DataDragon>.Target, progressRatio: Double, groupedIn dispatchGroup: DispatchGroup? = nil) {
+        dispatchGroup?.enter()
+
+        var cancellable: AnyCancellable? = nil
+        cancellable = self.ddProvider.requestWithProgressPublisher(targetType)
+            .receive(on: DispatchQueue.global(qos: .userInteractive))
+            .sink(receiveCompletion: { [weak self] completionType in
+                print(completionType)
+                switch completionType {
+                    case .failure(let error): break
+                    case .finished:
+                        DispatchQueue.main.async {
+                            self?.updateProgress.increaseProgress(forPhase: targetType, by: progressRatio)
+                            dispatchGroup?.leave()
+                        }
+                }
+            }) { [weak self] progressResponse in
+                if progressResponse.completed {
+                    self?.bagSafetyQueue.async(flags: .barrier) {
+                        self?.cancellableBag.remove(cancellable!)
+                    }
+                }
+            }
+
+        self.bagSafetyQueue.async(flags: .barrier) {
+            self.cancellableBag.insert(cancellable!)
+        }
     }
 
     /* Downloads all champion unique JSON files. (Uses multithreading) */
@@ -148,73 +198,39 @@ public class LeagueApi : ObservableObject {
         }
     }
 
+    //MARK: Icon downloads
     private func updateChampionIcons() {
         let itemIconIds = self.getListOfItemIds()
         DispatchQueue.concurrentPerform(iterations: itemIconIds.count) { i in
-            var cancellable: AnyCancellable? = nil
-            let targetType: MoyaProvider<DataDragon>.Target = .itemIcon(downloadPath: FilePaths.itemIcon(id: itemIconIds[i]).path,
-                                                                        id: itemIconIds[i])
-            cancellable = self.ddProvider.requestWithProgressPublisher(targetType)
-                .receive(on: DispatchQueue.global(qos: .userInteractive))
-                .sink(receiveCompletion: { [weak self] completionType in
-                    switch completionType {
-                        case .failure(let error): break
-                        case .finished:
-                            DispatchQueue.main.async {
-                                self?.updateProgress.increaseProgress(forPhase: targetType, by: 1.0 / Double(itemIconIds.count))
-                            }
-                    }
-                }) { [weak self] progressResponse in
-                    if progressResponse.completed {
-                        self?.bagSafetyQueue.async(flags: .barrier) {
-                            self?.cancellableBag.remove(cancellable!)
-                        }
-                    }
-                }
-
-            self.bagSafetyQueue.async(flags: .barrier) {
-                self.cancellableBag.insert(cancellable!)
-            }
+            self.downloadIcon(for: .itemIcon(downloadPath: FilePaths.itemIcon(id: itemIconIds[i]).path,
+                                             id: itemIconIds[i]),
+                              progressRatio: 1.0 / Double(itemIconIds.count))
         }
     }
 
     private func updateItemIcons() {
         let championIconFileNames = self.getListOfChampionIconNames()
         DispatchQueue.concurrentPerform(iterations: championIconFileNames.count) { i in
-            var cancellable: AnyCancellable? = nil
-            let targetType: MoyaProvider<DataDragon>.Target = .championIcon(downloadPath: FilePaths.championIcon(fileName: championIconFileNames[i]).path,
-                                                                            name: championIconFileNames[i])
-            cancellable = self.ddProvider.requestWithProgressPublisher(targetType)
-                .receive(on: DispatchQueue.global(qos: .userInteractive))
-                .sink(receiveCompletion: { [weak self] completionType in
-                    switch completionType {
-                        case .failure(let error): break
-                        case .finished:
-                            DispatchQueue.main.async {
-                                self?.updateProgress.increaseProgress(forPhase: targetType, by: 1.0 / Double(championIconFileNames.count))
-                            }
-                    }
-                }) { [weak self] progressResponse in
-                    if progressResponse.completed {
-                        self?.bagSafetyQueue.async(flags: .barrier) {
-                            self?.cancellableBag.remove(cancellable!)
-                        }
-                    }
-                }
-
-            self.bagSafetyQueue.async(flags: .barrier) {
-                self.cancellableBag.insert(cancellable!)
-            }
+            self.downloadIcon(for: .championIcon(downloadPath: FilePaths.championIcon(fileName: championIconFileNames[i]).path,
+                                                 name: championIconFileNames[i]),
+                              progressRatio: 1.0 / Double(championIconFileNames.count))
         }
     }
 
-    /* Downloads the corresponding JSON file for the specified target. */
-    private func downloadJson(targetType: MoyaProvider<DataDragon>.Target, progressRatio: Double) {
+    private func updateSummonerSpellIcons() {
+        let summonerSpellIconNames = self.getListOfSummonerSpellIconNames()
+        DispatchQueue.concurrentPerform(iterations: summonerSpellIconNames.count) { i in
+            self.downloadIcon(for: .summonerSpellIcon(downloadPath: FilePaths.summonerSpellIcon(fileName: summonerSpellIconNames[i]).path,
+                                                      name: summonerSpellIconNames[i]),
+                              progressRatio: 1.0 / Double(summonerSpellIconNames.count))
+        }
+    }
+
+    private func downloadIcon(for targetType: MoyaProvider<DataDragon>.Target, progressRatio: Double) {
         var cancellable: AnyCancellable? = nil
         cancellable = self.ddProvider.requestWithProgressPublisher(targetType)
             .receive(on: DispatchQueue.global(qos: .userInteractive))
             .sink(receiveCompletion: { [weak self] completionType in
-                print(completionType)
                 switch completionType {
                     case .failure(let error): break
                     case .finished:
@@ -235,7 +251,7 @@ public class LeagueApi : ObservableObject {
         }
     }
 
-    /* Returns an array with all champion names or icon names. */
+    //MARK: Array fetchers for common objects (champion names, item ids, etc...)
     private func getListOfChampionNames() -> [String] {
         let champListData = try! Data(contentsOf: FilePaths.championsJson.path)
         let champListObject = try! JSONDecoder().decode(ChampionsJSON.self, from: champListData)
@@ -250,12 +266,21 @@ public class LeagueApi : ObservableObject {
         return champListObject.data.map { $0.value.image.full }
     }
 
+    private func getListOfSummonerSpellIconNames() -> [String] {
+        let summonerSpellListData = try! Data(contentsOf: FilePaths.summonerSpellsJson.path)
+        let summonerSpellListObject = try! JSONDecoder().decode(SummonerSpellsJSON.self, from: summonerSpellListData)
+
+        return summonerSpellListObject.data.map { $0.value.image.full }
+    }
+
     private func getListOfItemIds() -> [Int] {
         let itemListData = try! Data(contentsOf: FilePaths.itemsJson.path)
         let itemListObject = try! JSONDecoder().decode(ItemsJSON.self, from: itemListData)
 
         return itemListObject.data.map { $0.key }
     }
+
+    //MARK:- Miscellaneous
 
     /* Checks if there is at least 40 Megabytes of free space on the device. */
     private func checkForEnoughSpace() -> Bool {
