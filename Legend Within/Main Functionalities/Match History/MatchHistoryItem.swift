@@ -42,11 +42,11 @@ struct MatchHistoryItem: View {
                 EmptyView()
             } else {
                 if participant != nil {
-                    VStack(spacing: 4) {
+                    VStack(spacing: 3.5) {
                         KFImage(FilePaths.championIcon(fileName: championIconName).path)
                             .bigItemImageStyle()
 
-                        HStack(spacing: 5) {
+                        HStack(spacing: 4) {
                             KFImage(FilePaths.summonerSpellIcon(fileName: gameData.summonerSpells[participant!.spell1Id]!.image.full).path)
                                 .smallItemImageStyle()
 
@@ -69,17 +69,16 @@ struct MatchHistoryItem: View {
                                     .foregroundColor(.gray)
                                     .alignmentGuide(.bottom, computeValue: { d in d[.bottom] + 1 })
 
-                                HStack {
-                                    Spacer()
-                                    Text(gameTime)
-                                        .font(.system(size: 13, design: .monospaced))
-                                }
+                                Spacer()
+
+                                Text(gameTime)
+                                    .font(.system(size: 13, design: .monospaced))
                             }
                         }
 
                         Divider()
                             .opacity(0.7)
-                            .padding(.top, 3).padding(.bottom, 5)
+                            .padding(.top, 2).padding(.bottom, 5)
 
                         HStack {
                             VStack(spacing: 0) {
@@ -96,13 +95,13 @@ struct MatchHistoryItem: View {
                                     Spacer()
                                 }
 
-                                Spacer(minLength: 6)
+                                Spacer(minLength: 5)
 
                                 HStack(spacing: 0) {
                                     HStack(spacing: 0) {
                                         Image("MatchHistoryIcon_Kill")
                                             .resizable()
-                                            .frame(width: 18, height: 18)
+                                            .frame(width: 15, height: 15)
                                             .padding(.trailing, 3)
                                         Text("\(participant!.stats.kills)")
                                             .font(.system(size: 15))
@@ -115,7 +114,7 @@ struct MatchHistoryItem: View {
                                     HStack(spacing: 0) {
                                         Image("MatchHistoryIcon_Death")
                                             .resizable()
-                                            .frame(width: 18, height: 18)
+                                            .frame(width: 15, height: 15)
                                             .padding(.trailing, 3)
                                         Text("\(participant!.stats.deaths)")
                                             .font(.system(size: 15))
@@ -128,7 +127,7 @@ struct MatchHistoryItem: View {
                                     HStack(spacing: 0) {
                                         Image("MatchHistoryIcon_Assist")
                                             .resizable()
-                                            .frame(width: 18, height: 18)
+                                            .frame(width: 15, height: 15)
                                             .padding(.trailing, 3)
                                         Text("\(participant!.stats.assists)")
                                             .font(.system(size: 15))
@@ -140,6 +139,7 @@ struct MatchHistoryItem: View {
                                     Spacer()
                                 }
                             }
+                            .padding(.top, -1)
 
                             Spacer()
 
