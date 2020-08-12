@@ -17,6 +17,7 @@ extension LeagueApi {
         @Published var queuesJSONProgress: Double = 0.0
         @Published var mapsJSONProgress: Double = 0.0
         @Published var runesJSONProgress: Double = 0.0
+        @Published var runeIconsProgress: Double = 0.0
         @Published var itemIconsProgress: Double = 0.0
         @Published var championIconsProgress: Double = 0.0
         @Published var summonerSpellsJSONProgress: Double = 0.0
@@ -31,6 +32,7 @@ extension LeagueApi {
                     case .maps: self.mapsJSONProgress += value
                     case .queues: self.queuesJSONProgress += value
                     case .runes: self.runesJSONProgress += value
+                    case .runeIcon: self.runeIconsProgress += value
                     case .championIcon: self.championIconsProgress += value
                     case .itemIcon: self.itemIconsProgress += value
                     case .summonerSpells: self.summonerSpellsJSONProgress += value
@@ -47,6 +49,7 @@ extension LeagueApi {
                 && !queuesJSONProgress.isLessThanOrEqualTo(0.9999)
                 && !mapsJSONProgress.isLessThanOrEqualTo(0.9999)
                 && !runesJSONProgress.isLessThanOrEqualTo(0.9999)
+                && !runeIconsProgress.isLessThanOrEqualTo(0.9999)
                 && !itemIconsProgress.isLessThanOrEqualTo(0.9999)
                 && !championIconsProgress.isLessThanOrEqualTo(0.9999)
                 && !summonerSpellsJSONProgress.isLessThanOrEqualTo(0.9999)
@@ -59,6 +62,7 @@ extension LeagueApi {
                                         queuesProgress: Double,
                                         mapsProgress: Double,
                                         runesProgress: Double,
+                                        runeIconsProgress: Double,
                                         itemIconsProgress: Double,
                                         championIconsProgress: Double,
                                         summonerSpellsProgress: Double,
@@ -70,6 +74,7 @@ extension LeagueApi {
                 && !queuesProgress.isLessThanOrEqualTo(0.9999)
                 && !mapsProgress.isLessThanOrEqualTo(0.9999)
                 && !runesProgress.isLessThanOrEqualTo(0.9999)
+                && !runeIconsProgress.isLessThanOrEqualTo(0.9999)
                 && !itemIconsProgress.isLessThanOrEqualTo(0.9999)
                 && !championIconsProgress.isLessThanOrEqualTo(0.9999)
                 && !summonerSpellsProgress.isLessThanOrEqualTo(0.9999)

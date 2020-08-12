@@ -20,20 +20,27 @@ final class MatchHistoryModel : ObservableObject {
 
     private var cancellableBag = Set<AnyCancellable>()
     private let bagSafetyQueue = DispatchQueue(label: "matchHistoryModel.bagSafetyQueue", attributes: .concurrent)
+    private let operationQueue = DispatchQueue(label: "matchHistoryModel.operationQueue", qos: .userInteractive, attributes: .concurrent)
 
     init() {
         setupMatchDetailsSubcription()
     }
 
-    public func requestMatches(beginIndex: Int, endIndex: Int, shouldOverwriteCurrentInstance: Bool = false) {
+    public func requestMatches(shouldOverwriteCurrentInstance: Bool = false) {
         let queryParams: LeagueApi.Matches.ByAccountQueryParameters = {
             var params = LeagueApi.Matches.ByAccountQueryParameters()
-            params.beginIndex = beginIndex
-            params.endIndex = endIndex
+            params.beginIndex = self.matchHistory?.matches.count ?? 0
+            params.endIndex = params.beginIndex! + 20
             params.queues = self.matchTypesToFetch.asRequestHeaderValue
 
             return params
         }()
+
+        if self.matchHistory == nil || shouldOverwriteCurrentInstance {
+            self.isLoadingFirstSetOfMatches = true
+        } else {
+            self.isLoadingFurtherSetsOfMatches = true
+        }
 
         matchesProvider.requestPublisher(.byAccount(region: .euw,
                                                     encryptedAccountId: "nnK1yvPQltAH9yNP81T9R_iT0hhdt2fk8RBHSEQtEnmubS4",
@@ -51,9 +58,12 @@ final class MatchHistoryModel : ObservableObject {
                 DispatchQueue.main.async {
                     if self.matchHistory == nil || shouldOverwriteCurrentInstance {
                         self.matchHistory = newMatchHistory
+                        self.objectWillChange.send()
                     } else {
-                        self.matchHistory!.matches.insert(contentsOf: newMatchHistory.matches,
-                                                          at: newMatchHistory.startIndex)
+                        var newSetOfMatches = self.matchHistory!.matches
+                        newSetOfMatches.insert(contentsOf: newMatchHistory.matches,
+                                               at: newMatchHistory.startIndex)
+                        self.matchHistory!.matches = newSetOfMatches
                     }
                 }
             }
@@ -62,6 +72,7 @@ final class MatchHistoryModel : ObservableObject {
 
     private func setupMatchDetailsSubcription() {
         $matchHistory
+            .receive(on: self.operationQueue)
             .sink { [weak self] matchHistory in
                 guard
                     let self = self,
@@ -70,7 +81,10 @@ final class MatchHistoryModel : ObservableObject {
 
                 let matchesToGetDetailsFor = matchHistory!.matches.filter { $0.details == nil }
 
+                let dpGroup = DispatchGroup()
                 DispatchQueue.concurrentPerform(iterations: matchesToGetDetailsFor.count) { i in
+                    dpGroup.enter() //ENTER
+
                     var cancellable: AnyCancellable? = nil
                     cancellable = self.matchesProvider.requestPublisher(.singleMatch(region: .euw, matchId: matchesToGetDetailsFor[i].gameId))
                         .receive(on: DispatchQueue.global(qos: .userInteractive))
@@ -81,6 +95,8 @@ final class MatchHistoryModel : ObservableObject {
                             self?.bagSafetyQueue.async(flags: .barrier) {
                                 self?.cancellableBag.remove(cancellable!)
                             }
+                            dpGroup.leave() //LEAVE
+
                             //TODO error handling
                         }) { newMatchDetails in
                             DispatchQueue.main.async {
@@ -91,6 +107,11 @@ final class MatchHistoryModel : ObservableObject {
                     self.bagSafetyQueue.async(flags: .barrier) {
                         self.cancellableBag.insert(cancellable!)
                     }
+                }
+
+                dpGroup.notify(queue: .main) {
+                    self.isLoadingFirstSetOfMatches = false
+                    self.isLoadingFurtherSetsOfMatches = false
                 }
             }
             .store(in: &cancellableBag)

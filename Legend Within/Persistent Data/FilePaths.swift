@@ -17,6 +17,7 @@ enum FilePaths {
     case mapsJson
     case queuesJson
     case runesJson
+    case runeIcon(filePath: String)
     case championIcon(fileName: String)
     case itemIcon(id: Int)
     case summonerSpellsJson
@@ -38,6 +39,8 @@ enum FilePaths {
                 return documentDirectory.appendingPathComponent("queues.json")
             case .runesJson:
                 return documentDirectory.appendingPathComponent("runes.json")
+            case .runeIcon(let path):
+                return documentDirectory.appendingPathComponent("runeIcons", isDirectory: true).appendingPathComponent("\(path)")
             case .championIcon(let fileName):
                 return documentDirectory.appendingPathComponent("championIcons", isDirectory: true).appendingPathComponent("\(fileName)")
             case .itemIcon(let id):

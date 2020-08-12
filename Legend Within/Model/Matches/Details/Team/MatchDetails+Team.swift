@@ -28,6 +28,16 @@ extension MatchDetails {
         let dominionVictoryScore: Int
         let bans: [Ban]
 
+        static func keyPathToString(keyPath: KeyPath<Self, Int>) -> String {
+            if keyPath == \.baronKills { return "Barons" }
+            if keyPath == \.dragonKills { return "Dragons" }
+            if keyPath == \.inhibitorKills { return "Inhibitors" }
+            if keyPath == \.riftHeraldKills { return "Rift Heralds" }
+            if keyPath == \.towerKills { return "Turrets" }
+
+            return "Unknown"
+        }
+
         private enum CodingKeys: String, CodingKey {
             case teamId = "teamId"
             case win = "win"

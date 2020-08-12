@@ -36,6 +36,41 @@ extension MatchDetails {
             [self.stats.item3, self.stats.item4, self.stats.item5]
         }
 
+
+        func primaryRunePath() -> RunePath? {
+            return GameData.shared.runePaths[self.stats.perkPrimaryStyle]
+        }
+        func keyStone() -> Rune? {
+            let primaryRunePath = self.primaryRunePath()
+            return primaryRunePath?.slots[0].runes.first { $0.id == self.stats.perk0 }
+        }
+        func primaryRunes() -> [Rune?] {
+            let primaryRunePath = self.primaryRunePath()
+            let rune1 = primaryRunePath?.slots[1].runes.first { $0.id == self.stats.perk1 }
+            let rune2 = primaryRunePath?.slots[2].runes.first { $0.id == self.stats.perk2 }
+            let rune3 = primaryRunePath?.slots[3].runes.first { $0.id == self.stats.perk3 }
+
+            return [rune1, rune2, rune3]
+        }
+
+        func secondaryRunePath() -> RunePath? {
+            return GameData.shared.runePaths[self.stats.perkSubStyle]
+        }
+        func secondaryRunes() -> [Rune?] {
+            let secondaryRunePath = self.secondaryRunePath()
+            var endResult = [Rune?]()
+
+            endResult.append(secondaryRunePath?.slots[1].runes.first { $0.id == self.stats.perk4 })
+            endResult.append(secondaryRunePath?.slots[1].runes.first { $0.id == self.stats.perk5 })
+            endResult.append(secondaryRunePath?.slots[2].runes.first { $0.id == self.stats.perk4 })
+            endResult.append(secondaryRunePath?.slots[2].runes.first { $0.id == self.stats.perk5 })
+            endResult.append(secondaryRunePath?.slots[3].runes.first { $0.id == self.stats.perk4 })
+            endResult.append(secondaryRunePath?.slots[3].runes.first { $0.id == self.stats.perk5 })
+
+            endResult = endResult.filter { $0 != nil }
+            return endResult.count == 2 ? endResult : [nil, nil]
+        }
+
         init(from decoder: Decoder) throws {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             participantId = try values.decode(Int.self, forKey: .participantId)

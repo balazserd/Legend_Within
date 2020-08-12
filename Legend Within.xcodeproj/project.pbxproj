@@ -58,6 +58,7 @@
 		5675295924AB46BE009057C8 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5675295824AB46BE009057C8 /* ActivityIndicator.swift */; };
 		5675295C24AB954A009057C8 /* KingfisherSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5675295B24AB954A009057C8 /* KingfisherSwiftUI */; };
 		5675295E24AB9593009057C8 /* UrlConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5675295D24AB9593009057C8 /* UrlConstants.swift */; };
+		56A1527224E2FA9B00A74846 /* KFImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A1527124E2FA9B00A74846 /* KFImage+Extensions.swift */; };
 		56BC228024C1E2090072D5E8 /* GlowingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BC227F24C1E2090072D5E8 /* GlowingView.swift */; };
 		56BC228324C23F2C0072D5E8 /* SummonerFoundOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BC228224C23F2C0072D5E8 /* SummonerFoundOverlay.swift */; };
 		56BC228524C23F8C0072D5E8 /* SummonerNotFoundOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BC228424C23F8C0072D5E8 /* SummonerNotFoundOverlay.swift */; };
@@ -184,6 +185,7 @@
 		567528FF24AA489C009057C8 /* MoyaPublisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoyaPublisher.swift; sourceTree = "<group>"; };
 		5675295824AB46BE009057C8 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		5675295D24AB9593009057C8 /* UrlConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlConstants.swift; sourceTree = "<group>"; };
+		56A1527124E2FA9B00A74846 /* KFImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "KFImage+Extensions.swift"; sourceTree = "<group>"; };
 		56BC227F24C1E2090072D5E8 /* GlowingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlowingView.swift; sourceTree = "<group>"; };
 		56BC228224C23F2C0072D5E8 /* SummonerFoundOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummonerFoundOverlay.swift; sourceTree = "<group>"; };
 		56BC228424C23F8C0072D5E8 /* SummonerNotFoundOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummonerNotFoundOverlay.swift; sourceTree = "<group>"; };
@@ -355,6 +357,7 @@
 			children = (
 				56328D0724DAAB8A00319CD9 /* Int+Extensions.swift */,
 				56328D0B24DC024300319CD9 /* NetworkRequestError.swift */,
+				56A1527124E2FA9B00A74846 /* KFImage+Extensions.swift */,
 			);
 			path = "Helper methods and objects";
 			sourceTree = "<group>";
@@ -791,6 +794,7 @@
 				56C96DB124D946E700685F76 /* Champion+Info.swift in Sources */,
 				562C9A2B24D57B060061EB38 /* Texts.swift in Sources */,
 				56D3189024D85965002F4FAB /* MatchDetails+Team+Ban.swift in Sources */,
+				56A1527224E2FA9B00A74846 /* KFImage+Extensions.swift in Sources */,
 				56F353C124AF66B600E21EB4 /* AssetPaths.swift in Sources */,
 				56ED282C24D956FB00016178 /* ChampionDetails+Data+Recommended+Block.swift in Sources */,
 				56C96DCB24D950F300685F76 /* ChampionDetails+Data+Passive.swift in Sources */,

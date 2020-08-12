@@ -55,10 +55,11 @@ public class LeagueApi : ObservableObject {
                                                             updateProgress.$queuesJSONProgress),
                                   Publishers.CombineLatest4(updateProgress.$mapsJSONProgress,
                                                             updateProgress.$runesJSONProgress,
-                                                            updateProgress.$itemIconsProgress,
-                                                            updateProgress.$championIconsProgress),
-                                  Publishers.CombineLatest(updateProgress.$summonerSpellsJSONProgress,
-                                                           updateProgress.$summonerSpellIconsProgress))
+                                                            updateProgress.$runeIconsProgress,
+                                                            updateProgress.$itemIconsProgress),
+                                  Publishers.CombineLatest3(updateProgress.$championIconsProgress,
+                                                            updateProgress.$summonerSpellsJSONProgress,
+                                                            updateProgress.$summonerSpellIconsProgress))
             .sink { [weak self] progress in
                 guard let self = self else { return }
 
@@ -68,10 +69,11 @@ public class LeagueApi : ObservableObject {
                                                        queuesProgress: progress.0.3,
                                                        mapsProgress: progress.1.0,
                                                        runesProgress: progress.1.1,
-                                                       itemIconsProgress: progress.1.2,
-                                                       championIconsProgress: progress.1.3,
-                                                       summonerSpellsProgress: progress.2.0,
-                                                       summonerSpellIconsProgress: progress.2.1) {
+                                                       runeIconsProgress: progress.1.2,
+                                                       itemIconsProgress: progress.1.3,
+                                                       championIconsProgress: progress.2.0,
+                                                       summonerSpellsProgress: progress.2.1,
+                                                       summonerSpellIconsProgress: progress.2.2) {
                     UserDefaults.standard.set(self.versionToDownload, forKey: Settings.currentDownloadedVersion)
                     self.updateProgress = UpdateProgress()
                     self.versionToDownload = nil
@@ -104,6 +106,15 @@ public class LeagueApi : ObservableObject {
             .sink { [weak self] progress in
                 if progress.isEqual(to: 1.0) {
                     self?.updateSummonerSpellIcons()
+                }
+            }
+            .store(in: &cancellableBag)
+
+        //When the runes JSON is downloaded, begin downloading all rune icons.
+        updateProgress.$runesJSONProgress
+            .sink { [weak self] progress in
+                if progress.isEqual(to: 1.0) {
+                    self?.updateRuneIcons()
                 }
             }
             .store(in: &cancellableBag)
@@ -226,6 +237,16 @@ public class LeagueApi : ObservableObject {
         }
     }
 
+    private func updateRuneIcons() {
+        let runeIconPaths = self.getListOfRuneIconNames()
+
+        DispatchQueue.concurrentPerform(iterations: runeIconPaths.count) { i in
+            self.downloadIcon(for: .runeIcon(downloadPath: FilePaths.runeIcon(filePath: runeIconPaths[i]).path,
+                                             path: runeIconPaths[i]),
+                              progressRatio: 1.0 / Double(runeIconPaths.count))
+        }
+    }
+
     private func downloadIcon(for targetType: MoyaProvider<DataDragon>.Target, progressRatio: Double) {
         var cancellable: AnyCancellable? = nil
         cancellable = self.ddProvider.requestWithProgressPublisher(targetType)
@@ -278,6 +299,25 @@ public class LeagueApi : ObservableObject {
         let itemListObject = try! JSONDecoder().decode(ItemsJSON.self, from: itemListData)
 
         return itemListObject.data.map { $0.key }
+    }
+
+    private func getListOfRuneIconNames() -> [String] {
+        let runeListData = try! Data(contentsOf: FilePaths.runesJson.path)
+        let runeListObject = try! JSONDecoder().decode([RunePath].self, from: runeListData)
+
+        var runeIconNames = [String]()
+
+        for runePath in runeListObject {
+            runeIconNames.append(runePath.icon)
+
+            for slot in runePath.slots {
+                for rune in slot.runes {
+                    runeIconNames.append(rune.icon)
+                }
+            }
+        }
+
+        return runeIconNames
     }
 
     //MARK:- Miscellaneous

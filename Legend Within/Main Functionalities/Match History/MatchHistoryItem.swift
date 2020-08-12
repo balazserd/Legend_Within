@@ -12,7 +12,7 @@ import Combine
 
 struct MatchHistoryItem: View {
     @EnvironmentObject var gameData: GameData
-    @ObservedObject var match: Match
+    var match: Match
 
     let dateFormatter: DateFormatter = {
         var formatter = DateFormatter()
@@ -44,15 +44,16 @@ struct MatchHistoryItem: View {
                 if participant != nil {
                     VStack(spacing: 3.5) {
                         KFImage(FilePaths.championIcon(fileName: championIconName).path)
-                            .bigItemImageStyle()
+                            .championImageStyle(width: 55)
 
                         HStack(spacing: 4) {
                             KFImage(FilePaths.summonerSpellIcon(fileName: gameData.summonerSpells[participant!.spell1Id]!.image.full).path)
-                                .smallItemImageStyle()
+                                .summonerSpellImageStyle(width: 25)
 
                             KFImage(FilePaths.summonerSpellIcon(fileName: gameData.summonerSpells[participant!.spell2Id]!.image.full).path)
-                                .smallItemImageStyle()
+                                .summonerSpellImageStyle(width: 25)
                         }
+                        .padding(.leading, -0.5)
                     }
                     .padding(.trailing, 5)
 
@@ -149,7 +150,7 @@ struct MatchHistoryItem: View {
                                         Spacer()
                                         if trinketItemId != nil {
                                             KFImage(FilePaths.itemIcon(id: trinketItemId!).path)
-                                                .smallItemImageStyle()
+                                                .itemImageStyle(width: 25)
                                         }
                                         Spacer()
                                     }
@@ -157,16 +158,16 @@ struct MatchHistoryItem: View {
                                     VStack(spacing: 3) {
                                         HStack(spacing: 3) {
                                             if itemIdsFirstRow != nil {
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![0]!).path).smallItemImageStyle()
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![1]!).path).smallItemImageStyle()
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![2]!).path).smallItemImageStyle()
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![0]!).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![1]!).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![2]!).path).itemImageStyle(width: 25)
                                             }
                                         }
                                         HStack(spacing: 3) {
                                             if itemIdsSecondRow != nil {
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![0]!).path).smallItemImageStyle()
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![1]!).path).smallItemImageStyle()
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![2]!).path).smallItemImageStyle()
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![0]!).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![1]!).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![2]!).path).itemImageStyle(width: 25)
                                             }
                                         }
                                     }
@@ -177,25 +178,6 @@ struct MatchHistoryItem: View {
                 }
             }
         }
-    }
-}
-
-private extension KFImage {
-    func smallItemImageStyle() -> some View {
-        self.itemImageStyle(width: 25)
-            .background(RoundedRectangle(cornerRadius: 3).fill(Color.gray).opacity(0.3))
-            .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.black, lineWidth: 1.5))
-    }
-
-    func bigItemImageStyle() -> some View {
-        self.itemImageStyle(width: 55)
-    }
-
-    private func itemImageStyle(width w: CGFloat) -> some View {
-        self
-            .resizable()
-            .frame(width: w, height: w)
-            .cornerRadius(3)
     }
 }
 

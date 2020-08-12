@@ -40,49 +40,71 @@ struct NewVersionDownloadingView: View {
                         .background(Color.lightBlue3)
                         .padding(.horizontal, -15).padding(.bottom, 5)
 
-                    VStack(spacing: 5) {
-                        HStack {
-                            Text("CHAMPIONS")
-                                .font(.system(size: 17)).bold()
-                            Spacer()
+                    VStack {
+                        VStack(spacing: 5) {
+                            HStack {
+                                Text("CHAMPIONS")
+                                    .font(.system(size: 17)).bold()
+                                Spacer()
+                            }
+                            DownloadRow(downloadingText: "Champion list",
+                                        progress: $updateProgress.championsJSONProgress)
+                            DownloadRow(downloadingText: "Individual champions' data",
+                                        progress: $updateProgress.championUniqueJSONsProgress)
+                            DownloadRow(downloadingText: "Champion icons",
+                                        progress: $updateProgress.championIconsProgress)
                         }
-                        DownloadRow(downloadingText: "Champion list",
-                                    progress: $updateProgress.championsJSONProgress)
-                        DownloadRow(downloadingText: "Individual champions' data",
-                                    progress: $updateProgress.championUniqueJSONsProgress)
-                        DownloadRow(downloadingText: "Champion icons",
-                                    progress: $updateProgress.championIconsProgress)
+
+                        Divider().padding(.bottom, 8)
                     }
 
-                    Divider().padding(.bottom, 8)
-
-                    VStack(spacing: 5) {
-                        HStack {
-                            Text("ITEMS")
-                                .font(.system(size: 17)).bold()
-                            Spacer()
+                    VStack {
+                        VStack(spacing: 5) {
+                            HStack {
+                                Text("ITEMS")
+                                    .font(.system(size: 17)).bold()
+                                Spacer()
+                            }
+                            DownloadRow(downloadingText: "Item list",
+                                        progress: $updateProgress.itemsJSONProgress)
+                            DownloadRow(downloadingText: "Item icons",
+                                        progress: $updateProgress.itemIconsProgress)
                         }
-                        DownloadRow(downloadingText: "Item list",
-                                    progress: $updateProgress.itemsJSONProgress)
-                        DownloadRow(downloadingText: "Item icons",
-                                    progress: $updateProgress.itemIconsProgress)
+
+                        Divider().padding(.bottom, 8)
                     }
 
-                    Divider().padding(.bottom, 8)
-
-                    VStack(spacing: 5) {
-                        HStack {
-                            Text("SUMMONER SPELLS")
-                                .font(.system(size: 17)).bold()
-                            Spacer()
+                    VStack {
+                        VStack(spacing: 5) {
+                            HStack {
+                                Text("SUMMONER SPELLS")
+                                    .font(.system(size: 17)).bold()
+                                Spacer()
+                            }
+                            DownloadRow(downloadingText: "Summoner spell list",
+                                        progress: $updateProgress.summonerSpellsJSONProgress)
+                            DownloadRow(downloadingText: "Summoner spell icons",
+                                        progress: $updateProgress.summonerSpellIconsProgress)
                         }
-                        DownloadRow(downloadingText: "Summoner spell list",
-                                    progress: $updateProgress.summonerSpellsJSONProgress)
-                        DownloadRow(downloadingText: "Summoner spell icons",
-                                    progress: $updateProgress.summonerSpellIconsProgress)
-                    }
 
-                    Divider().padding(.bottom, 8)
+                        Divider().padding(.bottom, 8)
+                    }
+                    
+                    VStack {
+                        VStack(spacing: 5) {
+                            HStack {
+                                Text("RUNES")
+                                    .font(.system(size: 17)).bold()
+                                Spacer()
+                            }
+                            DownloadRow(downloadingText: "Rune list",
+                                        progress: $updateProgress.runesJSONProgress)
+                            DownloadRow(downloadingText: "Rune icons",
+                                        progress: $updateProgress.runeIconsProgress)
+                        }
+
+                        Divider().padding(.bottom, 8)
+                    }
 
                     VStack(spacing: 5) {
                         HStack {
@@ -94,8 +116,6 @@ struct NewVersionDownloadingView: View {
                                     progress: $updateProgress.mapsJSONProgress)
                         DownloadRow(downloadingText: "Queues",
                                     progress: $updateProgress.queuesJSONProgress)
-                        DownloadRow(downloadingText: "Runes",
-                                    progress: $updateProgress.runesJSONProgress)
                     }
 
                 } else {

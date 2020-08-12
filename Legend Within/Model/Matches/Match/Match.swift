@@ -8,7 +8,7 @@
 
 import Foundation
 
-public final class Match: Codable, ObservableObject {
+final class Match: Codable, ObservableObject {
     let platformId: String
     let gameId: Int
     let champion: Int
@@ -29,6 +29,71 @@ public final class Match: Codable, ObservableObject {
         let usersParticipant = details.participants.first { $0.participantId == usersParticipantIdentity.participantId }!
 
         return usersParticipant
+    }
+
+    //MARK:- Teams and team members
+    func team(for participant: MatchDetails.Participant?) -> MatchDetails.Team? {
+        if let participant = participant {
+            return self.details?.teams.first { $0.teamId == participant.teamId }
+        }
+
+        return nil
+    }
+
+    var winnerTeam: MatchDetails.Team? {
+        return self.details?.teams.first { $0.win == "Win" }
+    }
+
+    var winnerTeamParticipants: [MatchDetails.Participant]? {
+        if let winningTeamId = self.winnerTeam?.teamId {
+            return self.details?.participants
+                .filter { $0.teamId == winningTeamId }
+                .sorted { $0.participantId < $1.participantId }
+        }
+        return nil
+    }
+
+    var winnerTeamParticipantIdentities: [MatchDetails.ParticipantIdentity]? {
+        if let winningTeamMembers = self.winnerTeamParticipants {
+            return self.details?.participantIdentities
+                .filter { identity in winningTeamMembers.map { $0.participantId }.contains(identity.participantId) }
+                .sorted { $0.participantId < $1.participantId }
+        }
+        return nil
+    }
+
+    var loserTeam: MatchDetails.Team? {
+        return self.details?.teams.first { $0.win == "Fail" }
+    }
+
+    var loserTeamParticipants: [MatchDetails.Participant]? {
+        if let losingTeamId = self.loserTeam?.teamId {
+            return self.details?.participants
+                .filter { $0.teamId == losingTeamId }
+                .sorted { $0.participantId < $1.participantId }
+        }
+        return nil
+    }
+
+    var loserTeamParticipantIdentities: [MatchDetails.ParticipantIdentity]? {
+        if let losingTeamMembers = self.loserTeamParticipants {
+            return self.details?.participantIdentities
+                .filter { identity in losingTeamMembers.map { $0.participantId }.contains(identity.participantId) }
+                .sorted { $0.participantId < $1.participantId }
+        }
+        return nil
+    }
+
+    //MARK:- Codable protocol conformance
+    private enum CodingKeys: String, CodingKey {
+        case platformId = "platformId"
+        case gameId = "gameId"
+        case champion = "champion"
+        case queue = "queue"
+        case season = "season"
+        case timestamp = "timestamp"
+        case role = "role"
+        case lane = "lane"
     }
 
     public init(from decoder: Decoder) throws {
@@ -53,18 +118,5 @@ public final class Match: Codable, ObservableObject {
         try container.encode(timestamp, forKey: .timestamp)
         try container.encode(role, forKey: .role)
         try container.encode(lane, forKey: .lane)
-    }
-}
-
-extension Match {
-    private enum CodingKeys: String, CodingKey {
-        case platformId = "platformId"
-        case gameId = "gameId"
-        case champion = "champion"
-        case queue = "queue"
-        case season = "season"
-        case timestamp = "timestamp"
-        case role = "role"
-        case lane = "lane"
     }
 }

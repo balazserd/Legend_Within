@@ -18,6 +18,7 @@ extension LeagueApi {
         case maps(downloadPath: URL)
         case queues(downloadPath: URL)
         case runes(downloadPath: URL)
+        case runeIcon(downloadPath: URL, path: String)
         case itemIcon(downloadPath: URL, id: Int)
         case championIcon(downloadPath: URL, name: String)
         case summonerSpells(downloadPath: URL)
@@ -34,6 +35,7 @@ extension LeagueApi.DataDragon : TargetType {
                  .champion,
                  .items,
                  .runes,
+                 .runeIcon,
                  .championIcon,
                  .itemIcon,
                  .summonerSpells,
@@ -56,6 +58,7 @@ extension LeagueApi.DataDragon : TargetType {
             case .maps: return "/maps.json"
             case .queues: return "/queues.json"
             case .runes: return "/cdn/\(currentVersion)/data/en_US/runesReforged.json"
+            case .runeIcon(_, let path): return "/cdn/img/\(path)"
             case .championIcon(_, let name): return "/cdn/\(currentVersion)/img/champion/\(name)"
             case .itemIcon(_, let id): return "/cdn/\(currentVersion)/img/item/\(id).png"
             case .summonerSpells: return "/cdn/\(currentVersion)/data/en_US/summoner.json"
@@ -81,6 +84,7 @@ extension LeagueApi.DataDragon : TargetType {
                  .maps(let downloadPath),
                  .queues(let downloadPath),
                  .runes(let downloadPath),
+                 .runeIcon(let downloadPath, _),
                  .championIcon(let downloadPath, _),
                  .itemIcon(let downloadPath, _),
                  .summonerSpells(let downloadPath),

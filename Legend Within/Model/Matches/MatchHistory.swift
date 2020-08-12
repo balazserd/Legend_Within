@@ -9,8 +9,8 @@
 import Foundation
 import Combine
 
-public final class MatchHistory : Codable, ObservableObject {
-    @Published var matches: [Match]
+struct MatchHistory : Codable {
+    var matches: [Match]
     let startIndex: Int
     let endIndex: Int
     let totalGames: Int

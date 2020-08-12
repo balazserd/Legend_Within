@@ -18,7 +18,7 @@ struct MatchHistoryPage: View {
                 List {
                     ForEach(model.matchHistory?.matches ?? [], id: \.gameId) { match in
                         ZStack {
-                            NavigationLink(destination: MatchDetailsPage()) {
+                            NavigationLink(destination: MatchDetailsPage(match: match)) {
                                 MatchHistoryItem(match: match)
                             }
                         }
@@ -26,16 +26,20 @@ struct MatchHistoryPage: View {
 
                     HStack {
                         Spacer()
-                        Button(action: {
-                            self.model.requestMatches(beginIndex: 0, endIndex: 20)
-                        }) {
-                            Text("Load more")
+                        if model.isLoadingFirstSetOfMatches || model.isLoadingFurtherSetsOfMatches {
+                            LoadingIndicator()
+                        } else {
+                            Button(action: {
+                                self.model.requestMatches()
+                            }) {
+                                Text("Load more")
+                            }
                         }
                         Spacer()
                     }
+                    .padding(.vertical, 5)
                 }
                 .introspectTableView { tableView in
-//                    tableView.separatorStyle = .none
                     tableView.tableFooterView = UIView()
                 }
             }
@@ -47,6 +51,23 @@ struct MatchHistoryPage: View {
                 }
             )
             .navigationBarTitle(Text("Match History"))
+        }
+        .onAppear {
+            if self.model.matchHistory?.matches == nil
+            || self.model.matchHistory!.matches.count == 0 {
+                self.model.requestMatches()
+            }
+        }
+    }
+
+    private struct LoadingIndicator: View {
+        var body: some View {
+            HStack {
+                Text("Loading matches...")
+                    .font(.system(size: 15))
+
+                ActivityIndicator(isSpinning: .constant(true))
+            }
         }
     }
 }

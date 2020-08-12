@@ -27,6 +27,7 @@ enum UrlConstants {
                 print("Using this URL is deprecated, as item icons are now downloaded to device.")
                 return URL(string: "https://ddragon.leagueoflegends.com/cdn/\(currentVersion)/img/item/\(itemId).png")
             case .runeIcons(let runePath):
+                print("Using this URL is deprecated, as item icons are now downloaded to device.")
                 return URL(string: "https://ddragon.leagueoflegends.com/cdn/\(currentVersion)/img/\(runePath)")
         }
     }
