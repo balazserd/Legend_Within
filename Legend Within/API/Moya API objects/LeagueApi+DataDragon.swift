@@ -48,21 +48,21 @@ extension LeagueApi.DataDragon : TargetType {
     }
 
     var path: String {
-        let currentVersion = UserDefaults.standard.string(forKey: Settings.currentDownloadedVersion) ?? "10.13.1"
+        let versionToDownload = UserDefaults.standard.string(forKey: Settings.versionToDownload) ?? "10.16.1"
 
         switch self {
             case .versions: return "/api/versions.json"
-            case .champions: return "/cdn/\(currentVersion)/data/en_US/champion.json"
-            case .items: return "/cdn/\(currentVersion)/data/en_US/item.json"
-            case .champion(_, let name): return "/cdn/\(currentVersion)/data/en_US/champion/\(name).json"
+            case .champions: return "/cdn/\(versionToDownload)/data/en_US/champion.json"
+            case .items: return "/cdn/\(versionToDownload)/data/en_US/item.json"
+            case .champion(_, let name): return "/cdn/\(versionToDownload)/data/en_US/champion/\(name).json"
             case .maps: return "/maps.json"
             case .queues: return "/queues.json"
-            case .runes: return "/cdn/\(currentVersion)/data/en_US/runesReforged.json"
+            case .runes: return "/cdn/\(versionToDownload)/data/en_US/runesReforged.json"
             case .runeIcon(_, let path): return "/cdn/img/\(path)"
-            case .championIcon(_, let name): return "/cdn/\(currentVersion)/img/champion/\(name)"
-            case .itemIcon(_, let id): return "/cdn/\(currentVersion)/img/item/\(id).png"
-            case .summonerSpells: return "/cdn/\(currentVersion)/data/en_US/summoner.json"
-            case .summonerSpellIcon(_, let name): return "/cdn/\(currentVersion)/img/spell/\(name)"
+            case .championIcon(_, let name): return "/cdn/\(versionToDownload)/img/champion/\(name)"
+            case .itemIcon(_, let id): return "/cdn/\(versionToDownload)/img/item/\(id).png"
+            case .summonerSpells: return "/cdn/\(versionToDownload)/data/en_US/summoner.json"
+            case .summonerSpellIcon(_, let name): return "/cdn/\(versionToDownload)/img/spell/\(name)"
         }
     }
 

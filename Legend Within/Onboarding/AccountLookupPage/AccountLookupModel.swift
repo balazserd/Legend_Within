@@ -23,10 +23,19 @@ public class AccountLookupModel : ObservableObject {
 
     private var cancellableBag = Set<AnyCancellable>()
 
-    private let summonerSearchProvider = MoyaProvider<LeagueApi.Summoners>()
-    private let leagueEntrySearchProvider = MoyaProvider<LeagueApi.LeagueEntries>()
+    private let summonerSearchProviderQueue: DispatchQueue
+    private let summonerSearchProvider: MoyaProvider<LeagueApi.Summoners>
+
+    private let leagueEntrySearchProviderQueue: DispatchQueue
+    private let leagueEntrySearchProvider: MoyaProvider<LeagueApi.LeagueEntries>
 
     init() {
+        self.summonerSearchProviderQueue = DispatchQueue(label: "accountLookupModel.summonerSearchProviderQueue", qos: .userInitiated, attributes: .concurrent)
+        self.summonerSearchProvider = MoyaProvider<LeagueApi.Summoners>(callbackQueue: self.summonerSearchProviderQueue)
+
+        self.leagueEntrySearchProviderQueue = DispatchQueue(label: "accountLookupModel.leagueEntrySearchProviderQueue", qos: .userInitiated, attributes: .concurrent)
+        self.leagueEntrySearchProvider = MoyaProvider<LeagueApi.LeagueEntries>(callbackQueue: self.leagueEntrySearchProviderQueue)
+
         self.setupSummonerQuerySubscription()
         self.setupSoloQueueEntryQuerySubscription()
         self.setupSoloQueueDivisionQuerySubscription()

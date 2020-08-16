@@ -150,7 +150,7 @@ struct MatchHistoryItem: View {
                                         Spacer()
                                         if trinketItemId != nil {
                                             KFImage(FilePaths.itemIcon(id: trinketItemId!).path)
-                                                .itemImageStyle(width: 25)
+                                                .trinketImageStyle(width: 25)
                                         }
                                         Spacer()
                                     }
@@ -158,16 +158,16 @@ struct MatchHistoryItem: View {
                                     VStack(spacing: 3) {
                                         HStack(spacing: 3) {
                                             if itemIdsFirstRow != nil {
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![0]!).path).itemImageStyle(width: 25)
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![1]!).path).itemImageStyle(width: 25)
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![2]!).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![0]).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![1]).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![2]).path).itemImageStyle(width: 25)
                                             }
                                         }
                                         HStack(spacing: 3) {
                                             if itemIdsSecondRow != nil {
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![0]!).path).itemImageStyle(width: 25)
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![1]!).path).itemImageStyle(width: 25)
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![2]!).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![0]).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![1]).path).itemImageStyle(width: 25)
+                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![2]).path).itemImageStyle(width: 25)
                                             }
                                         }
                                     }

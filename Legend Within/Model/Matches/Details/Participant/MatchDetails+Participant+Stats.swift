@@ -12,13 +12,13 @@ extension MatchDetails.Participant {
     struct Stats: Codable {
         let participantId: Int
         let win: Bool
-        var item0: Int?
-        var item1: Int?
-        var item2: Int?
-        var item3: Int?
-        var item4: Int?
-        var item5: Int?
-        var item6: Int?
+        var item0: Int
+        var item1: Int
+        var item2: Int
+        var item3: Int
+        var item4: Int
+        var item5: Int
+        var item6: Int
         let kills: Int
         let deaths: Int
         let assists: Int
@@ -226,13 +226,13 @@ extension MatchDetails.Participant {
             let values = try decoder.container(keyedBy: CodingKeys.self)
             participantId = try values.decode(Int.self, forKey: .participantId)
             win = try values.decode(Bool.self, forKey: .win)
-            item0 = try values.decodeIfPresent(Int.self, forKey: .item0)
-            item1 = try values.decodeIfPresent(Int.self, forKey: .item1)
-            item2 = try values.decodeIfPresent(Int.self, forKey: .item2)
-            item3 = try values.decodeIfPresent(Int.self, forKey: .item3)
-            item4 = try values.decodeIfPresent(Int.self, forKey: .item4)
-            item5 = try values.decodeIfPresent(Int.self, forKey: .item5)
-            item6 = try values.decodeIfPresent(Int.self, forKey: .item6)
+            item0 = try values.decode(Int.self, forKey: .item0)
+            item1 = try values.decode(Int.self, forKey: .item1)
+            item2 = try values.decode(Int.self, forKey: .item2)
+            item3 = try values.decode(Int.self, forKey: .item3)
+            item4 = try values.decode(Int.self, forKey: .item4)
+            item5 = try values.decode(Int.self, forKey: .item5)
+            item6 = try values.decode(Int.self, forKey: .item6)
             kills = try values.decode(Int.self, forKey: .kills)
             deaths = try values.decode(Int.self, forKey: .deaths)
             assists = try values.decode(Int.self, forKey: .assists)
@@ -334,13 +334,13 @@ extension MatchDetails.Participant {
             var container = encoder.container(keyedBy: CodingKeys.self)
             try container.encode(participantId, forKey: .participantId)
             try container.encode(win, forKey: .win)
-            try container.encodeIfPresent(item0, forKey: .item0)
-            try container.encodeIfPresent(item1, forKey: .item1)
-            try container.encodeIfPresent(item2, forKey: .item2)
-            try container.encodeIfPresent(item3, forKey: .item3)
-            try container.encodeIfPresent(item4, forKey: .item4)
-            try container.encodeIfPresent(item5, forKey: .item5)
-            try container.encodeIfPresent(item6, forKey: .item6)
+            try container.encode(item0, forKey: .item0)
+            try container.encode(item1, forKey: .item1)
+            try container.encode(item2, forKey: .item2)
+            try container.encode(item3, forKey: .item3)
+            try container.encode(item4, forKey: .item4)
+            try container.encode(item5, forKey: .item5)
+            try container.encode(item6, forKey: .item6)
             try container.encode(kills, forKey: .kills)
             try container.encode(deaths, forKey: .deaths)
             try container.encode(assists, forKey: .assists)

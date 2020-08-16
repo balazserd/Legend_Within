@@ -14,6 +14,7 @@ extension LeagueApi {
     enum Matches {
         case singleMatch(region: Region, matchId: Int)
         case byAccount(region: Region, encryptedAccountId: String, queryParams: ByAccountQueryParameters)
+        case timeline(region: Region, matchId: Int)
     }
 }
 
@@ -21,7 +22,8 @@ extension LeagueApi.Matches : TargetType {
     public var baseURL: URL {
         switch self {
             case .singleMatch(let region, _),
-                 .byAccount(let region, _, _):
+                 .byAccount(let region, _, _),
+                 .timeline(let region, _):
                 return LeagueApi.apiUrl(region: region)
         }
     }
@@ -33,6 +35,8 @@ extension LeagueApi.Matches : TargetType {
                 return "\(commonPart)/matches/\(matchId)"
             case .byAccount(_, let encryptedAccountId, _):
                 return "\(commonPart)/matchlists/by-account/\(encryptedAccountId)"
+            case .timeline(_, let matchId):
+                return "\(commonPart)/timelines/by-match/\(matchId)"
         }
     }
 
@@ -46,6 +50,8 @@ extension LeagueApi.Matches : TargetType {
                 return .requestPlain
             case .byAccount(_, _, let queryParams):
                 return .requestParameters(parameters: queryParams.convertToRequestParameters(), encoding: SameQueryParameterMultipleTimesEncoding())
+            case .timeline:
+                return .requestPlain
         }
     }
 

@@ -18,8 +18,8 @@ extension MatchDetails.Participant {
         let xpPerMinDeltas: [String : Double]?
         let xpDiffPerMinDeltas: [String : Double]?
         let goldPerMinDeltas: [String : Double]?
-        let role: String
-        let lane: String
+        let role: Role
+        let lane: Lane
 
         private enum CodingKeys: String, CodingKey {
             case participantId = "participantId"
@@ -44,8 +44,8 @@ extension MatchDetails.Participant {
             goldPerMinDeltas = try values.decodeIfPresent([String : Double].self, forKey: .goldPerMinDeltas)
             damageTakenPerMinDeltas = try values.decodeIfPresent([String : Double].self, forKey: .damageTakenPerMinDeltas)
             damageTakenDiffPerMinDeltas = try values.decodeIfPresent([String : Double].self, forKey: .damageTakenDiffPerMinDeltas)
-            role = try values.decode(String.self, forKey: .role)
-            lane = try values.decode(String.self, forKey: .lane)
+            role = Role(rawValue: try values.decode(String.self, forKey: .role))!
+            lane = Lane(rawValue: try values.decode(String.self, forKey: .lane))!
         }
 
         func encode(to encoder: Encoder) throws {
@@ -58,8 +58,46 @@ extension MatchDetails.Participant {
             try container.encodeIfPresent(goldPerMinDeltas, forKey: .goldPerMinDeltas)
             try container.encodeIfPresent(damageTakenPerMinDeltas, forKey: .damageTakenPerMinDeltas)
             try container.encodeIfPresent(damageTakenDiffPerMinDeltas, forKey: .damageTakenDiffPerMinDeltas)
-            try container.encode(role, forKey: .role)
-            try container.encode(lane, forKey: .lane)
+            try container.encode(role.rawValue, forKey: .role)
+            try container.encode(lane.rawValue, forKey: .lane)
+        }
+    }
+}
+
+extension MatchDetails.Participant.Timeline {
+    enum Lane : String {
+        case middle = "MIDDLE"
+        case mid = "MID"
+        case top = "TOP"
+        case bottom = "BOTTOM"
+        case bot = "BOT"
+        case jungle = "JUNGLE"
+        case none = "NONE"
+
+        var rankedPosition: Int {
+            switch self {
+                case .top: return 1
+                case .jungle: return 2
+                case .middle, .mid: return 3
+                case .bottom, .bot: return 4
+                default: return 5
+            }
+        }
+    }
+
+    enum Role : String {
+        case duo = "DUO" //duo lane
+        case none = "NONE" //should be jungler
+        case solo = "SOLO" //solo lane
+        case duoCarry = "DUO_CARRY"
+        case duoSupport = "DUO_SUPPORT"
+
+        var positionId: Int {
+            switch self {
+                case .duoCarry: return 1
+                case .duoSupport: return 2
+                default: return 3
+            }
         }
     }
 }

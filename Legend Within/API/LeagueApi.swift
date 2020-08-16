@@ -14,6 +14,8 @@ import Combine
 public class LeagueApi : ObservableObject {
     private(set) static var shared = LeagueApi()
     private init() {
+        self.providerQueue = DispatchQueue(label: "leagueApi.DataDragonAPIQueue", qos: .userInitiated, attributes: .concurrent)
+        self.ddProvider = MoyaProvider<DataDragon>(callbackQueue: self.providerQueue)
         self.setupUpdateCycleSubscriptions()
     }
 
@@ -26,7 +28,8 @@ public class LeagueApi : ObservableObject {
     //Dedicated queue for handling the cancellableBag in a thread safe way.
     private let bagSafetyQueue = DispatchQueue(label: "leagueApi.bagSafetyQueue", qos: .userInteractive)
 
-    private let ddProvider = MoyaProvider<DataDragon>()
+    private let providerQueue: DispatchQueue
+    private let ddProvider: MoyaProvider<DataDragon>
 
     //MARK:- Static members
     class func apiUrl(region: Region) -> URL {
@@ -136,6 +139,7 @@ public class LeagueApi : ObservableObject {
                 if newerExists {
                     guard let self = self else { return }
 
+                    UserDefaults.standard.set(latestVersion, forKey: Settings.versionToDownload)
                     self.versionToDownload = latestVersion
                 }
 
@@ -210,7 +214,7 @@ public class LeagueApi : ObservableObject {
     }
 
     //MARK: Icon downloads
-    private func updateChampionIcons() {
+    private func updateItemIcons() {
         let itemIconIds = self.getListOfItemIds()
         DispatchQueue.concurrentPerform(iterations: itemIconIds.count) { i in
             self.downloadIcon(for: .itemIcon(downloadPath: FilePaths.itemIcon(id: itemIconIds[i]).path,
@@ -219,7 +223,7 @@ public class LeagueApi : ObservableObject {
         }
     }
 
-    private func updateItemIcons() {
+    private func updateChampionIcons() {
         let championIconFileNames = self.getListOfChampionIconNames()
         DispatchQueue.concurrentPerform(iterations: championIconFileNames.count) { i in
             self.downloadIcon(for: .championIcon(downloadPath: FilePaths.championIcon(fileName: championIconFileNames[i]).path,

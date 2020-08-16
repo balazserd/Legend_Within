@@ -21,7 +21,7 @@ struct MatchDetails: Codable {
     let gameMode: String
     let gameType: String
     let teams: [Team]
-    let participants: [Participant]
+    var participants: [Participant]
     let participantIdentities: [ParticipantIdentity]
 
     static func getPeriodStringRepresentation(lowerEndOfMinutesOfTens: Int) -> String {

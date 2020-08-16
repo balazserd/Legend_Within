@@ -44,11 +44,12 @@ final class Match: Codable, ObservableObject {
         return self.details?.teams.first { $0.win == "Win" }
     }
 
+    /* will attempt to return in this order: top - jungle - mid - adc - support */
     var winnerTeamParticipants: [MatchDetails.Participant]? {
         if let winningTeamId = self.winnerTeam?.teamId {
             return self.details?.participants
                 .filter { $0.teamId == winningTeamId }
-                .sorted { $0.participantId < $1.participantId }
+//                .sortedByLanes()
         }
         return nil
     }
@@ -66,11 +67,12 @@ final class Match: Codable, ObservableObject {
         return self.details?.teams.first { $0.win == "Fail" }
     }
 
+    /* will attempt to return in this order: top - jungle - mid - adc - support */
     var loserTeamParticipants: [MatchDetails.Participant]? {
         if let losingTeamId = self.loserTeam?.teamId {
             return self.details?.participants
                 .filter { $0.teamId == losingTeamId }
-                .sorted { $0.participantId < $1.participantId }
+//                .sortedByLanes()
         }
         return nil
     }

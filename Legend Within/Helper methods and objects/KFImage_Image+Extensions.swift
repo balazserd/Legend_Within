@@ -22,10 +22,19 @@ extension KFImage {
         self.itemImageStyle(width: w)
     }
 
-    func runeImageStyle(width w: CGFloat) -> some View {
+    func plainImageStyle(width w: CGFloat) -> some View {
         self
             .resizable()
             .frame(width: w, height: w)
+    }
+
+    func trinketImageStyle(width w: CGFloat) -> some View {
+        self
+            .resizable()
+            .frame(width: w, height: w)
+            .clipShape(Circle())
+            .background(Circle().fill(Color.gray).opacity(0.3))
+            .overlay(Circle().stroke(Color.black, lineWidth: 1.5))
     }
 
     func championImageStyle(width w: CGFloat) -> some View {
@@ -52,10 +61,19 @@ extension Image {
         self.itemImageStyle(width: w)
     }
 
-    func runeImageStyle(width w: CGFloat) -> some View {
+    func plainImageStyle(width w: CGFloat) -> some View {
         self
             .resizable()
             .frame(width: w, height: w)
+    }
+
+    func trinketImageStyle(width w: CGFloat) -> some View {
+        self
+            .resizable()
+            .frame(width: w, height: w)
+            .clipShape(Circle())
+            .background(Circle().fill(Color.gray).opacity(0.3))
+            .overlay(Circle().stroke(Color.black, lineWidth: 1.5))
     }
 
     func championImageStyle(width w: CGFloat) -> some View {

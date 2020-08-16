@@ -15,7 +15,7 @@ enum UrlConstants {
     case runeIcons(runePath: Int)
 
     var url: URL? {
-        let currentVersion = UserDefaults.standard.string(forKey: Settings.currentDownloadedVersion) ?? "10.16.1"
+        let currentVersion = UserDefaults.standard.string(forKey: Settings.versionToDownload) ?? "10.16.1"
 
         switch self {
             case .profileIcons(let iconId):

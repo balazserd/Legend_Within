@@ -28,14 +28,17 @@ extension MatchDetails {
             case timeline = "timeline"
         }
 
-        var firstThreeItemIds: [Int?] {
+        var firstThreeItemIds: [Int] {
             [self.stats.item0, self.stats.item1, self.stats.item2]
         }
 
-        var secondThreeItemIds: [Int?] {
+        var secondThreeItemIds: [Int] {
             [self.stats.item3, self.stats.item4, self.stats.item5]
         }
 
+        var allItems: [Int] {
+            [self.stats.item0, self.stats.item1, self.stats.item2, self.stats.item3, self.stats.item4, self.stats.item5, self.stats.item6]
+        }
 
         func primaryRunePath() -> RunePath? {
             return GameData.shared.runePaths[self.stats.perkPrimaryStyle]
@@ -91,6 +94,18 @@ extension MatchDetails {
             try container.encode(spell2Id, forKey: .spell2Id)
             try container.encode(stats, forKey: .stats)
             try container.encode(timeline, forKey: .timeline)
+        }
+    }
+}
+
+extension Array where Element == MatchDetails.Participant {
+    func sortedByLanes() -> Self {
+        self.sorted {
+            if $0.timeline.lane.rankedPosition != $1.timeline.lane.rankedPosition {
+                return $0.timeline.lane.rankedPosition < $1.timeline.lane.rankedPosition
+            }
+
+            return $0.timeline.role.positionId < $1.timeline.role.positionId
         }
     }
 }

@@ -127,7 +127,7 @@ extension AccountLookupPage {
 
                     HStack(alignment: .center, spacing: 3) {
                         VStack {
-                            MiddleAlignedView {
+                            HorizontalAlignedView(.center) {
                                 Text("\(soloQueueEntry!.wins)")
                                     .bold()
                                     .font(.system(size: 25))
@@ -136,7 +136,7 @@ extension AccountLookupPage {
                                     .foregroundColor(Color.green5)
                             }
 
-                            MiddleAlignedView {
+                            HorizontalAlignedView(.center) {
                                 Text("WON")
                                     .bold()
                                     .font(.system(size: 14))
@@ -145,7 +145,7 @@ extension AccountLookupPage {
                         }
 
                         VStack {
-                            MiddleAlignedView {
+                            HorizontalAlignedView(.center) {
                                 Text("\(soloQueueEntry!.winRatePercent)%")
                                     .bold()
                                     .font(.system(size: 40))
@@ -153,7 +153,7 @@ extension AccountLookupPage {
                                     .lineLimit(1)
                             }
 
-                            MiddleAlignedView {
+                            HorizontalAlignedView(.center) {
                                 Text("Winrate")
                                     .bold()
                                     .font(.system(size: 14))
@@ -164,7 +164,7 @@ extension AccountLookupPage {
                         }
 
                         VStack {
-                            MiddleAlignedView {
+                            HorizontalAlignedView(.center) {
                                 Text("\(soloQueueEntry!.losses)")
                                     .bold()
                                     .font(.system(size: 25))
@@ -173,7 +173,7 @@ extension AccountLookupPage {
                                     .foregroundColor(Color.red5)
                             }
 
-                            MiddleAlignedView {
+                            HorizontalAlignedView(.center) {
                                 Text("LOST")
                                     .bold()
                                     .font(.system(size: 14))

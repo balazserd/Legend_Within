@@ -17,6 +17,7 @@ struct Settings {
 
     //MARK: League Api stuff
     static let currentDownloadedVersion = "leagueApi.currentDownloadedVersion"
+    static let versionToDownload = "leagueApi.versionToDownload"
 
     //MARK: Constants used throughout the app
     static let supportEmailAddress = "ebuniapps@gmail.com"
