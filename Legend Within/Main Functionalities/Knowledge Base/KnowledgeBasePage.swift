@@ -9,8 +9,9 @@
 import SwiftUI
 
 struct KnowledgeBasePage: View {
+    let values: [(Double, Double)] = [(1, 3), (2, 7), (3, -4), (4, 2), (5, -1), (6, 3)]
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        LineChart(data: [LineChartData(values: values)])
     }
 }
 
