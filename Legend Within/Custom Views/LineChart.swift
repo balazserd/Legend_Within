@@ -9,81 +9,28 @@
 import Foundation
 import SwiftUI
 import UIKit
-import Charts
 import SpriteKit
 
 struct LineChart: View {
     var lineType: LineType = .curved
     var data: [LineChartData]
+    @Binding var visibilityMatrix: [Bool]
 
     var body: some View {
         ZStack {
-            GeometryReader { proxy in
-                self.getPath(in: proxy)
+            GeometryReader<ForEach<[LineChartData], UUID, SingleLineChart>> { geoProxy in
+                let vt = self.getValueTransformer(for: geoProxy)
 
-            }
-            .offset(x: 4, y: 0)
-
-            GeometryReader { proxy in
-                self.getPoints(in: proxy)
-            }
-            .offset(x: 0, y: -4)
-        }
-        .rotation3DEffect(Angle(degrees: 180), axis: (1, 0, 0))
-    }
-
-    enum LineType {
-        case linear
-        case curved
-    }
-
-    struct ValueTransformer {
-        var xValueTransformer: (Double) -> Double
-        var yValueTransformer: (Double) -> Double
-    }
-
-    private func getPoints(in proxy: GeometryProxy) -> some View {
-        let valueTransformer = self.getValueTransformer(for: proxy)
-        let transformedValues = self.data
-        .map {
-            LineChartData(values: $0.values.map {
-                              (x: valueTransformer.xValueTransformer($0.x),
-                               y: valueTransformer.yValueTransformer($0.y))
-                          },
-                          lineColor: $0.lineColor, shownAspects: $0.shownAspects)
-        }
-        .filter { $0.shownAspects.contains(.points) }
-
-        return ZStack {
-            ForEach(transformedValues, id: \.id) { transformedData in
-                ForEach(0..<transformedData.values.count) { i in
-                    Circle().fill(Color.black)
-                        .frame(width: 8, height: 8)
-                        .offset(x: CGFloat(transformedData.values[i].x),
-                                y: CGFloat(transformedData.values[i].y))
+                return ForEach(self.data.filter { self.visibilityMatrix[$0.associatedParticipantId!] }, id: \.id) { dataSet in
+                    SingleLineChart(data: dataSet, proxy: geoProxy, transformer: vt)
                 }
             }
         }
     }
 
-    private func getPath(in proxy: GeometryProxy) -> some View {
-        let valueTransformer = self.getValueTransformer(for: proxy)
-        let transformedValues = self.data
-            .map {
-                LineChartData(values: $0.values.map {
-                                  (x: valueTransformer.xValueTransformer($0.x),
-                                   y: valueTransformer.yValueTransformer($0.y))
-                              },
-                              lineColor: $0.lineColor, shownAspects: $0.shownAspects)
-            }
-            .filter { $0.shownAspects.contains(.line) }
-
-        return ZStack {
-            ForEach(transformedValues, id: \.id) { transformedData in
-                LineChartPath(data: transformedData)
-                    .stroke(Color.black, lineWidth: 3)
-            }
-        }
+    enum LineType {
+        case linear
+        case curved
     }
 
     private func getValueTransformer(for proxy: GeometryProxy) -> ValueTransformer {
@@ -101,9 +48,53 @@ struct LineChart: View {
 
         return ValueTransformer(xValueTransformer: transformX, yValueTransformer: transformY)
     }
+
+    struct ValueTransformer {
+        var xValueTransformer: (Double) -> Double
+        var yValueTransformer: (Double) -> Double
+    }
 }
 
-struct LineChartPath: Shape {
+fileprivate struct SingleLineChart: View {
+    var lineType: LineChart.LineType = .curved
+    var data: LineChartData
+    var proxy: GeometryProxy
+    var transformer: LineChart.ValueTransformer
+
+    var body: some View {
+        let transformedData = self.data.copyForTransform(with: self.transformer)
+
+        return ZStack {
+            if self.data.shownAspects.contains(.line) {
+                LineChartPath(data: transformedData)
+                    .stroke(transformedData.lineColor, lineWidth: 3)
+                    .offset(x: 4, y: 0)
+            }
+
+            if self.data.shownAspects.contains(.points) {
+                LineChartPoints(data: transformedData)
+                    .offset(x: 0, y: -4)
+            }
+        }
+        .rotation3DEffect(Angle(degrees: 180), axis: (1, 0, 0))
+    }
+}
+
+fileprivate struct LineChartPoints: View {
+    var data: LineChartData
+
+    var body: some View {
+        ForEach(0..<data.values.count) { [data] i in
+            Circle().fill(data.pointColor)
+                .frame(width: 8, height: 8)
+                .offset(x: CGFloat(data.values[i].x),
+                        y: CGFloat(data.values[i].y))
+        }
+    }
+}
+
+
+fileprivate struct LineChartPath: Shape {
     func path(in rect: CGRect) -> Path {
         Path { path in
             path.move(to: CGPoint(x: self.splinedValues[0].0, y: self.splinedValues[0].1))
@@ -129,23 +120,41 @@ struct LineChartPath: Shape {
         let xMin = data.values.map { $0.x }.min()!
         let xMax = data.values.map { $0.x }.max()!
         stride(from: xMin, to: xMax, by: (xMax - xMin) / 200).forEach {
-            self.splinedValues.append((CGFloat($0), CGFloat(sequence.sample(atTime: CGFloat($0)) as! Double)))
+            self.splinedValues.append((CGFloat($0), sequence.sample(atTime: CGFloat($0)) as! CGFloat))
         }
     }
 }
 
-struct LineChartData {
-    let id = UUID()
+class LineChartData : ObservableObject {
+    private(set) var id = UUID()
     var values: [Value]
     var lineColor: Color
+    var pointColor: Color
     var shownAspects: [ShownAspect]
+    var associatedParticipantId: Int?
 
     init(values: [(Double, Double)],
          lineColor: Color = .black,
-         shownAspects: [ShownAspect] = [.line, .points]) {
+         pointColor: Color = .black,
+         shownAspects: [ShownAspect] = [.line, .points],
+         associatedParticipantId: Int? = nil) {
         self.values = values.map { Value(x: $0.0, y: $0.1)}
         self.lineColor = lineColor
+        self.pointColor = pointColor
         self.shownAspects = shownAspects
+        self.associatedParticipantId = associatedParticipantId
+    }
+
+    func copyForTransform(with transformer: LineChart.ValueTransformer) -> LineChartData {
+        let new = LineChartData(values: self.values.map {
+                                    (x: transformer.xValueTransformer($0.x),
+                                     y: transformer.yValueTransformer($0.y))
+                                },
+                                lineColor: self.lineColor,
+                                pointColor: self.pointColor,
+                                shownAspects: self.shownAspects)
+        new.id = self.id
+        return new
     }
 
     struct Value {
@@ -156,15 +165,5 @@ struct LineChartData {
     enum ShownAspect {
         case line
         case points
-    }
-}
-
-struct LineChart_Previews: PreviewProvider {
-    static var previews: some View {
-        LineChart(data: [LineChartData(values: [(1, 4), (2, 6), (3, 7), (4, 5), (5, 3), (6, -1), (7, -2),
-                                                (8, -2.5), (9, -2), (10, 0), (11, 4)],
-                                       lineColor: .black,
-                                       shownAspects: [.line, .points])])
-            .frame(height: 200)
     }
 }

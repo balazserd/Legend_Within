@@ -10,10 +10,13 @@ import SwiftUI
 import KingfisherSwiftUI
 
 struct MatchDetailsPage: View {
+    private let colorArray: [Color] = [.blue, .green, .orange, .red, .purple, .black, .yellow, .pink, .darkBlue2, .darkGreen5]
     @EnvironmentObject var gameData: GameData
 
     @State private var selectedPlayer: MatchDetails.Participant? = nil
     @ObservedObject private var model: MatchDetailsModel
+
+    @State private var chart_shownPlayers: [Bool] = Array(repeating: true, count: 11) //ParticipantId is 1-based, we need 11 elements.
 
     init(match _match: Match) {
         model = MatchDetailsModel(match: _match)
@@ -53,35 +56,40 @@ struct MatchDetailsPage: View {
 
                             Divider()
 
-                            HStack {
-                                Text("WINNING TEAM")
-                                    .font(.system(size: 20)).bold()
-                                    .foregroundColor(.green)
-                                Spacer()
-                                self.banView(bans: winningTeam!.bans)
-                            }
-                            .padding(.bottom, -3)
+                            VStack {
+                                HStack {
+                                    Text("WINNING TEAM")
+                                        .font(.system(size: 20)).bold()
+                                        .foregroundColor(.green)
+                                    Spacer()
+                                    self.banView(bans: winningTeam!.bans)
+                                }
+                                .padding(.bottom, -3)
 
-                            self.teamLevelStats(team: winningTeam!)
-                            self.teamView(participants: winningTeamParticipants!,
-                                          participantIdentities: winningTeamParticipantIdentities!)
+                                self.teamLevelStats(team: winningTeam!)
+                                self.teamView(participants: winningTeamParticipants!,
+                                              participantIdentities: winningTeamParticipantIdentities!)
+
+                                Divider()
+
+                                HStack {
+                                    Text("LOSING TEAM")
+                                        .font(.system(size: 20)).bold()
+                                        .foregroundColor(.red)
+                                    Spacer()
+                                    self.banView(bans: losingTeam!.bans)
+                                }
+                                .padding(.bottom, -3)
+
+                                self.teamLevelStats(team: losingTeam!)
+                                self.teamView(participants: losingTeamParticipants!,
+                                              participantIdentities: losingTeamParticipantIdentities!)
+                            }
 
                             Divider()
 
-                            HStack {
-                                Text("LOSING TEAM")
-                                    .font(.system(size: 20)).bold()
-                                    .foregroundColor(.red)
-                                Spacer()
-                                self.banView(bans: losingTeam!.bans)
-                            }
-                            .padding(.bottom, -3)
-
-                            self.teamLevelStats(team: losingTeam!)
-                            self.teamView(participants: losingTeamParticipants!,
-                                          participantIdentities: losingTeamParticipantIdentities!)
-
-                            Divider()
+                            self.chartView(winningTeamParticipants: winningTeamParticipants!,
+                                           losingTeamParticipants: losingTeamParticipants!)
                         }
                     }
                     .padding(15)
@@ -91,6 +99,55 @@ struct MatchDetailsPage: View {
         .navigationBarTitle("Details", displayMode: .inline)
         .onAppear {
             self.model.requestTimeline(for: self.model.initialMatchParameter)
+        }
+    }
+
+    private func chartView(winningTeamParticipants: [MatchDetails.Participant],
+                           losingTeamParticipants: [MatchDetails.Participant]) -> some View {
+        let chartData = model.timeline!.getGoldValues().map { goldValueTimeline in
+            LineChartData(values: goldValueTimeline.value.map { (Double($0.key), Double($0.value)) }.sorted(by: { $0.0 < $1.0 }),
+                          lineColor: self.colorArray[goldValueTimeline.key - 1],
+                          shownAspects: [.line],
+                          associatedParticipantId: goldValueTimeline.key)
+        }
+
+        return VStack {
+            HStack {
+                Text("Graphs")
+                    .font(.system(size: 17)).bold()
+                Spacer()
+            }
+
+            HStack {
+                ForEach(winningTeamParticipants, id: \.participantId) { participant in
+                    KFImage(FilePaths.championIcon(fileName: self.gameData.champions[participant.championId]!.onlyData().image.full).path)
+                        .championImageStyle(width: 30)
+                        .opacity(self.chart_shownPlayers[participant.participantId] ? 1 : 0.5)
+                        .onTapGesture {
+                            let newValue = !self.chart_shownPlayers[participant.participantId]
+                            self.chart_shownPlayers[participant.participantId] = newValue
+                        }
+                }
+
+                Divider()
+
+                ForEach(losingTeamParticipants, id: \.participantId) { participant in
+                    KFImage(FilePaths.championIcon(fileName: self.gameData.champions[participant.championId]!.onlyData().image.full).path)
+                        .championImageStyle(width: 30)
+                        .opacity(self.chart_shownPlayers[participant.participantId] ? 1 : 0.5)
+                        .onTapGesture {
+                            let newValue = !self.chart_shownPlayers[participant.participantId]
+                            self.chart_shownPlayers[participant.participantId] = newValue
+                        }
+                }
+            }
+
+            LineChart(data: chartData, visibilityMatrix: self.$chart_shownPlayers)
+                .frame(height: 200)
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.gray.opacity(0.1))
+                    .shadow(color: Color.gray.opacity(0.2), radius: 3, x: 0, y: 1.5))
         }
     }
 

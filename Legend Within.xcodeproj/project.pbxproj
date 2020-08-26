@@ -34,7 +34,6 @@
 		5639762424D873CC003388C0 /* MatchDetailsExample.json in Resources */ = {isa = PBXBuildFile; fileRef = 5639762324D873CC003388C0 /* MatchDetailsExample.json */; };
 		563C3F5124E847C400DA2825 /* RoleClassifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563C3F5024E847C400DA2825 /* RoleClassifier.swift */; };
 		563C3F5524E92FE600DA2825 /* LoLRoleClassifier_Final.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 563C3F5424E92FE600DA2825 /* LoLRoleClassifier_Final.mlmodel */; };
-		5640EB1B24EC7A78001B5780 /* Charts in Frameworks */ = {isa = PBXBuildFile; productRef = 5640EB1A24EC7A78001B5780 /* Charts */; };
 		5640EB1D24EC7AA5001B5780 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640EB1C24EC7AA5001B5780 /* LineChart.swift */; };
 		56477ED824CADC6F00495535 /* OnboardingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56477ED724CADC6F00495535 /* OnboardingModel.swift */; };
 		56477EE024CAFAA800495535 /* OnboardingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56477EDF24CAFAA800495535 /* OnboardingPage.swift */; };
@@ -291,7 +290,6 @@
 				5675295C24AB954A009057C8 /* KingfisherSwiftUI in Frameworks */,
 				56FCBD3224DC737700D4FABB /* Introspect in Frameworks */,
 				567528EA24AA2C12009057C8 /* Moya in Frameworks */,
-				5640EB1B24EC7A78001B5780 /* Charts in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -782,7 +780,6 @@
 				567528E924AA2C12009057C8 /* Moya */,
 				5675295B24AB954A009057C8 /* KingfisherSwiftUI */,
 				56FCBD3124DC737700D4FABB /* Introspect */,
-				5640EB1A24EC7A78001B5780 /* Charts */,
 			);
 			productName = "Legend Within";
 			productReference = 567528BF24AA29B8009057C8 /* Legend Within.app */;
@@ -838,7 +835,6 @@
 				567528E824AA2C12009057C8 /* XCRemoteSwiftPackageReference "Moya" */,
 				5675295A24AB954A009057C8 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				56FCBD3024DC737700D4FABB /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
-				5640EB1924EC7A78001B5780 /* XCRemoteSwiftPackageReference "Charts" */,
 			);
 			productRefGroup = 567528C024AA29B8009057C8 /* Products */;
 			projectDirPath = "";
@@ -1261,14 +1257,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		5640EB1924EC7A78001B5780 /* XCRemoteSwiftPackageReference "Charts" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/danielgindi/Charts.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.5.0;
-			};
-		};
 		567528E824AA2C12009057C8 /* XCRemoteSwiftPackageReference "Moya" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Moya/Moya.git";
@@ -1296,11 +1284,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5640EB1A24EC7A78001B5780 /* Charts */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5640EB1924EC7A78001B5780 /* XCRemoteSwiftPackageReference "Charts" */;
-			productName = Charts;
-		};
 		567528E924AA2C12009057C8 /* Moya */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 567528E824AA2C12009057C8 /* XCRemoteSwiftPackageReference "Moya" */;
