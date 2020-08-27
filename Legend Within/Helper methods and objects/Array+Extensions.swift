@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import CoreGraphics
 
-extension Array where Element == Double {
-    func closestValue(to i: Double) -> Element {
-        return self.min(by: { abs($0 - i) < abs($1 - i) })!
+extension Array where Element : BinaryFloatingPoint {
+    func closestValue(to i: Element) -> Element {
+        return self.min(by: { abs($0 - i).isLess(than: abs($1 - i)) })!
     }
 }

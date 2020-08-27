@@ -10,7 +10,7 @@ import SwiftUI
 import KingfisherSwiftUI
 
 struct MatchDetailsPage: View {
-    private let colorArray: [Color] = [.blue, .green, .orange, .red, .purple, .black, .yellow, .pink, .darkBlue2, .darkGreen5]
+    private let colorArray: [Color] = [.blue, .green, .orange, .red, .purple, .black, .yellow, .gray, .darkBlue2, .darkGreen5]
     @EnvironmentObject var gameData: GameData
 
     @State private var selectedPlayer: MatchDetails.Participant? = nil

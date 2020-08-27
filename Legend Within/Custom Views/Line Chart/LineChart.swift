@@ -13,10 +13,16 @@ import SpriteKit
 import Combine
 
 struct LineChart: View {
+    fileprivate typealias AnyGeometryReader = GeometryReader<ZStack<TupleView<(DragSignal?, AnyForEach)>>>
+    fileprivate typealias AnyForEach = ForEach<[LineChartData], UUID, SingleLineChart>
+
     var data: [LineChartData]
     @Binding var visibilityMatrix: [Bool]
     var dragGestureHandlers: [DragGestureHandler]
     var lineType: LineType = .curved
+
+    @State private var gestureXValue: CGFloat = 0
+    @State private var isDragging = false
 
     init(data: [LineChartData],
          visibilityMatrix: Binding<[Bool]>,
@@ -34,28 +40,49 @@ struct LineChart: View {
                 .fill(Color.gray.opacity(0.1))
                 .shadow(color: Color.gray.opacity(0.2), radius: 3, x: 0, y: 1.5)
 
-            GeometryReader<ForEach<[LineChartData], UUID, SingleLineChart>> { geoProxy in
+            AnyGeometryReader { geoProxy in
                 let vt = self.getValueTransformer(for: geoProxy)
                 let visibleLineDataSets = self.data
                     .filter { self.visibilityMatrix[$0.associatedParticipantId!] }
                     .sorted(by: { $0.associatedParticipantId! < $1.associatedParticipantId! })
 
-                return ForEach<[LineChartData], UUID, SingleLineChart>(visibleLineDataSets, id: \.id) { dataSet in
-                    return SingleLineChart(data: dataSet,
-                                    transformer: vt,
-                                    lineType: self.lineType,
-                                    dragGestureHandler: self.dragGestureHandlers[dataSet.associatedParticipantId!])
+                return ZStack(alignment: .leading) {
+                    if self.isDragging {
+                        DragSignal(gestureXValue: self.$gestureXValue)
+                    }
+
+                    AnyForEach(visibleLineDataSets, id: \.id) { dataSet in
+                        SingleLineChart(data: dataSet,
+                                        transformer: vt,
+                                        lineType: self.lineType,
+                                        dragGestureHandler: self.dragGestureHandlers[dataSet.associatedParticipantId!],
+                                        isDragging: self.$isDragging,
+                                        gestureXValue: self.$gestureXValue)
+                    }
                 }
             }
-            .padding()
+            .padding(8)
         }
         .gesture(DragGesture()
             .onChanged { value in
+                self.isDragging = true
+                self.gestureXValue = value.location.x
                 self.dragGestureHandlers.forEach { $0.requestedCoordinate.send(value.location) }
             }
             .onEnded { _ in
+                self.isDragging = false
                 self.dragGestureHandlers.forEach { $0.requestedCoordinate.send(nil) }
             })
+    }
+
+    struct DragSignal: View {
+        @Binding var gestureXValue: CGFloat
+
+        var body: some View {
+            Rectangle().fill(Color.gray)
+                .frame(width: 0.5)
+                .offset(x: gestureXValue - 8) //The padding offset must be balanced out.
+        }
     }
 
     enum LineType {
@@ -106,14 +133,21 @@ fileprivate struct SingleLineChart: View {
     private var transformedData: LineChartData
     private var dragGestureHandler: LineChart.DragGestureHandler
 
+    @Binding var gestureXValue: CGFloat
+    @Binding var isDragging: Bool
+
     init(data: LineChartData,
          transformer: LineChart.ValueTransformer,
          lineType: LineChart.LineType,
-         dragGestureHandler: LineChart.DragGestureHandler) {
+         dragGestureHandler: LineChart.DragGestureHandler,
+         isDragging: Binding<Bool>,
+         gestureXValue: Binding<CGFloat>) {
         self.data = data
         self.transformer = transformer
         self.lineType = lineType
         self.dragGestureHandler = dragGestureHandler
+        self._isDragging = isDragging
+        self._gestureXValue = gestureXValue
 
         self.transformedData = self.data.copyForTransform(with: self.transformer)
         self.sequence = SKKeyframeSequence(keyframeValues: transformedData.values.map { $0.y },
@@ -128,8 +162,12 @@ fileprivate struct SingleLineChart: View {
     }
 
     var body: some View {
+        let closestXValue = transformedData.values.map { $0.x }.closestValue(to: Double(gestureXValue - 8))
+        let closestXIndex = transformedData.values.firstIndex { $0.x == closestXValue }!
+        let yValueForClosestX = transformedData.values[closestXIndex].y
+        print ("\(closestXValue) - \(closestXValue) - \(yValueForClosestX)")
 
-        return ZStack {
+        return ZStack(alignment: .topLeading) {
             if self.data.shownAspects.contains(.line) {
                 LineChartPath(self.splinedValues)
                     .stroke(self.data.lineColor, lineWidth: 3)
@@ -139,6 +177,16 @@ fileprivate struct SingleLineChart: View {
             if self.data.shownAspects.contains(.points) {
                 LineChartPoints(data: transformedData)
                     .offset(x: 0, y: -4)
+            }
+
+            if isDragging {
+                Circle().fill(Color.white)
+                    .frame(width: 7, height: 7)
+                    .overlay(Circle().stroke(self.data.lineColor, lineWidth: 2)
+                        .frame(width: 7, height: 7))
+                    .offset(x: CGFloat(closestXValue),
+                            y: CGFloat(yValueForClosestX) - 4)
+                    .zIndex(.infinity)
             }
         }
         .rotation3DEffect(Angle(degrees: 180), axis: (1, 0, 0))
