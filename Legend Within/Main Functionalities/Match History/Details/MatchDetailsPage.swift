@@ -36,6 +36,7 @@ struct MatchDetailsPage: View {
         return formatter
     }()
 
+    //MARK:- Body
     var body: some View {
         let winningTeam = model.match?.winnerTeam!
         let winningTeamParticipants = model.match?.winnerTeamParticipants!
@@ -44,6 +45,13 @@ struct MatchDetailsPage: View {
         let losingTeam = model.match?.loserTeam!
         let losingTeamParticipants = model.match?.loserTeamParticipants!
         let losingTeamParticipantIdentities = model.match?.loserTeamParticipantIdentities!
+
+        let chartData = model.timeline?.getGoldValues().map { goldValueTimeline in
+            LineChartData(values: goldValueTimeline.value.map { (Double($0.key), Double($0.value)) }.sorted(by: { $0.0 < $1.0 }),
+                          lineColor: self.colorArray[goldValueTimeline.key - 1],
+                          shownAspects: [.line],
+                          associatedParticipantId: goldValueTimeline.key)
+        }
 
         return VStack {
             if model.isWorking || model.match == nil {
@@ -88,8 +96,11 @@ struct MatchDetailsPage: View {
 
                             Divider()
 
-                            self.chartView(winningTeamParticipants: winningTeamParticipants!,
-                                           losingTeamParticipants: losingTeamParticipants!)
+                            ChartView(winningTeamParticipants: winningTeamParticipants!,
+                                      losingTeamParticipants: losingTeamParticipants!,
+                                      chartData: chartData!,
+                                      model: self.model,
+                                      visiblePlayers: self.$chart_shownPlayers)
                         }
                     }
                     .padding(15)
@@ -102,54 +113,7 @@ struct MatchDetailsPage: View {
         }
     }
 
-    private func chartView(winningTeamParticipants: [MatchDetails.Participant],
-                           losingTeamParticipants: [MatchDetails.Participant]) -> some View {
-        let chartData = model.timeline!.getGoldValues().map { goldValueTimeline in
-            LineChartData(values: goldValueTimeline.value.map { (Double($0.key), Double($0.value)) }.sorted(by: { $0.0 < $1.0 }),
-                          lineColor: self.colorArray[goldValueTimeline.key - 1],
-                          shownAspects: [.line],
-                          associatedParticipantId: goldValueTimeline.key)
-        }
-
-        return VStack {
-            HStack {
-                Text("Graphs")
-                    .font(.system(size: 17)).bold()
-                Spacer()
-            }
-
-            HStack {
-                ForEach(winningTeamParticipants, id: \.participantId) { participant in
-                    KFImage(FilePaths.championIcon(fileName: self.gameData.champions[participant.championId]!.onlyData().image.full).path)
-                        .championImageStyle(width: 30)
-                        .opacity(self.chart_shownPlayers[participant.participantId] ? 1 : 0.5)
-                        .onTapGesture {
-                            let newValue = !self.chart_shownPlayers[participant.participantId]
-                            self.chart_shownPlayers[participant.participantId] = newValue
-                        }
-                }
-
-                Divider()
-
-                ForEach(losingTeamParticipants, id: \.participantId) { participant in
-                    KFImage(FilePaths.championIcon(fileName: self.gameData.champions[participant.championId]!.onlyData().image.full).path)
-                        .championImageStyle(width: 30)
-                        .opacity(self.chart_shownPlayers[participant.participantId] ? 1 : 0.5)
-                        .onTapGesture {
-                            let newValue = !self.chart_shownPlayers[participant.participantId]
-                            self.chart_shownPlayers[participant.participantId] = newValue
-                        }
-                }
-            }
-
-            LineChart(data: chartData, visibilityMatrix: self.$chart_shownPlayers)
-                .frame(height: 200)
-                .padding()
-                .background(RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.gray.opacity(0.1))
-                    .shadow(color: Color.gray.opacity(0.2), radius: 3, x: 0, y: 1.5))
-        }
-    }
+    //MARK:- Body parts
 
     private func generalGameInfo() -> some View {
         let gameTime = dateFormatter.string(from: Date(timeIntervalSince1970: Double(model.match!.timestamp / 1000)))

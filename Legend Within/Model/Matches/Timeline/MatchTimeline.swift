@@ -80,3 +80,12 @@ struct MatchTimeline: Codable {
     }
 
 }
+
+extension MatchTimeline {
+    enum TimelineStatType {
+        case gold
+        case minions
+        case damage
+
+    }
+}
