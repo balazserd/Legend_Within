@@ -9,19 +9,25 @@
 import Foundation
 
 struct MatchTimeline: Codable {
+    typealias ParticipantIdGroupedTimelineValues = [Int : [Int : Int]]
+    typealias TeamGroupedTimelineValues = [Int : [Int : Int]]
 
     //MARK:- properties
     let frames: [Frame]
     let frameInterval: Int
 
     //MARK:- public functions
-    func getGoldValues() -> [Int : [Int : Int]] { //[ParticipantId : [TimeStamp : Gold]]
+    func getGoldValues() -> ParticipantIdGroupedTimelineValues { self.getValues(for: \.totalGold) }
+    func getXpValues() -> ParticipantIdGroupedTimelineValues { self.getValues(for: \.xp) }
+    func getMinionKillsValues() -> ParticipantIdGroupedTimelineValues { self.getValues(for: \.minionsKilled) }
+
+    func getValues(for keyPath: KeyPath<Frame.ParticipantFrame, Int>) -> ParticipantIdGroupedTimelineValues { //e.g. [ParticipantId : [TimeStamp : Gold]]
         var result = Dictionary<Int, Dictionary<Int, Int>>(uniqueKeysWithValues: (1...10).map { ($0, [:]) })
 
         let participantFrames = self.getParticipantFrames()
         for pf in participantFrames {
             for frameUnit in pf.value {
-                result[frameUnit.participantId]![pf.key] = frameUnit.totalGold
+                result[frameUnit.participantId]![pf.key] = frameUnit[keyPath: keyPath]
             }
         }
 
@@ -29,7 +35,6 @@ struct MatchTimeline: Codable {
     }
 
     //MARK:- private functions
-
     private func getEvents(for participant: MatchDetails.Participant? = nil, typed type: Frame.Event.Kind? = nil) -> [Frame.Event] {
         var events = [Frame.Event]()
 

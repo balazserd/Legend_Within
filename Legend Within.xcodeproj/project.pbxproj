@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5605875E24FB9DAE0049372D /* TeamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5605875D24FB9DAE0049372D /* TeamView.swift */; };
+		5605876024FB9E960049372D /* PlayerItemsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5605875F24FB9E960049372D /* PlayerItemsView.swift */; };
+		5605876224FB9EEB0049372D /* PlayerStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5605876124FB9EEB0049372D /* PlayerStatsView.swift */; };
+		5605876424FB9FAF0049372D /* TeamStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5605876324FB9FAF0049372D /* TeamStatsView.swift */; };
+		5605876624FBA06F0049372D /* BansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5605876524FBA06F0049372D /* BansView.swift */; };
+		5605876824FBA12A0049372D /* GeneralGameInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5605876724FBA12A0049372D /* GeneralGameInfoView.swift */; };
+		5605876A24FBA7600049372D /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5605876924FBA7600049372D /* Colors.xcassets */; };
+		5605876C24FBBB630049372D /* MatchDetailsModel+ChartDataRequestTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5605876B24FBBB630049372D /* MatchDetailsModel+ChartDataRequestTypes.swift */; };
 		561D466C24E00D7D006786C6 /* LoadingCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D466B24E00D7D006786C6 /* LoadingCircle.swift */; };
 		561D466E24E03575006786C6 /* LeagueApi+UpdateProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D466D24E03575006786C6 /* LeagueApi+UpdateProgress.swift */; };
 		561D467024E03821006786C6 /* MatchHistoryFilterPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561D466F24E03821006786C6 /* MatchHistoryFilterPage.swift */; };
@@ -153,6 +161,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5605875D24FB9DAE0049372D /* TeamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamView.swift; sourceTree = "<group>"; };
+		5605875F24FB9E960049372D /* PlayerItemsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerItemsView.swift; sourceTree = "<group>"; };
+		5605876124FB9EEB0049372D /* PlayerStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerStatsView.swift; sourceTree = "<group>"; };
+		5605876324FB9FAF0049372D /* TeamStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamStatsView.swift; sourceTree = "<group>"; };
+		5605876524FBA06F0049372D /* BansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BansView.swift; sourceTree = "<group>"; };
+		5605876724FBA12A0049372D /* GeneralGameInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralGameInfoView.swift; sourceTree = "<group>"; };
+		5605876924FBA7600049372D /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		5605876B24FBBB630049372D /* MatchDetailsModel+ChartDataRequestTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MatchDetailsModel+ChartDataRequestTypes.swift"; sourceTree = "<group>"; };
 		561D466B24E00D7D006786C6 /* LoadingCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCircle.swift; sourceTree = "<group>"; };
 		561D466D24E03575006786C6 /* LeagueApi+UpdateProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeagueApi+UpdateProgress.swift"; sourceTree = "<group>"; };
 		561D466F24E03821006786C6 /* MatchHistoryFilterPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchHistoryFilterPage.swift; sourceTree = "<group>"; };
@@ -478,6 +494,7 @@
 				567528C224AA29B8009057C8 /* AppDelegate.swift */,
 				567528C424AA29B8009057C8 /* SceneDelegate.swift */,
 				567528CE24AA29BB009057C8 /* Assets.xcassets */,
+				5605876924FBA7600049372D /* Colors.xcassets */,
 				567528D024AA29BB009057C8 /* LaunchScreen.storyboard */,
 				567528D324AA29BB009057C8 /* Info.plist */,
 				567528CB24AA29B8009057C8 /* Legend_Within.xcdatamodeld */,
@@ -578,8 +595,15 @@
 			children = (
 				56D3188024D7226E002F4FAB /* MatchDetailsPage.swift */,
 				56A1528724E6F0AB00A74846 /* MatchDetailsModel.swift */,
+				5605876B24FBBB630049372D /* MatchDetailsModel+ChartDataRequestTypes.swift */,
 				5639762124D8735C003388C0 /* MatchExample.json */,
 				5639762324D873CC003388C0 /* MatchDetailsExample.json */,
+				5605876724FBA12A0049372D /* GeneralGameInfoView.swift */,
+				5605875D24FB9DAE0049372D /* TeamView.swift */,
+				5605876524FBA06F0049372D /* BansView.swift */,
+				5605876324FB9FAF0049372D /* TeamStatsView.swift */,
+				5605876124FB9EEB0049372D /* PlayerStatsView.swift */,
+				5605875F24FB9E960049372D /* PlayerItemsView.swift */,
 				565E407D24F7F4E800D4CFEC /* ChartView.swift */,
 				565E407F24F7F55500D4CFEC /* ChartFilterView.swift */,
 			);
@@ -876,6 +900,7 @@
 				56BC228F24C244090072D5E8 /* SummonerFoundExampleSummoner.json in Resources */,
 				5639762424D873CC003388C0 /* MatchDetailsExample.json in Resources */,
 				567528D224AA29BB009057C8 /* LaunchScreen.storyboard in Resources */,
+				5605876A24FBA7600049372D /* Colors.xcassets in Resources */,
 				567528CF24AA29BB009057C8 /* Assets.xcassets in Resources */,
 				56BC228B24C242650072D5E8 /* SummonerFoundExampleLeagueEntry.json in Resources */,
 			);
@@ -932,8 +957,10 @@
 				56328D0C24DC024300319CD9 /* NetworkRequestError.swift in Sources */,
 				5657F31C24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift in Sources */,
 				56C96DC324D9508400685F76 /* ChampionDetails+Data+Skin.swift in Sources */,
+				5605876C24FBBB630049372D /* MatchDetailsModel+ChartDataRequestTypes.swift in Sources */,
 				56FCBD2F24DC489A00D4FABB /* RunePath+Slot+Rune.swift in Sources */,
 				567528FC24AA3776009057C8 /* LeagueApi+ApiKey.swift in Sources */,
+				5605876224FB9EEB0049372D /* PlayerStatsView.swift in Sources */,
 				56328D0524D9F11100319CD9 /* NewVersionDownloadingView.swift in Sources */,
 				56C96DC924D950CF00685F76 /* ChampionDetails+Data+Spell.swift in Sources */,
 				5675295E24AB9593009057C8 /* UrlConstants.swift in Sources */,
@@ -954,6 +981,7 @@
 				56BC228324C23F2C0072D5E8 /* SummonerFoundOverlay.swift in Sources */,
 				56328D0824DAAB8A00319CD9 /* Int+Extensions.swift in Sources */,
 				56C96DB924D94A0200685F76 /* ChampionDetails.swift in Sources */,
+				5605875E24FB9DAE0049372D /* TeamView.swift in Sources */,
 				56ED282E24D9572A00016178 /* ChampionDetails+Data+Recommended+Block+Item.swift in Sources */,
 				567528F324AA2FCC009057C8 /* Region.swift in Sources */,
 				563C3F5524E92FE600DA2825 /* LoLRoleClassifier_Final.mlmodel in Sources */,
@@ -964,6 +992,7 @@
 				56BA840D24E7DB7B009F9F90 /* MatchTimeline+Frame+Event+MonsterSubType.swift in Sources */,
 				56D3188324D85560002F4FAB /* MatchHistoryModel.swift in Sources */,
 				56477EE024CAFAA800495535 /* OnboardingPage.swift in Sources */,
+				5605876024FB9E960049372D /* PlayerItemsView.swift in Sources */,
 				561D467024E03821006786C6 /* MatchHistoryFilterPage.swift in Sources */,
 				56477EE224CB24ED00495535 /* PageView.swift in Sources */,
 				567528C324AA29B8009057C8 /* AppDelegate.swift in Sources */,
@@ -975,6 +1004,7 @@
 				567528F724AA30C0009057C8 /* LeagueEntry.swift in Sources */,
 				56FCBD2D24DC487D00D4FABB /* RunePath+Slot.swift in Sources */,
 				56D3188B24D85803002F4FAB /* MatchDetails.swift in Sources */,
+				5605876824FBA12A0049372D /* GeneralGameInfoView.swift in Sources */,
 				567528FE24AA43FF009057C8 /* MoyaProvider+Combine.swift in Sources */,
 				56BA840524E7D74D009F9F90 /* VerticalAlignedView.swift in Sources */,
 				56ED283324D95FF400016178 /* Item+Image.swift in Sources */,
@@ -991,6 +1021,7 @@
 				56ED283B24D961A400016178 /* GameData.swift in Sources */,
 				562C9A2924D478600061EB38 /* FlatSegmentedPicker.swift in Sources */,
 				56C96DAF24D946C400685F76 /* Champion.swift in Sources */,
+				5605876424FB9FAF0049372D /* TeamStatsView.swift in Sources */,
 				56F353C624AF7A2800E21EB4 /* HorizontalAlignedView.swift in Sources */,
 				562C9A2E24D719A20061EB38 /* MainWindow.swift in Sources */,
 				56D3187F24D721BA002F4FAB /* MatchHistoryItem.swift in Sources */,
@@ -1012,6 +1043,7 @@
 				56477ED824CADC6F00495535 /* OnboardingModel.swift in Sources */,
 				561D467524E18700006786C6 /* SummonerSpell.swift in Sources */,
 				56C96DBF24D94AE600685F76 /* ChampionDetails+Data.swift in Sources */,
+				5605876624FBA06F0049372D /* BansView.swift in Sources */,
 				5648A74324AF3CCF0074B550 /* FloatIn.swift in Sources */,
 				56ED283524D9600000016178 /* Item+Gold.swift in Sources */,
 				56F353BD24AF43EF00E21EB4 /* LeagueApi+Summoners.swift in Sources */,

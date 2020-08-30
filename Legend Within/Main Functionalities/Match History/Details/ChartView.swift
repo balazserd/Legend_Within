@@ -15,13 +15,84 @@ extension MatchDetailsPage {
         var chartData: [LineChartData]
         var model: MatchDetailsModel
         @Binding var visiblePlayers: [Bool]
+
+        @State private var teamLevelSum: Bool = false
+        @State private var roleSelection: [Bool] = Array(repeating: false, count: 5)
+        private let positionIconNames = [
+            "Position_Challenger-Top",
+            "Position_Challenger-Jungle",
+            "Position_Challenger-Mid",
+            "Position_Challenger-Bot",
+            "Position_Challenger-Support",
+        ]
         
-        var body: some View {
+        var body: some View { 
             VStack {
                 HStack {
                     Text("Graphs")
                         .font(.system(size: 17)).bold()
                     Spacer()
+                }
+
+                HStack { 
+                    ForEach(0..<positionIconNames.count) { i in
+                        Button(action: {
+                            let anotherRoleIsAlreadySelected = self.roleSelection.contains(true)
+                            self.roleSelection[i].toggle()
+
+                            if !self.roleSelection.contains(true) {
+                                self.visiblePlayers = self.visiblePlayers.map { _ in true }
+                            } else {
+                                if !anotherRoleIsAlreadySelected {
+                                    //if this is the 1st selected role undo all player selections
+                                    self.visiblePlayers = self.visiblePlayers.map { _ in false }
+                                }
+                                self.visiblePlayers[self.winningTeamParticipants[i].participantId] = self.roleSelection[i]
+                                self.visiblePlayers[self.losingTeamParticipants[i].participantId] = self.roleSelection[i]
+                            }
+                        }) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color.gray.opacity(self.roleSelection[i] ? 0.25 : 0.15))
+
+                                if self.roleSelection[i] {
+                                    RoundedRectangle(cornerRadius: 5)
+                                        .stroke(Color.darkGold, lineWidth: 2)
+                                }
+
+                                Image(self.positionIconNames[i])
+                                        .resizable()
+                                        .frame(width: 25, height: 25)
+                                        .padding(2)
+                            }
+                        }.buttonStyle(PlainButtonStyle())
+                    }
+
+                    Button(action: {
+                        self.teamLevelSum.toggle()
+                        if self.teamLevelSum {
+                            self.roleSelection = self.roleSelection.map { _ in false } //undo role selections
+                            self.visiblePlayers = self.visiblePlayers.map { _ in false } //undo player selections
+                        } else {
+                            self.visiblePlayers = self.visiblePlayers.map { _ in true } //select all players
+                        }
+                    }) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color.gray.opacity(self.teamLevelSum ? 0.25 : 0.15))
+
+                            if self.teamLevelSum {
+                                RoundedRectangle(cornerRadius: 5)
+                                    .stroke(Color.darkGold, lineWidth: 2)
+                            }
+
+                            Text("Teams")
+                                .font(.system(size: 14)).bold()
+                                .foregroundColor(.darkGold)
+                                .frame(height: 25)
+                                .padding(2)
+                        }
+                    }.buttonStyle(PlainButtonStyle())
                 }
 
                 HStack {

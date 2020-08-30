@@ -24,8 +24,7 @@ extension MatchDetailsPage {
                             .championImageStyle(width: 32)
                             .opacity(self.visiblePlayers[participant.participantId] ? 1 : 0.5)
                             .onTapGesture {
-                                let newValue = !self.visiblePlayers[participant.participantId]
-                                self.visiblePlayers[participant.participantId] = newValue
+                                self.visiblePlayers[participant.participantId].toggle()
                             }
 
                         if self.model.chart_currentValuesForDragGesture[participant.participantId] != nil {

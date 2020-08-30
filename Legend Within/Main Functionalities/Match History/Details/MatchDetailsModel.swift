@@ -23,42 +23,24 @@ final class MatchDetailsModel : ObservableObject {
     @Published var isWorking: Bool = false
     @Published var match: Match? = nil
     var initialMatchParameter: Match
+
+    var needsNewChartData = PassthroughSubject<(SumType, StatType), Never>()
+    @Published var chartData: [LineChartData]? = nil
     @Published var chart_currentValuesForDragGesture: [Double?] = Array(repeating: nil, count: 11) //1-based array.
     var chart_currentValueHandlers: [GestureValueHandler] = (0...10).map { _ in GestureValueHandler() } //1-based array.
 
     private var cancellableBag = Set<AnyCancellable>()
     private let timelineProvider = MoyaProvider<LeagueApi.Matches>()
     private(set) var roleClassifier: RoleClassifier? = nil
+    private let colorArray: [Color] = [.blue, .green, .orange, .red, .purple, .black, .yellow, .gray, .darkBlue2, .darkGreen5]
 
     init(match: Match) {
         self.initialMatchParameter = match
 
-        for i in (1...10) {
-            //When the drag gesture happens, a new value is requested to show the values of the chart where the finger is.
-            chart_currentValueHandlers[i].$valueAtRequest
-                .sink { [weak self] in
-                    guard let self = self else { return }
-                    var newArray = self.chart_currentValuesForDragGesture
-                    newArray[i] = $0
-                    self.chart_currentValuesForDragGesture = newArray
-                }
-                .store(in: &cancellableBag)
-        }
-
-        match.$details
-            .removeDuplicates(by: { $0?.participants.map { $0.participantId } == $1?.participants.map { $0.participantId } })
-            .sink { [weak self] details in
-                guard
-                    let self = self,
-                    let details = details
-                else { return }
-
-                print(details.participants.map { $0.championId })
-                self.participants = details.participants
-            }
-            .store(in: &cancellableBag)
-
+        self.setupMatchDetailsSubscription(for: match)
         self.setupTimelineSubscription()
+        self.setupChartDataRequestPipeline()
+        self.setupChartDragGestureHandlers()
     }
 
     public func requestTimeline(for match: Match) {
@@ -81,20 +63,7 @@ final class MatchDetailsModel : ObservableObject {
             .store(in: &self.cancellableBag)
     }
 
-    private func reshuffleParticipantsToMatchLaneOrder() {
-        guard roles?.count == 10 && lanes?.count == 10 else { return } //only reshuffle on summoner's rift.
-
-        let newParticipantOrder = self.participants!.sorted(by: { p1, p2 in
-            if lanes![p1.participantId]!!.rankedPosition != lanes![p2.participantId]!!.rankedPosition {
-                return lanes![p1.participantId]!!.rankedPosition < lanes![p2.participantId]!!.rankedPosition
-            }
-
-            return roles![p1.participantId]!!.positionId < roles![p2.participantId]!!.positionId
-        })
-
-        initialMatchParameter.details!.participants = newParticipantOrder
-        self.match = initialMatchParameter
-    }
+    //MARK: - Subscriptions and Request Pipelines
 
     private func setupTimelineSubscription() {
         $timeline
@@ -122,5 +91,76 @@ final class MatchDetailsModel : ObservableObject {
                 }
             }
             .store(in: &cancellableBag)
+    }
+
+    private func setupMatchDetailsSubscription(for match: Match) {
+        match.$details
+            .removeDuplicates(by: { $0?.participants.map { $0.participantId } == $1?.participants.map { $0.participantId } })
+            .sink { [weak self] details in
+                guard
+                    let self = self,
+                    let details = details
+                else { return }
+
+                print(details.participants.map { $0.championId })
+                self.participants = details.participants
+            }
+            .store(in: &cancellableBag)
+    }
+
+    private func setupChartDataRequestPipeline() {
+        needsNewChartData
+            .receive(on: DispatchQueue.global(qos: .userInitiated))
+            .sink { [weak self] sumType, statType in
+                guard
+                    let self = self,
+                    self.timeline != nil,
+                    self.participants != nil
+                else { return }
+
+                let values = sumType.mappedValue(self.timeline!.getValues(for: statType.associatedKeyPath), self.participants!)
+                let chartData = values.map { timelineValue in
+                    LineChartData(values: timelineValue.value.map { (Double($0.key), Double($0.value)) }.sorted(by: { $0.0 < $1.0 }),
+                                  lineColor: self.colorArray[timelineValue.key - 1],
+                                  shownAspects: [.line],
+                                  associatedParticipantId: timelineValue.key)
+                }
+
+                DispatchQueue.main.async {
+                    self.chartData = chartData
+                }
+            }
+            .store(in: &cancellableBag)
+    }
+
+    private func setupChartDragGestureHandlers() {
+        for i in (1...10) {
+            //When the drag gesture happens, a new value is requested to show the values of the chart where the finger is.
+            chart_currentValueHandlers[i].$valueAtRequest
+                .sink { [weak self] in
+                    guard let self = self else { return }
+                    var newArray = self.chart_currentValuesForDragGesture
+                    newArray[i] = $0
+                    self.chart_currentValuesForDragGesture = newArray
+                }
+                .store(in: &cancellableBag)
+        }
+    }
+
+    //MARK:- private accessory functions
+
+    private func reshuffleParticipantsToMatchLaneOrder() {
+        guard roles?.count == 10 && lanes?.count == 10 else { return } //only reshuffle on summoner's rift.
+
+        let newParticipantOrder = self.participants!.sorted(by: { p1, p2 in
+            if lanes![p1.participantId]!!.rankedPosition != lanes![p2.participantId]!!.rankedPosition {
+                return lanes![p1.participantId]!!.rankedPosition < lanes![p2.participantId]!!.rankedPosition
+            }
+
+            return roles![p1.participantId]!!.positionId < roles![p2.participantId]!!.positionId
+        })
+
+        initialMatchParameter.details!.participants = newParticipantOrder
+        self.match = initialMatchParameter
     }
 }
