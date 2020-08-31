@@ -24,6 +24,8 @@ final class MatchDetailsModel : ObservableObject {
     @Published var match: Match? = nil
     var initialMatchParameter: Match
 
+    @Published var requestedStatType: StatType? = nil
+    @Published var requestedSumType: SumType? = nil
     var needsNewChartData = PassthroughSubject<(SumType, StatType), Never>()
     @Published var chartData: [LineChartData]? = nil
     @Published var chart_currentValuesForDragGesture: [Double?] = Array(repeating: nil, count: 11) //1-based array.
@@ -58,6 +60,10 @@ final class MatchDetailsModel : ObservableObject {
                 DispatchQueue.main.async {
                     self.timeline = timeline
                     self.isWorking = true
+
+                    //Should request initial data
+                    self.requestedStatType = .gold
+                    self.requestedSumType = .playerBased
                 }
             }
             .store(in: &self.cancellableBag)
@@ -109,6 +115,15 @@ final class MatchDetailsModel : ObservableObject {
     }
 
     private func setupChartDataRequestPipeline() {
+        Publishers.CombineLatest($requestedSumType.compactMap { $0 }, $requestedStatType.compactMap { $0 }) //removing nils
+            .receive(on: DispatchQueue.global(qos: .userInitiated))
+            .sink { [weak self] sumType, statType in
+                guard let self = self else { return }
+
+                self.needsNewChartData.send((sumType, statType))
+            }
+            .store(in: &cancellableBag)
+
         needsNewChartData
             .receive(on: DispatchQueue.global(qos: .userInitiated))
             .sink { [weak self] sumType, statType in

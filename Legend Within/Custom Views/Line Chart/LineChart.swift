@@ -15,11 +15,13 @@ import Combine
 struct LineChart: View {
     fileprivate typealias AnyGeometryReader = GeometryReader<ZStack<TupleView<(DragSignal?, AnyForEach)>>>
     fileprivate typealias AnyForEach = ForEach<[LineChartData], UUID, SingleLineChart>
+    typealias SumType = MatchDetailsModel.SumType
 
     var data: [LineChartData]
     @Binding var visibilityMatrix: [Bool]
     var dragGestureHandlers: [DragGestureHandler]
     var lineType: LineType = .curved
+    var sumType: SumType
 
     @State private var gestureXValue: CGFloat = 0
     @State private var isDragging = false
@@ -27,10 +29,12 @@ struct LineChart: View {
     init(data: [LineChartData],
          visibilityMatrix: Binding<[Bool]>,
          dragGestureHandlers: [DragGestureHandler],
+         sumType: SumType,
          lineType: LineType = .curved) {
         self.data = data
         self._visibilityMatrix = visibilityMatrix
         self.dragGestureHandlers = dragGestureHandlers
+        self.sumType = sumType
         self.lineType = lineType
     }
 
@@ -43,8 +47,10 @@ struct LineChart: View {
             AnyGeometryReader { geoProxy in
                 let vt = self.getValueTransformer(for: geoProxy)
                 let visibleLineDataSets = self.data
-                    .filter { self.visibilityMatrix[$0.associatedParticipantId!] }
-                    .sorted(by: { $0.associatedParticipantId! < $1.associatedParticipantId! })
+                    .filter { self.visibilityMatrix[$0.associatedParticipantId!] || self.sumType == .teamBased }
+                    .sorted(by: self.sumType == .teamBased
+                        ? { _, _ in true }
+                        : { $0.associatedParticipantId! < $1.associatedParticipantId! })
 
                 return ZStack(alignment: .leading) {
                     if self.isDragging {

@@ -32,7 +32,7 @@ struct MatchDetailsPage: View {
         let losingTeamParticipantIdentities = model.match?.loserTeamParticipantIdentities!
 
         return VStack {
-            if model.isWorking || model.match == nil || model.chartData == nil {
+            if model.isWorking || model.match == nil {
                 Text("Loading")
             } else {
                 ScrollView {
@@ -74,11 +74,13 @@ struct MatchDetailsPage: View {
 
                             Divider()
 
-                            ChartView(winningTeamParticipants: winningTeamParticipants!,
-                                      losingTeamParticipants: losingTeamParticipants!,
-                                      chartData: model.chartData!,
-                                      model: self.model,
-                                      visiblePlayers: self.$chart_shownPlayers)
+                            if model.chartData != nil {
+                                ChartView(winningTeamParticipants: winningTeamParticipants!,
+                                          losingTeamParticipants: losingTeamParticipants!,
+                                          chartData: model.chartData!,
+                                          model: self.model,
+                                          visiblePlayers: self.$chart_shownPlayers)
+                            }
                         }
                     }
                     .padding(15)

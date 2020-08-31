@@ -30,7 +30,7 @@ extension MatchDetailsModel {
                     }
 
                     for values in valuesByPlayer {
-                        if participants.first(where: { $0.participantId == values.key })!.teamId == 1 {
+                        if participants.first(where: { $0.participantId == values.key })!.teamId == 100 {
                             addValuesOfPlayerToTeam(values.value, &team1Values)
                         } else {
                             addValuesOfPlayerToTeam(values.value, &team2Values)
@@ -46,10 +46,18 @@ extension MatchDetailsModel {
         }
     }
 
-    enum StatType {
-        case gold
+    enum StatType : Int, CaseIterable {
+        case gold = 0
         case xp
         case minionKills
+
+        var description: String {
+            switch self {
+                case .gold: return "Gold"
+                case .xp: return "Experience"
+                case .minionKills: return "Minion Kills"
+            }
+        }
 
         var associatedKeyPath: KeyPath<MatchTimeline.Frame.ParticipantFrame, Int> {
             switch self {
