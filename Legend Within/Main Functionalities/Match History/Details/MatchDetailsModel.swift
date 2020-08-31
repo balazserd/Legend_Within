@@ -35,6 +35,7 @@ final class MatchDetailsModel : ObservableObject {
     private let timelineProvider = MoyaProvider<LeagueApi.Matches>()
     private(set) var roleClassifier: RoleClassifier? = nil
     private let colorArray: [Color] = [.blue, .green, .orange, .red, .purple, .black, .yellow, .gray, .darkBlue2, .darkGreen5]
+    func colorForParticipantId(_ id: Int) -> Color { return self.colorArray[id - 1] }
 
     init(match: Match) {
         self.initialMatchParameter = match

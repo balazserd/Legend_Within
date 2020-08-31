@@ -38,9 +38,11 @@ extension MatchDetailsPage {
 
                 Picker("", selection: $model.requestedStatType) {
                     ForEach(StatType.allCases, id: \.self.rawValue) { type in
-                        Text(type.description).tag(type as StatType?) //Having to cast to optional? Meh..
+                        Text(type.description).tag(type as StatType?) //Unless tag value is cast to optional, this won't work.
+                            .frame(height: 20).padding(.vertical, -2)
                     }
-                }.pickerStyle(SegmentedPickerStyle())
+                }
+                .pickerStyle(SegmentedPickerStyle())
 
                 HStack { 
                     ForEach(0..<positionIconNames.count) { i in

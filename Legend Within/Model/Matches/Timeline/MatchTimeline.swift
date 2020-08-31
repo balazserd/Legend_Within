@@ -28,6 +28,10 @@ struct MatchTimeline: Codable {
         for pf in participantFrames {
             for frameUnit in pf.value {
                 result[frameUnit.participantId]![pf.key] = frameUnit[keyPath: keyPath]
+                if keyPath == \.minionsKilled {
+                    //If we want to get the minions killed amount, add the neutral monsters too.
+                    result[frameUnit.participantId]![pf.key]! += frameUnit[keyPath: \.jungleMinionsKilled]
+                }
             }
         }
 

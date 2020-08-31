@@ -35,7 +35,7 @@ struct MatchDetailsPage: View {
             if model.isWorking || model.match == nil {
                 Text("Loading")
             } else {
-                ScrollView {
+                ScrollView(.vertical) {
                     VStack {
                         VStack {
                             GeneralGameInfoView(model: self.model)
