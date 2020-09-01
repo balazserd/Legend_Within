@@ -51,7 +51,7 @@
 		5657F31C24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5657F31B24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift */; };
 		565E407E24F7F4E800D4CFEC /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565E407D24F7F4E800D4CFEC /* ChartView.swift */; };
 		565E408024F7F55500D4CFEC /* ChartFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565E407F24F7F55500D4CFEC /* ChartFilterView.swift */; };
-		567364AA24F7ECF700F04ED9 /* DragGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567364A924F7ECF700F04ED9 /* DragGestureHandler.swift */; };
+		567364AA24F7ECF700F04ED9 /* LineChart+DragGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567364A924F7ECF700F04ED9 /* LineChart+DragGestureHandler.swift */; };
 		567528C324AA29B8009057C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567528C224AA29B8009057C8 /* AppDelegate.swift */; };
 		567528C524AA29B8009057C8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567528C424AA29B8009057C8 /* SceneDelegate.swift */; };
 		567528CD24AA29B8009057C8 /* Legend_Within.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 567528CB24AA29B8009057C8 /* Legend_Within.xcdatamodeld */; };
@@ -83,6 +83,7 @@
 		56A1528424E6E76B00A74846 /* MatchTimeline+Frame+Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A1528324E6E76B00A74846 /* MatchTimeline+Frame+Event.swift */; };
 		56A1528624E6E7C800A74846 /* MatchTimeline+Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A1528524E6E7C800A74846 /* MatchTimeline+Position.swift */; };
 		56A1528824E6F0AB00A74846 /* MatchDetailsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A1528724E6F0AB00A74846 /* MatchDetailsModel.swift */; };
+		56A2B3EC24FEF0910061EFFE /* LineChart+XAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56A2B3EB24FEF0910061EFFE /* LineChart+XAxis.swift */; };
 		56B0786424FD7B8600B8B6CF /* Publisher+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B0786324FD7B8600B8B6CF /* Publisher+Extensions.swift */; };
 		56BA840524E7D74D009F9F90 /* VerticalAlignedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BA840424E7D74D009F9F90 /* VerticalAlignedView.swift */; };
 		56BA840824E7D85E009F9F90 /* MatchTimeline+Frame+Event+Kind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56BA840724E7D85E009F9F90 /* MatchTimeline+Frame+Event+Kind.swift */; };
@@ -206,7 +207,7 @@
 		5657F31B24D1E0E200A7F437 /* UnknownErrorOverlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnknownErrorOverlayModel.swift; sourceTree = "<group>"; };
 		565E407D24F7F4E800D4CFEC /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		565E407F24F7F55500D4CFEC /* ChartFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartFilterView.swift; sourceTree = "<group>"; };
-		567364A924F7ECF700F04ED9 /* DragGestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragGestureHandler.swift; sourceTree = "<group>"; };
+		567364A924F7ECF700F04ED9 /* LineChart+DragGestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineChart+DragGestureHandler.swift"; sourceTree = "<group>"; };
 		567528BF24AA29B8009057C8 /* Legend Within.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Legend Within.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		567528C224AA29B8009057C8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		567528C424AA29B8009057C8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -241,6 +242,7 @@
 		56A1528324E6E76B00A74846 /* MatchTimeline+Frame+Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MatchTimeline+Frame+Event.swift"; sourceTree = "<group>"; };
 		56A1528524E6E7C800A74846 /* MatchTimeline+Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MatchTimeline+Position.swift"; sourceTree = "<group>"; };
 		56A1528724E6F0AB00A74846 /* MatchDetailsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchDetailsModel.swift; sourceTree = "<group>"; };
+		56A2B3EB24FEF0910061EFFE /* LineChart+XAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineChart+XAxis.swift"; sourceTree = "<group>"; };
 		56B0786324FD7B8600B8B6CF /* Publisher+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Extensions.swift"; sourceTree = "<group>"; };
 		56BA840424E7D74D009F9F90 /* VerticalAlignedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalAlignedView.swift; sourceTree = "<group>"; };
 		56BA840724E7D85E009F9F90 /* MatchTimeline+Frame+Event+Kind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MatchTimeline+Frame+Event+Kind.swift"; sourceTree = "<group>"; };
@@ -459,8 +461,9 @@
 		567364A824F7ECE000F04ED9 /* Line Chart */ = {
 			isa = PBXGroup;
 			children = (
-				567364A924F7ECF700F04ED9 /* DragGestureHandler.swift */,
 				5640EB1C24EC7AA5001B5780 /* LineChart.swift */,
+				567364A924F7ECF700F04ED9 /* LineChart+DragGestureHandler.swift */,
+				56A2B3EB24FEF0910061EFFE /* LineChart+XAxis.swift */,
 			);
 			path = "Line Chart";
 			sourceTree = "<group>";
@@ -1003,8 +1006,9 @@
 				56BC228024C1E2090072D5E8 /* GlowingView.swift in Sources */,
 				56C96DD224D9538E00685F76 /* ChampionDetails+Data+Spell+Var.swift in Sources */,
 				56A1528424E6E76B00A74846 /* MatchTimeline+Frame+Event.swift in Sources */,
-				567364AA24F7ECF700F04ED9 /* DragGestureHandler.swift in Sources */,
+				567364AA24F7ECF700F04ED9 /* LineChart+DragGestureHandler.swift in Sources */,
 				562C9A3624D71A820061EB38 /* KnowledgeBasePage.swift in Sources */,
+				56A2B3EC24FEF0910061EFFE /* LineChart+XAxis.swift in Sources */,
 				567528F724AA30C0009057C8 /* LeagueEntry.swift in Sources */,
 				56FCBD2D24DC487D00D4FABB /* RunePath+Slot.swift in Sources */,
 				56D3188B24D85803002F4FAB /* MatchDetails.swift in Sources */,

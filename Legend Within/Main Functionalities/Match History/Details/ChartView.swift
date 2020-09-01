@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 extension MatchDetailsPage {
     struct ChartView: View {
@@ -39,28 +40,22 @@ extension MatchDetailsPage {
                 Picker("", selection: $model.requestedStatType) {
                     ForEach(StatType.allCases, id: \.self.rawValue) { type in
                         Text(type.description).tag(type as StatType?) //Unless tag value is cast to optional, this won't work.
-                            .frame(height: 20).padding(.vertical, -2)
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
+                .introspectSegmentedControl(customize: { segmentedControl in
+                    segmentedControl.setTitleTextAttributes([.foregroundColor : UIColor(named: "darkGold")!],
+                                                            for: .normal)
+                    segmentedControl.setTitleTextAttributes([.foregroundColor : UIColor.white],
+                                                            for: .selected)
+                    segmentedControl.selectedSegmentTintColor = UIColor(named: "darkGold")!
+                })
+                .scaleEffect(CGSize(width: 1, height: 0.95), anchor: .top)
+                .padding(.horizontal, -1) //Normal SegmentedControl has some random padding
 
                 HStack { 
                     ForEach(0..<positionIconNames.count) { i in
-                        Button(action: {
-                            let anotherRoleIsAlreadySelected = self.roleSelection.contains(true)
-                            self.roleSelection[i].toggle()
-
-                            if !self.roleSelection.contains(true) {
-                                self.visiblePlayers = self.visiblePlayers.map { _ in true }
-                            } else {
-                                if !anotherRoleIsAlreadySelected {
-                                    //if this is the 1st selected role undo all player selections
-                                    self.visiblePlayers = self.visiblePlayers.map { _ in false }
-                                }
-                                self.visiblePlayers[self.winningTeamParticipants[i].participantId] = self.roleSelection[i]
-                                self.visiblePlayers[self.losingTeamParticipants[i].participantId] = self.roleSelection[i]
-                            }
-                        }) {
+                        Button(action: { self.didPressPositionFilterButton(at: i) }) {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 4)
                                     .fill(Color.gray.opacity(self.roleSelection[i] ? 0.25 : 0.15))
@@ -78,21 +73,7 @@ extension MatchDetailsPage {
                         }.buttonStyle(PlainButtonStyle())
                     }
 
-                    Button(action: {
-                        //Practically a toggle, but ready to use other enum cases in the future.
-                        self.model.requestedSumType = self.model.requestedSumType == .teamBased
-                            ? .playerBased
-                            : .teamBased
-
-                        switch self.model.requestedSumType {
-                            case .teamBased:
-                                self.roleSelection = self.roleSelection.map { _ in false } //undo role selections
-                                self.visiblePlayers = self.visiblePlayers.map { _ in false } //undo player selections
-                            case .playerBased:
-                                self.visiblePlayers = self.visiblePlayers.map { _ in true } //select all players
-                            default: break
-                        }
-                    }) {
+                    Button(action: { self.didPressGroupingButton() }) {
                         ZStack {
                             RoundedRectangle(cornerRadius: 4)
                                 .fill(Color.gray.opacity(self.teamLevelSum ? 0.25 : 0.15))
@@ -140,6 +121,42 @@ extension MatchDetailsPage {
                           dragGestureHandlers: self.model.chart_currentValueHandlers,
                           sumType: self.model.requestedSumType!)
                     .frame(height: 200)
+            }
+        }
+
+        private func didPressPositionFilterButton(at index: Int) {
+            //No matter what, when position filter button is pressed, switch back from team grouping.
+            //Because @Published is a hidden CurrentValueSubject, this shouldn't invoke significant extra resource use.
+            model.requestedSumType = .playerBased
+
+            let anotherRoleWasAlreadySelected = roleSelection.contains(true)
+            roleSelection[index].toggle()
+
+            if !roleSelection.contains(true) {
+                visiblePlayers = visiblePlayers.map { _ in true }
+            } else {
+                if !anotherRoleWasAlreadySelected {
+                    //if this is the 1st selected role undo all player selections
+                    visiblePlayers = visiblePlayers.map { _ in false }
+                }
+                visiblePlayers[winningTeamParticipants[index].participantId] = roleSelection[index]
+                visiblePlayers[losingTeamParticipants[index].participantId] = roleSelection[index]
+            }
+        }
+
+        private func didPressGroupingButton() {
+            //Practically a toggle, but ready to use other enum cases in the future.
+            model.requestedSumType = model.requestedSumType == .teamBased
+                ? .playerBased
+                : .teamBased
+
+            switch model.requestedSumType {
+                case .teamBased:
+                    roleSelection = roleSelection.map { _ in false } //undo role selections
+                    visiblePlayers = visiblePlayers.map { _ in false } //undo player selections
+                case .playerBased:
+                    visiblePlayers = visiblePlayers.map { _ in true } //select all players
+                default: break
             }
         }
     }

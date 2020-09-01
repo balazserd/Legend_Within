@@ -1,5 +1,5 @@
 //
-//  DragGestureHandler.swift
+//  LineChart+DragGestureHandler.swift
 //  Legend Within
 //
 //  Created by Balazs Erdesz on 2020. 08. 27..

@@ -71,7 +71,9 @@ struct MatchHistoryItem: View {
                                     .alignmentGuide(.bottom, computeValue: { d in d[.bottom] + 1 })
 
                                 Spacer()
+                            }
 
+                            HStack(alignment: .center) {
                                 Text(gameTime)
                                     .font(.system(size: 13, design: .monospaced))
                             }

@@ -13,7 +13,7 @@ import SpriteKit
 import Combine
 
 struct LineChart: View {
-    fileprivate typealias AnyGeometryReader = GeometryReader<ZStack<TupleView<(DragSignal?, AnyForEach)>>>
+    fileprivate typealias AnyGeometryReader = GeometryReader<ZStack<TupleView<(DragSignal?, AnyForEach, XAxis)>>>
     fileprivate typealias AnyForEach = ForEach<[LineChartData], UUID, SingleLineChart>
     typealias SumType = MatchDetailsModel.SumType
 
@@ -65,9 +65,11 @@ struct LineChart: View {
                                         isDragging: self.$isDragging,
                                         gestureXValue: self.$gestureXValue)
                     }
+
+                    XAxis(data: visibleLineDataSets)
                 }
             }
-            .padding(8)
+            .padding(5)
         }
         .gesture(DragGesture()
             .onChanged { value in
@@ -87,7 +89,7 @@ struct LineChart: View {
         var body: some View {
             Rectangle().fill(Color.gray)
                 .frame(width: 0.5)
-                .offset(x: gestureXValue - 8) //The padding offset must be balanced out.
+                .offset(x: gestureXValue + 4) //The padding offset must be balanced out.
         }
     }
 
@@ -103,13 +105,13 @@ struct LineChart: View {
         let yValueMin = self.data.map { $0.values.map { $0.y }.min()! }.min()!
 
         let transformX: (Double) -> Double = { xValue in
-            (xValue - xValueMin) / (xValueMax - xValueMin) * Double(proxy.size.width - 8)
+            (xValue - xValueMin) / (xValueMax - xValueMin) * Double(proxy.size.width - 30)
         }
         let transformXInverse: (Double) -> (Double) = { convertedXValue in
             (convertedXValue / Double(proxy.size.width - 8)) * (xValueMax - xValueMin)
         }
         let transformY: (Double) -> Double = { yValue in
-            (yValue - yValueMin) / (yValueMax - yValueMin) * Double(proxy.size.height - 8)
+            (yValue - yValueMin) / (yValueMax - yValueMin) * Double(proxy.size.height - 30)
         }
         let transformYInverse: (Double) -> (Double) = { convertedYValue in
             (convertedYValue / Double(proxy.size.height - 8)) * (yValueMax - yValueMin)
@@ -196,6 +198,7 @@ fileprivate struct SingleLineChart: View {
             }
         }
         .rotation3DEffect(Angle(degrees: 180), axis: (1, 0, 0))
+        .padding(.init(top: 10, leading: 20, bottom: 20, trailing: 10)) //Space for labels
         .onReceive(self.dragGestureHandler.requestedCoordinate) { coordinateOfLocation in
             if let coord = coordinateOfLocation {
                 let originalX = self.transformer.xValueTransformerInverse(Double(coord.x))
