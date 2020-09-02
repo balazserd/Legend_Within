@@ -13,9 +13,11 @@ import SpriteKit
 import Combine
 
 struct LineChart: View {
-    fileprivate typealias AnyGeometryReader = GeometryReader<ZStack<TupleView<(DragSignal?, AnyForEach, XAxis)>>>
+    fileprivate typealias AnyGeometryReader = GeometryReader<ZStack<TupleView<(DragSignal?, AnyForEach, XAxis, YAxis)>>>
     fileprivate typealias AnyForEach = ForEach<[LineChartData], UUID, SingleLineChart>
     typealias SumType = MatchDetailsModel.SumType
+
+    private let chartAreaPadding = EdgeInsets(top: 10, leading: 25, bottom: 20, trailing: 10)
 
     var data: [LineChartData]
     @Binding var visibilityMatrix: [Bool]
@@ -54,7 +56,7 @@ struct LineChart: View {
 
                 return ZStack(alignment: .leading) {
                     if self.isDragging {
-                        DragSignal(gestureXValue: self.$gestureXValue)
+                        DragSignal(gestureXValue: self.$gestureXValue, chartAreaPadding: self.chartAreaPadding)
                     }
 
                     AnyForEach(visibleLineDataSets, id: \.id) { dataSet in
@@ -62,11 +64,13 @@ struct LineChart: View {
                                         transformer: vt,
                                         lineType: self.lineType,
                                         dragGestureHandler: self.dragGestureHandlers[dataSet.associatedParticipantId!],
+                                        chartAreaPadding: self.chartAreaPadding,
                                         isDragging: self.$isDragging,
                                         gestureXValue: self.$gestureXValue)
                     }
 
                     XAxis(data: visibleLineDataSets)
+                    YAxis(data: visibleLineDataSets)
                 }
             }
             .padding(5)
@@ -85,11 +89,12 @@ struct LineChart: View {
 
     struct DragSignal: View {
         @Binding var gestureXValue: CGFloat
+        var chartAreaPadding: EdgeInsets
 
         var body: some View {
             Rectangle().fill(Color.gray)
                 .frame(width: 0.5)
-                .offset(x: gestureXValue + 4) //The padding offset must be balanced out.
+                .offset(x: gestureXValue + chartAreaPadding.leading - 4) //The padding offset must be balanced out.
         }
     }
 
@@ -104,14 +109,14 @@ struct LineChart: View {
         let yValueMax = self.data.map { $0.values.map { $0.y }.max()! }.max()!
         let yValueMin = self.data.map { $0.values.map { $0.y }.min()! }.min()!
 
-        let transformX: (Double) -> Double = { xValue in
-            (xValue - xValueMin) / (xValueMax - xValueMin) * Double(proxy.size.width - 30)
+        let transformX: (Double) -> Double = { [chartAreaPadding] xValue in
+            (xValue - xValueMin) / (xValueMax - xValueMin) * Double(proxy.size.width - (chartAreaPadding.trailing + chartAreaPadding.leading))
         }
         let transformXInverse: (Double) -> (Double) = { convertedXValue in
             (convertedXValue / Double(proxy.size.width - 8)) * (xValueMax - xValueMin)
         }
-        let transformY: (Double) -> Double = { yValue in
-            (yValue - yValueMin) / (yValueMax - yValueMin) * Double(proxy.size.height - 30)
+        let transformY: (Double) -> Double = { [chartAreaPadding] yValue in
+            (yValue - yValueMin) / (yValueMax - yValueMin) * Double(proxy.size.height - (chartAreaPadding.bottom + chartAreaPadding.top))
         }
         let transformYInverse: (Double) -> (Double) = { convertedYValue in
             (convertedYValue / Double(proxy.size.height - 8)) * (yValueMax - yValueMin)
@@ -140,6 +145,7 @@ fileprivate struct SingleLineChart: View {
     private var splinedValues = [(CGFloat, CGFloat)]()
     private var transformedData: LineChartData
     private var dragGestureHandler: LineChart.DragGestureHandler
+    private var chartAreaPadding: EdgeInsets
 
     @Binding var gestureXValue: CGFloat
     @Binding var isDragging: Bool
@@ -148,12 +154,14 @@ fileprivate struct SingleLineChart: View {
          transformer: LineChart.ValueTransformer,
          lineType: LineChart.LineType,
          dragGestureHandler: LineChart.DragGestureHandler,
+         chartAreaPadding: EdgeInsets,
          isDragging: Binding<Bool>,
          gestureXValue: Binding<CGFloat>) {
         self.data = data
         self.transformer = transformer
         self.lineType = lineType
         self.dragGestureHandler = dragGestureHandler
+        self.chartAreaPadding = chartAreaPadding
         self._isDragging = isDragging
         self._gestureXValue = gestureXValue
 
@@ -173,7 +181,6 @@ fileprivate struct SingleLineChart: View {
         let closestXValue = transformedData.values.map { $0.x }.closestValue(to: Double(gestureXValue - 8))
         let closestXIndex = transformedData.values.firstIndex { $0.x == closestXValue }!
         let yValueForClosestX = transformedData.values[closestXIndex].y
-        print ("\(closestXValue) - \(closestXValue) - \(yValueForClosestX)")
 
         return ZStack(alignment: .topLeading) {
             if self.data.shownAspects.contains(.line) {
@@ -198,7 +205,7 @@ fileprivate struct SingleLineChart: View {
             }
         }
         .rotation3DEffect(Angle(degrees: 180), axis: (1, 0, 0))
-        .padding(.init(top: 10, leading: 20, bottom: 20, trailing: 10)) //Space for labels
+        .padding(chartAreaPadding) //Space for labels
         .onReceive(self.dragGestureHandler.requestedCoordinate) { coordinateOfLocation in
             if let coord = coordinateOfLocation {
                 let originalX = self.transformer.xValueTransformerInverse(Double(coord.x))

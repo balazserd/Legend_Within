@@ -109,7 +109,6 @@ final class MatchDetailsModel : ObservableObject {
                     let details = details
                 else { return }
 
-                print(details.participants.map { $0.championId })
                 self.participants = details.participants
             }
             .store(in: &cancellableBag)

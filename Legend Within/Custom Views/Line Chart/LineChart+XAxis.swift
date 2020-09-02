@@ -28,7 +28,7 @@ extension LineChart {
                     Rectangle()
                         .fill(Color.gray)
                         .frame(height: 0.5)
-                        .padding(.horizontal, 5)
+                        .padding(.horizontal, 6)
 
                     HStack {
                         ForEach(0..<self.xData.count) { i in
@@ -45,9 +45,8 @@ extension LineChart {
         }
 
         private func getMinuteText(forIndex i: Int) -> some View {
-            Text("\(Int(self.xData[i]))m")
+            Text(i == 0 ? "" : "\(Int(self.xData[i]))m")
                 .font(.system(size: 12))
-                .offset(x: i == 0 ? 15 : 0, y: 0)
                 .frame(width: 30)
         }
 
