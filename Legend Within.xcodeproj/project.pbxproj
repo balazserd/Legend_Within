@@ -97,6 +97,11 @@
 		56BC228E24C244090072D5E8 /* SummonerFoundExampleSoloQueueDivision.json in Resources */ = {isa = PBXBuildFile; fileRef = 56BC228C24C244090072D5E8 /* SummonerFoundExampleSoloQueueDivision.json */; };
 		56BC228F24C244090072D5E8 /* SummonerFoundExampleSummoner.json in Resources */ = {isa = PBXBuildFile; fileRef = 56BC228D24C244090072D5E8 /* SummonerFoundExampleSummoner.json */; };
 		56C8033A25014A260070D3EE /* EdgeInsets+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8033925014A260070D3EE /* EdgeInsets+Extensions.swift */; };
+		56C8033C250159C10070D3EE /* LineChart+SingleLineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8033B250159C10070D3EE /* LineChart+SingleLineChart.swift */; };
+		56C8033E25015A0C0070D3EE /* LineChart+LineChartPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8033D25015A0C0070D3EE /* LineChart+LineChartPath.swift */; };
+		56C8034025015A160070D3EE /* LineChart+LineChartPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8033F25015A160070D3EE /* LineChart+LineChartPoints.swift */; };
+		56C8034225015A590070D3EE /* LineChart+ValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8034125015A590070D3EE /* LineChart+ValueTransformer.swift */; };
+		56C8034425015A740070D3EE /* LineChartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8034325015A740070D3EE /* LineChartData.swift */; };
 		56C96DAC24D8A14300685F76 /* LeagueApi+DataDragon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C96DAB24D8A14300685F76 /* LeagueApi+DataDragon.swift */; };
 		56C96DAF24D946C400685F76 /* Champion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C96DAE24D946C400685F76 /* Champion.swift */; };
 		56C96DB124D946E700685F76 /* Champion+Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C96DB024D946E700685F76 /* Champion+Info.swift */; };
@@ -257,6 +262,11 @@
 		56BC228C24C244090072D5E8 /* SummonerFoundExampleSoloQueueDivision.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SummonerFoundExampleSoloQueueDivision.json; sourceTree = "<group>"; };
 		56BC228D24C244090072D5E8 /* SummonerFoundExampleSummoner.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SummonerFoundExampleSummoner.json; sourceTree = "<group>"; };
 		56C8033925014A260070D3EE /* EdgeInsets+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EdgeInsets+Extensions.swift"; sourceTree = "<group>"; };
+		56C8033B250159C10070D3EE /* LineChart+SingleLineChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineChart+SingleLineChart.swift"; sourceTree = "<group>"; };
+		56C8033D25015A0C0070D3EE /* LineChart+LineChartPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineChart+LineChartPath.swift"; sourceTree = "<group>"; };
+		56C8033F25015A160070D3EE /* LineChart+LineChartPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineChart+LineChartPoints.swift"; sourceTree = "<group>"; };
+		56C8034125015A590070D3EE /* LineChart+ValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineChart+ValueTransformer.swift"; sourceTree = "<group>"; };
+		56C8034325015A740070D3EE /* LineChartData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartData.swift; sourceTree = "<group>"; };
 		56C96DAB24D8A14300685F76 /* LeagueApi+DataDragon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeagueApi+DataDragon.swift"; sourceTree = "<group>"; };
 		56C96DAE24D946C400685F76 /* Champion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Champion.swift; sourceTree = "<group>"; };
 		56C96DB024D946E700685F76 /* Champion+Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Champion+Info.swift"; sourceTree = "<group>"; };
@@ -464,6 +474,11 @@
 			isa = PBXGroup;
 			children = (
 				5640EB1C24EC7AA5001B5780 /* LineChart.swift */,
+				56C8034325015A740070D3EE /* LineChartData.swift */,
+				56C8034125015A590070D3EE /* LineChart+ValueTransformer.swift */,
+				56C8033F25015A160070D3EE /* LineChart+LineChartPoints.swift */,
+				56C8033D25015A0C0070D3EE /* LineChart+LineChartPath.swift */,
+				56C8033B250159C10070D3EE /* LineChart+SingleLineChart.swift */,
 				567364A924F7ECF700F04ED9 /* LineChart+DragGestureHandler.swift */,
 				56A2B3EB24FEF0910061EFFE /* LineChart+XAxis.swift */,
 				56A2B3ED24FFA7060061EFFE /* LineChart+YAxis.swift */,
@@ -938,6 +953,7 @@
 				56D3189624D85A79002F4FAB /* MatchDetails+Participant+Timeline.swift in Sources */,
 				567528F024AA2EBA009057C8 /* AccountLookupModel.swift in Sources */,
 				56F353B924AF3EE700E21EB4 /* CustomViewModifiers.swift in Sources */,
+				56C8033C250159C10070D3EE /* LineChart+SingleLineChart.swift in Sources */,
 				56C96DD024D951BD00685F76 /* ChampionDetails+Data+Spell+LevelTip.swift in Sources */,
 				56C96DCD24D9512C00685F76 /* ChampionDetails+Data+Recommended.swift in Sources */,
 				56A1528824E6F0AB00A74846 /* MatchDetailsModel.swift in Sources */,
@@ -1037,6 +1053,7 @@
 				56F353C624AF7A2800E21EB4 /* HorizontalAlignedView.swift in Sources */,
 				562C9A2E24D719A20061EB38 /* MainWindow.swift in Sources */,
 				56D3187F24D721BA002F4FAB /* MatchHistoryItem.swift in Sources */,
+				56C8034425015A740070D3EE /* LineChartData.swift in Sources */,
 				5640EB1D24EC7AA5001B5780 /* LineChart.swift in Sources */,
 				5631470124AE0FD5000CC418 /* Settings.swift in Sources */,
 				562C9A3424D71A500061EB38 /* StatisticsPage.swift in Sources */,
@@ -1047,6 +1064,8 @@
 				567528CD24AA29B8009057C8 /* Legend_Within.xcdatamodeld in Sources */,
 				56BA840824E7D85E009F9F90 /* MatchTimeline+Frame+Event+Kind.swift in Sources */,
 				561D467324E186C6006786C6 /* SummonerSpellsJSON.swift in Sources */,
+				56C8034025015A160070D3EE /* LineChart+LineChartPoints.swift in Sources */,
+				56C8034225015A590070D3EE /* LineChart+ValueTransformer.swift in Sources */,
 				56ED283924D9602900016178 /* Item+Stat.swift in Sources */,
 				56BA840A24E7D968009F9F90 /* MatchTimeline+Frame+Event+MonsterType.swift in Sources */,
 				565E408024F7F55500D4CFEC /* ChartFilterView.swift in Sources */,
@@ -1058,6 +1077,7 @@
 				5605876624FBA06F0049372D /* BansView.swift in Sources */,
 				5648A74324AF3CCF0074B550 /* FloatIn.swift in Sources */,
 				56ED283524D9600000016178 /* Item+Gold.swift in Sources */,
+				56C8033E25015A0C0070D3EE /* LineChart+LineChartPath.swift in Sources */,
 				56F353BD24AF43EF00E21EB4 /* LeagueApi+Summoners.swift in Sources */,
 				561D466C24E00D7D006786C6 /* LoadingCircle.swift in Sources */,
 				56F353BF24AF440300E21EB4 /* LeagueApi+LeagueEntries.swift in Sources */,

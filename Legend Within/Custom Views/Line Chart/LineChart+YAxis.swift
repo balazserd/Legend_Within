@@ -18,8 +18,8 @@ extension LineChart {
         private(set) var yMin: Double
 
         init(data: [LineChartData]) {
-            let yMaxData = data.map { $0.values.map { $0.y }.max()! } //This is just to make sure, but each dataSet should have the same max.
-            let yMinData = data.map { $0.values.map { $0.y }.min()! } //This is just to make sure, but each dataSet should have the same min.
+            let yMaxData = data.map { $0.values.map { $0.y }.max()! }
+            let yMinData = data.map { $0.values.map { $0.y }.min()! }
             self.yMax = yMaxData.max()!
             self.yMin = yMinData.min()!
             self.yData = Self.yDataCreate(numberOfValuesShown: 4, yMin: yMin, yMax: yMax)
