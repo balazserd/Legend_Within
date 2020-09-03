@@ -13,11 +13,9 @@ import SpriteKit
 import Combine
 
 struct LineChart: View {
-    fileprivate typealias AnyGeometryReader = GeometryReader<ZStack<TupleView<(DragSignal?, AnyForEach, XAxis, YAxis)>>>
-    fileprivate typealias AnyForEach = ForEach<[LineChartData], UUID, SingleLineChart>
     typealias SumType = MatchDetailsModel.SumType
 
-    private let chartAreaPadding = EdgeInsets(top: 10, leading: 25, bottom: 20, trailing: 10)
+    private let chartAreaPadding = EdgeInsets(top: 10, leading: 30, bottom: 20, trailing: 10)
 
     var data: [LineChartData]
     @Binding var visibilityMatrix: [Bool]
@@ -46,55 +44,64 @@ struct LineChart: View {
                 .fill(Color.gray.opacity(0.1))
                 .shadow(color: Color.gray.opacity(0.2), radius: 3, x: 0, y: 1.5)
 
-            AnyGeometryReader { geoProxy in
-                let vt = self.getValueTransformer(for: geoProxy)
-                let visibleLineDataSets = self.data
-                    .filter { self.visibilityMatrix[$0.associatedParticipantId!] || self.sumType == .teamBased }
-                    .sorted(by: self.sumType == .teamBased
-                        ? { _, _ in true }
-                        : { $0.associatedParticipantId! < $1.associatedParticipantId! })
-
-                return ZStack(alignment: .leading) {
-                    if self.isDragging {
-                        DragSignal(gestureXValue: self.$gestureXValue, chartAreaPadding: self.chartAreaPadding)
-                    }
-
-                    AnyForEach(visibleLineDataSets, id: \.id) { dataSet in
-                        SingleLineChart(data: dataSet,
-                                        transformer: vt,
-                                        lineType: self.lineType,
-                                        dragGestureHandler: self.dragGestureHandlers[dataSet.associatedParticipantId!],
-                                        chartAreaPadding: self.chartAreaPadding,
-                                        isDragging: self.$isDragging,
-                                        gestureXValue: self.$gestureXValue)
-                    }
-
-                    XAxis(data: visibleLineDataSets)
-                    YAxis(data: visibleLineDataSets)
-                }
+            GeometryReader { geoProxy in
+                self.chartArea(in: geoProxy)
             }
             .padding(5)
+
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.gray.opacity(0.01))
+                .gesture(DragGesture(coordinateSpace: .local)
+                    .onChanged { value in
+                        self.isDragging = true
+                        self.gestureXValue = value.location.x //Gestures don't want to coordinate...
+                        print(self.gestureXValue)
+                        self.dragGestureHandlers.forEach { $0.requestedCoordinate.send(value.location) }
+                    }
+                    .onEnded { _ in
+                        self.isDragging = false
+                        self.dragGestureHandlers.forEach { $0.requestedCoordinate.send(nil) }
+                    })
+                .padding(self.chartAreaPadding)
         }
-        .gesture(DragGesture()
-            .onChanged { value in
-                self.isDragging = true
-                self.gestureXValue = value.location.x
-                self.dragGestureHandlers.forEach { $0.requestedCoordinate.send(value.location) }
+    }
+
+    private func chartArea(in geoProxy: GeometryProxy) -> some View {
+        let vt = self.getValueTransformer(for: geoProxy)
+        let visibleLineDataSets = self.data
+            .filter { self.visibilityMatrix[$0.associatedParticipantId!] || self.sumType == .teamBased }
+            .sorted(by: self.sumType == .teamBased
+                ? { _, _ in true }
+                : { $0.associatedParticipantId! < $1.associatedParticipantId! })
+
+        return ZStack(alignment: .leading) {
+            if self.isDragging {
+                DragSignal(gestureXValue: self.$gestureXValue)
+                    .padding(self.chartAreaPadding)
             }
-            .onEnded { _ in
-                self.isDragging = false
-                self.dragGestureHandlers.forEach { $0.requestedCoordinate.send(nil) }
-            })
+
+            ForEach(visibleLineDataSets, id: \.id) { dataSet in
+                SingleLineChart(data: dataSet,
+                                transformer: vt,
+                                lineType: self.lineType,
+                                dragGestureHandler: self.dragGestureHandlers[dataSet.associatedParticipantId!],
+                                chartAreaPadding: self.chartAreaPadding,
+                                isDragging: self.$isDragging,
+                                gestureXValue: self.$gestureXValue)
+            }
+
+            XAxis(data: visibleLineDataSets)
+            YAxis(data: visibleLineDataSets)
+        }
     }
 
     struct DragSignal: View {
         @Binding var gestureXValue: CGFloat
-        var chartAreaPadding: EdgeInsets
 
         var body: some View {
             Rectangle().fill(Color.gray)
                 .frame(width: 0.5)
-                .offset(x: gestureXValue + chartAreaPadding.leading - 4) //The padding offset must be balanced out.
+                .offset(x: gestureXValue)
         }
     }
 
@@ -112,14 +119,14 @@ struct LineChart: View {
         let transformX: (Double) -> Double = { [chartAreaPadding] xValue in
             (xValue - xValueMin) / (xValueMax - xValueMin) * Double(proxy.size.width - (chartAreaPadding.trailing + chartAreaPadding.leading))
         }
-        let transformXInverse: (Double) -> (Double) = { convertedXValue in
-            (convertedXValue / Double(proxy.size.width - 8)) * (xValueMax - xValueMin)
+        let transformXInverse: (Double) -> (Double) = { [chartAreaPadding] convertedXValue in
+            (convertedXValue / Double(proxy.size.width - (chartAreaPadding.trailing + chartAreaPadding.leading))) * (xValueMax - xValueMin)
         }
         let transformY: (Double) -> Double = { [chartAreaPadding] yValue in
             (yValue - yValueMin) / (yValueMax - yValueMin) * Double(proxy.size.height - (chartAreaPadding.bottom + chartAreaPadding.top))
         }
-        let transformYInverse: (Double) -> (Double) = { convertedYValue in
-            (convertedYValue / Double(proxy.size.height - 8)) * (yValueMax - yValueMin)
+        let transformYInverse: (Double) -> (Double) = { [chartAreaPadding] convertedYValue in
+            (convertedYValue / Double(proxy.size.height - (chartAreaPadding.bottom + chartAreaPadding.top))) * (yValueMax - yValueMin)
         }
 
         return ValueTransformer(xValueTransformer: transformX,
@@ -150,6 +157,8 @@ fileprivate struct SingleLineChart: View {
     @Binding var gestureXValue: CGFloat
     @Binding var isDragging: Bool
 
+    private let pointSize: CGFloat = 7
+
     init(data: LineChartData,
          transformer: LineChart.ValueTransformer,
          lineType: LineChart.LineType,
@@ -178,29 +187,28 @@ fileprivate struct SingleLineChart: View {
     }
 
     var body: some View {
-        let closestXValue = transformedData.values.map { $0.x }.closestValue(to: Double(gestureXValue - 8))
+        let closestXValue = transformedData.values.map { $0.x }.closestValue(to: Double(gestureXValue))
         let closestXIndex = transformedData.values.firstIndex { $0.x == closestXValue }!
         let yValueForClosestX = transformedData.values[closestXIndex].y
 
         return ZStack(alignment: .topLeading) {
             if self.data.shownAspects.contains(.line) {
                 LineChartPath(self.splinedValues)
-                    .stroke(self.data.lineColor, lineWidth: 3)
-                    .offset(x: 4, y: 0)
+                    .stroke(self.data.lineColor, style: StrokeStyle(lineWidth: 2,
+                                                                    lineCap: .round))
             }
 
             if self.data.shownAspects.contains(.points) {
                 LineChartPoints(data: transformedData)
-                    .offset(x: 0, y: -4)
             }
 
             if isDragging {
                 Circle().fill(Color.white)
-                    .frame(width: 7, height: 7)
+                    .frame(width: pointSize, height: pointSize)
                     .overlay(Circle().stroke(self.data.lineColor, lineWidth: 2)
-                        .frame(width: 7, height: 7))
-                    .offset(x: CGFloat(closestXValue),
-                            y: CGFloat(yValueForClosestX) - 4)
+                        .frame(width: pointSize, height: pointSize))
+                    .offset(x: CGFloat(closestXValue) - pointSize / 2,
+                            y: CGFloat(yValueForClosestX) - pointSize / 2)
                     .zIndex(.infinity)
             }
         }
