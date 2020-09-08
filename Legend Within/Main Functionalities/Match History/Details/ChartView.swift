@@ -39,13 +39,13 @@ extension MatchDetailsPage {
                     }
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                .introspectSegmentedControl(customize: { segmentedControl in
+                .introspectSegmentedControl { segmentedControl in
                     segmentedControl.setTitleTextAttributes([.foregroundColor : ColorPalette.selectedFilterUIColor],
                                                             for: .normal)
                     segmentedControl.setTitleTextAttributes([.foregroundColor : UIColor.white],
                                                             for: .selected)
                     segmentedControl.selectedSegmentTintColor = ColorPalette.selectedFilterUIColor
-                })
+                }
                 .scaleEffect(CGSize(width: 1, height: 0.95), anchor: .center)
                 .padding(-1, 0, -1, 0)
 

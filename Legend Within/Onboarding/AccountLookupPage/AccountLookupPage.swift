@@ -29,11 +29,14 @@ struct AccountLookupPage: View {
                             .resizable()
                             .frame(width: 35, height: 35)
 
-                        Picker(selection: $accountLookupModel.region, label: Text("")) {
-                            ForEach(Region.allCases, id: \.rawValue) { region in
-                                Text("\(region.shortName)").tag(region)
-                            }
-                        }.pickerStyle(SegmentedPickerStyle())
+                        SegmentedPicker(selectedItem: $accountLookupModel.region,
+                                        items: Region.allCases,
+                                        color: ColorPalette.accentBlue,
+                                        cell: {
+                                            Text("\($0.shortName)")
+                                                .font(.system(size: self.accountLookupModel.region == $0 ? 14 : 13))
+                                                .fontWeight(self.accountLookupModel.region == $0 ? .bold : .regular)
+                                        })
                     }
                     .padding(.bottom, 15)
 
@@ -46,7 +49,7 @@ struct AccountLookupPage: View {
                             TextField("Summoner name", text: $accountLookupModel.summonerName) {
                                 self.dismissKeyboard()
                             }
-                            .foregroundColor(.blue)
+                            .foregroundColor(ColorPalette.accentBlue)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .frame(height: 32)
 
@@ -141,6 +144,13 @@ struct AccountLookupPage: View {
 extension AccountLookupPage : Equatable {
     static func ==(lhs: AccountLookupPage, rhs: AccountLookupPage) -> Bool {
         return true
+    }
+}
+
+extension AccountLookupPage {
+    struct ColorPalette {
+        static let accentBlue = Color("accentBlue")
+        static let accentBlueUIColor = UIColor(named: "accentBlue")!
     }
 }
 
