@@ -24,6 +24,8 @@ extension LineChart {
         @Binding var gestureXValue: CGFloat
         @Binding var isDragging: Bool
 
+        @State private var animationPercentage: CGFloat = 0.0
+
         private let pointSize: CGFloat = 7
 
         init(data: LineChartData,
@@ -61,8 +63,10 @@ extension LineChart {
             return ZStack(alignment: .topLeading) {
                 if self.data.shownAspects.contains(.line) {
                     LineChartPath(self.splinedValues)
+                        .trim(from: 0, to: animationPercentage)
                         .stroke(self.data.lineColor, style: StrokeStyle(lineWidth: 2,
                                                                         lineCap: .round))
+                        .animation(.linear(duration: 1))
                 }
 
                 if self.data.shownAspects.contains(.points) {
@@ -92,6 +96,9 @@ extension LineChart {
                     self.dragGestureHandler.valueAtRequest = nil
                     return
                 }
+            }
+            .onAppear {
+                self.animationPercentage = 1.0
             }
         }
     }

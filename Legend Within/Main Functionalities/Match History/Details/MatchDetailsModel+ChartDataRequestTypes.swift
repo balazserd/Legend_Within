@@ -46,7 +46,7 @@ extension MatchDetailsModel {
         }
     }
 
-    enum StatType : Int, CaseIterable {
+    enum TimelineStatType : Int, CaseIterable {
         case gold = 0
         case xp
         case minionKills

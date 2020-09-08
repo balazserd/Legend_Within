@@ -172,7 +172,7 @@ public class LeagueApi : ObservableObject {
         self.downloadJson(targetType: .summonerSpells(downloadPath: FilePaths.summonerSpellsJson.path), progressRatio: 1.0, groupedIn: dpGroup)
     }
 
-    //MARK: JSON downloads
+    //MARK:- JSON downloads
     /* Downloads the corresponding JSON file for the specified target. */
     private func downloadJson(targetType: MoyaProvider<DataDragon>.Target, progressRatio: Double, groupedIn dispatchGroup: DispatchGroup? = nil) {
         dispatchGroup?.enter()
@@ -180,6 +180,7 @@ public class LeagueApi : ObservableObject {
         var cancellable: AnyCancellable? = nil
         cancellable = self.ddProvider.requestWithProgressPublisher(targetType)
             .receive(on: DispatchQueue.global(qos: .userInteractive))
+            .retry(3)
             .sink(receiveCompletion: { [weak self] completionType in
                 print(completionType)
                 switch completionType {
@@ -213,7 +214,7 @@ public class LeagueApi : ObservableObject {
         }
     }
 
-    //MARK: Icon downloads
+    //MARK:- Icon downloads
     private func updateItemIcons() {
         let itemIconIds = self.getListOfItemIds()
         DispatchQueue.concurrentPerform(iterations: itemIconIds.count) { i in
@@ -255,6 +256,7 @@ public class LeagueApi : ObservableObject {
         var cancellable: AnyCancellable? = nil
         cancellable = self.ddProvider.requestWithProgressPublisher(targetType)
             .receive(on: DispatchQueue.global(qos: .userInteractive))
+            .retry(3)
             .sink(receiveCompletion: { [weak self] completionType in
                 switch completionType {
                     case .failure(let error): break
@@ -276,7 +278,7 @@ public class LeagueApi : ObservableObject {
         }
     }
 
-    //MARK: Array fetchers for common objects (champion names, item ids, etc...)
+    //MARK:- Array fetchers for common objects (champion names, item ids, etc...)
     private func getListOfChampionNames() -> [String] {
         let champListData = try! Data(contentsOf: FilePaths.championsJson.path)
         let champListObject = try! JSONDecoder().decode(ChampionsJSON.self, from: champListData)

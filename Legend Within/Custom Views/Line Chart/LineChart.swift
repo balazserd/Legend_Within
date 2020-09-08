@@ -40,9 +40,8 @@ struct LineChart: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray.opacity(0.1))
-                .shadow(color: Color.gray.opacity(0.2), radius: 3, x: 0, y: 1.5)
+            RoundedRectangle(cornerRadius: 6)
+                .fill(MatchDetailsPage.ColorPalette.chartAreaBackground)
 
             GeometryReader { geoProxy in
                 self.chartArea(in: geoProxy)
@@ -90,8 +89,10 @@ struct LineChart: View {
                                 gestureXValue: self.$gestureXValue)
             }
 
-            XAxis(data: visibleLineDataSets)
-            YAxis(data: visibleLineDataSets)
+            if visibleLineDataSets.count != 0 {
+                XAxis(data: visibleLineDataSets)
+                YAxis(data: visibleLineDataSets)
+            }
         }
     }
 

@@ -54,7 +54,7 @@ extension MatchDetailsPage {
                     }
                 }
             }
-            .frame(height: 25)
+            .frame(height: 20)
         }
     }
 

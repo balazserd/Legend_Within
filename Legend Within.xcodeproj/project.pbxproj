@@ -102,6 +102,7 @@
 		56C8034025015A160070D3EE /* LineChart+LineChartPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8033F25015A160070D3EE /* LineChart+LineChartPoints.swift */; };
 		56C8034225015A590070D3EE /* LineChart+ValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8034125015A590070D3EE /* LineChart+ValueTransformer.swift */; };
 		56C8034425015A740070D3EE /* LineChartData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8034325015A740070D3EE /* LineChartData.swift */; };
+		56C8034625066F410070D3EE /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C8034525066F410070D3EE /* UIColor+Extensions.swift */; };
 		56C96DAC24D8A14300685F76 /* LeagueApi+DataDragon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C96DAB24D8A14300685F76 /* LeagueApi+DataDragon.swift */; };
 		56C96DAF24D946C400685F76 /* Champion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C96DAE24D946C400685F76 /* Champion.swift */; };
 		56C96DB124D946E700685F76 /* Champion+Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C96DB024D946E700685F76 /* Champion+Info.swift */; };
@@ -267,6 +268,7 @@
 		56C8033F25015A160070D3EE /* LineChart+LineChartPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineChart+LineChartPoints.swift"; sourceTree = "<group>"; };
 		56C8034125015A590070D3EE /* LineChart+ValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LineChart+ValueTransformer.swift"; sourceTree = "<group>"; };
 		56C8034325015A740070D3EE /* LineChartData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineChartData.swift; sourceTree = "<group>"; };
+		56C8034525066F410070D3EE /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		56C96DAB24D8A14300685F76 /* LeagueApi+DataDragon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeagueApi+DataDragon.swift"; sourceTree = "<group>"; };
 		56C96DAE24D946C400685F76 /* Champion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Champion.swift; sourceTree = "<group>"; };
 		56C96DB024D946E700685F76 /* Champion+Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Champion+Info.swift"; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 				56A1527124E2FA9B00A74846 /* KFImage_Image+Extensions.swift */,
 				56DB6FBA24F7EF8800A938CB /* Array+Extensions.swift */,
 				56C8033925014A260070D3EE /* EdgeInsets+Extensions.swift */,
+				56C8034525066F410070D3EE /* UIColor+Extensions.swift */,
 			);
 			path = "Helper methods and objects";
 			sourceTree = "<group>";
@@ -516,10 +519,10 @@
 				567528E724AA29E2009057C8 /* Onboarding */,
 				562C9A2C24D7197A0061EB38 /* Main Functionalities */,
 				567528C224AA29B8009057C8 /* AppDelegate.swift */,
+				567528D024AA29BB009057C8 /* LaunchScreen.storyboard */,
 				567528C424AA29B8009057C8 /* SceneDelegate.swift */,
 				567528CE24AA29BB009057C8 /* Assets.xcassets */,
 				5605876924FBA7600049372D /* Colors.xcassets */,
-				567528D024AA29BB009057C8 /* LaunchScreen.storyboard */,
 				567528D324AA29BB009057C8 /* Info.plist */,
 				567528CB24AA29B8009057C8 /* Legend_Within.xcdatamodeld */,
 			);
@@ -1011,6 +1014,7 @@
 				567528F324AA2FCC009057C8 /* Region.swift in Sources */,
 				563C3F5524E92FE600DA2825 /* LoLRoleClassifier_Final.mlmodel in Sources */,
 				561D467724E1885D006786C6 /* SummonerSpell+Var.swift in Sources */,
+				56C8034625066F410070D3EE /* UIColor+Extensions.swift in Sources */,
 				5657F31A24D1D2CF00A7F437 /* SupportEmailView.swift in Sources */,
 				56C8033A25014A260070D3EE /* EdgeInsets+Extensions.swift in Sources */,
 				56ED283724D9601A00016178 /* Item+Maps.swift in Sources */,

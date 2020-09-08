@@ -9,15 +9,20 @@
 import SwiftUI
 
 struct OnboardingPage: View {
+    @ObservedObject private var model = OnboardingModel.shared
+
     @State var currentPage: Int = 0
+    
     let pages = [AnyView(WelcomePage()),
-                 AnyView(AccountLookupPage())]
+                 AnyView(AccountLookupPage()),
+                 AnyView(WelcomePage())]
     .map { UIHostingController(rootView: $0)}
     
     var body: some View {
         return ZStack {
             PageView(pages: pages,
-                     currentPage: $currentPage)
+                     currentPage: $currentPage,
+                     highestAllowedPage: $model.highestAllowedPage)
                 .id(UUID())
 
             VStack {

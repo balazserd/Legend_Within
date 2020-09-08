@@ -16,7 +16,8 @@ struct StartScreen: View {
             if leagueApi.newVersionExists == nil || leagueApi.newVersionExists! {
                 NewVersionDownloadingView()
             } else {
-                MainWindow()
+//                MainWindow()
+                OnboardingPage()
             }
         }
     }

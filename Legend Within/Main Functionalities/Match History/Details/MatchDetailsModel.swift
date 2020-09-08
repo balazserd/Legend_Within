@@ -24,9 +24,9 @@ final class MatchDetailsModel : ObservableObject {
     @Published var match: Match? = nil
     var initialMatchParameter: Match
 
-    @Published var requestedStatType: StatType? = nil
+    @Published var requestedStatType: TimelineStatType? = nil
     @Published var requestedSumType: SumType? = nil
-    var needsNewChartData = PassthroughSubject<(SumType, StatType), Never>()
+    var needsNewChartData = PassthroughSubject<(SumType, TimelineStatType), Never>()
     @Published var chartData: [LineChartData]? = nil
     @Published var chart_currentValuesForDragGesture: [Double?] = Array(repeating: nil, count: 11) //1-based array.
     var chart_currentValueHandlers: [GestureValueHandler] = (0...10).map { _ in GestureValueHandler() } //1-based array.
@@ -34,8 +34,9 @@ final class MatchDetailsModel : ObservableObject {
     private var cancellableBag = Set<AnyCancellable>()
     private let timelineProvider = MoyaProvider<LeagueApi.Matches>()
     private(set) var roleClassifier: RoleClassifier? = nil
-    private let colorArray: [Color] = [.blue, .green, .orange, .red, .purple, .black, .yellow, .gray, .darkBlue2, .darkGreen5]
+    private let colorArray: [Color] = [.green, .orange, .blue, .red, .purple, .black, Color("darkGold"), .gray, .darkBlue2, .darkGreen5]
     func colorForParticipantId(_ id: Int) -> Color { return self.colorArray[id - 1] }
+    func colorForTeamId(_ id: Int) -> Color { return self.colorArray[id / 100 - 1] }
 
     init(match: Match) {
         self.initialMatchParameter = match

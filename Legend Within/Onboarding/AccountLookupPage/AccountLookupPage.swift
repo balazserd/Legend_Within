@@ -14,10 +14,6 @@ struct AccountLookupPage: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.blue2, .blue5]),
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
-                .edgesIgnoringSafeArea(.all)
-
             VStack {
                 VStack {
                     HStack {
@@ -33,12 +29,11 @@ struct AccountLookupPage: View {
                             .resizable()
                             .frame(width: 35, height: 35)
 
-                        FlatSegmentedPicker(selectedItem: $accountLookupModel.region,
-                                            items: Region.allCases,
-                                            color: .blue2,
-                                            cell: { Text("\($0.shortName)").font(.system(size: 15)).bold() })
-                            .frame(height: 32)
-                            .shadow(color: Color.gray.opacity(0.2), radius: 4, x: 0, y: 2)
+                        Picker(selection: $accountLookupModel.region, label: Text("")) {
+                            ForEach(Region.allCases, id: \.rawValue) { region in
+                                Text("\(region.shortName)").tag(region)
+                            }
+                        }.pickerStyle(SegmentedPickerStyle())
                     }
                     .padding(.bottom, 15)
 
@@ -65,7 +60,7 @@ struct AccountLookupPage: View {
                 .padding()
                 .background(Color.lightBlue5)
                 .cornerRadius(8)
-                .shadow(color: Color.black.opacity(0.8), radius: 4, x: 0, y: 2)
+                .shadow(color: Color.gray.opacity(0.4), radius: 4, x: 0, y: 2)
                 .padding(.bottom, 8)
 
                 VStack {

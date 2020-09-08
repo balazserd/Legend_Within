@@ -133,12 +133,12 @@ extension LeagueEntry {
 
 //MARK: - Positions
 extension LeagueEntry {
-    public enum Position : String {
+    public enum Position : String, CaseIterable {
         case top
+        case jungle
         case mid
         case bot
         case support
-        case jungle
 
         var normalizedString: String {
             return self.rawValue.localizedCapitalized

@@ -13,6 +13,7 @@ final class OnboardingModel : ObservableObject {
     static let shared = OnboardingModel()
 
     @Published var onboardingStatus: OnboardingModel.Phase
+    @Published var highestAllowedPage: Int = 2
 
     private var cancellableBag = Set<AnyCancellable>()
 

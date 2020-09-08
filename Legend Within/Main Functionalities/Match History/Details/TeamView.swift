@@ -17,9 +17,30 @@ extension MatchDetailsPage {
         var teamParticipants: [MatchDetails.Participant]
         var teamParticipantIds: [MatchDetails.ParticipantIdentity]
 
+        var didWin: Bool {
+            self.team.win == "Win"
+        }
+
         var body: some View {
-            VStack {
-                TeamStatsView(team: team)
+            VStack(spacing: 6) {
+                VStack(spacing: 4) {
+                    HStack(alignment: .top) {
+                        Text(didWin ? "WINNING TEAM" : "LOSING TEAM")
+                            .font(.system(size: 20)).bold()
+                            .foregroundColor(.white)
+                            .padding(.leading, 3)
+                        Spacer()
+                        BansView(bans: team.bans)
+                            .padding(0, 3, 3, 0)
+                    }
+
+                    TeamStatsView(team: team)
+                        .padding(.bottom, 2)
+                }
+                .padding(4)
+                .background(RoundedRectangle(cornerRadius: 5)
+                    .fill(didWin ? ColorPalette.winningTeamHeader : ColorPalette.losingTeamHeader)
+                    .shadow(color: Color.gray.opacity(0.4), radius: 3, x: 0, y: 1.5))
 
                 ForEach<[MatchDetails.Participant], Int, AnyView>(teamParticipants, id: \.participantId) { participant in
                     let identity = self.teamParticipantIds.first { $0.participantId == participant.participantId }!
@@ -67,7 +88,10 @@ extension MatchDetailsPage {
                             PlayerStatsView(player: participant)
                         }
                         .frame(maxWidth: .infinity)
-                    })
+                    }
+                    .padding(4)
+                    .background(RoundedRectangle(cornerRadius: 5)
+                        .fill(self.didWin ? ColorPalette.winningTeamPlayerRow : ColorPalette.losingTeamPlayerRow)))
                 }
             }
         }

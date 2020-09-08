@@ -40,7 +40,7 @@ extension AccountLookupPage {
                 .padding(.bottom, 10)
                 .background(Color.lightRed5)
                 .cornerRadius(8)
-                .shadow(color: Color.black.opacity(0.8), radius: 6, x: 0, y: 3)
+                .shadow(color: Color.gray.opacity(0.4), radius: 6, x: 0, y: 3)
                 .padding(.bottom, 15)
 
                 if MFMailComposeViewController.canSendMail() {

@@ -41,5 +41,4 @@ extension Color {
     static let greenishBlue1 = Color(183, 213, 216)
 
     static let gold = Color("gold")
-    static let darkGold = Color("darkGold")
 }

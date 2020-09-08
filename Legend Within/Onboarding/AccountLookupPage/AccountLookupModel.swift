@@ -12,6 +12,8 @@ import Combine
 import Alamofire
 
 public class AccountLookupModel : ObservableObject {
+    private let onboardingModel = OnboardingModel.shared
+
     @Published public var region: Region = .euw
     @Published public var summonerName: String = ""
     @Published public var summoner: Summoner? = nil
@@ -20,6 +22,7 @@ public class AccountLookupModel : ObservableObject {
     @Published public var isQuerying: Bool = false
     @Published public var soloQueueEntry: LeagueEntry? = nil
     @Published public var soloQueueDivision: League? = nil //if soloQueueEntry is not nil, it is fatal that this results in nil.
+    @Published public var canProgressToNextStep: Bool = false
 
     private var cancellableBag = Set<AnyCancellable>()
 
@@ -39,6 +42,7 @@ public class AccountLookupModel : ObservableObject {
         self.setupSummonerQuerySubscription()
         self.setupSoloQueueEntryQuerySubscription()
         self.setupSoloQueueDivisionQuerySubscription()
+        self.setupCanProgressToNextStepSubscription()
     }
 
     private func setupSummonerQuerySubscription() {
@@ -143,6 +147,24 @@ public class AccountLookupModel : ObservableObject {
                         self.soloQueueDivision = division
                     })
                 cancellable!.store(in: &self.cancellableBag)
+            }
+            .store(in: &cancellableBag)
+    }
+
+    private func setupCanProgressToNextStepSubscription() {
+        Publishers.CombineLatest($summoner, $errorCode)
+            .sink { [weak self] values in
+                if values.0 != nil && values.1 == nil {
+                    self?.canProgressToNextStep = true
+                } else {
+                    self?.canProgressToNextStep = false
+                }
+            }
+            .store(in: &cancellableBag)
+
+        $canProgressToNextStep
+            .sink { [weak self] canProgress in
+                self?.onboardingModel.highestAllowedPage = canProgress ? 3 : 2 //This is the 2nd page.
             }
             .store(in: &cancellableBag)
     }

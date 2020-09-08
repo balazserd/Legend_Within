@@ -37,50 +37,28 @@ struct MatchDetailsPage: View {
             } else {
                 ScrollView(.vertical) {
                     VStack {
+                        GeneralGameInfoView(model: self.model)
+
+                        Divider()
+
                         VStack {
-                            GeneralGameInfoView(model: self.model)
+                            TeamView(team: winningTeam!,
+                                     teamParticipants: winningTeamParticipants!,
+                                     teamParticipantIds: winningTeamParticipantIdentities!)
 
-                            Divider()
+                            TeamView(team: losingTeam!,
+                                     teamParticipants: losingTeamParticipants!,
+                                     teamParticipantIds: losingTeamParticipantIdentities!)
+                        }
 
-                            VStack {
-                                HStack {
-                                    Text("WINNING TEAM")
-                                        .font(.system(size: 20)).bold()
-                                        .foregroundColor(.green)
-                                    Spacer()
-                                    BansView(bans: winningTeam!.bans)
-                                }
-                                .padding(.bottom, -3)
+                        Divider()
 
-                                TeamView(team: winningTeam!,
-                                         teamParticipants: winningTeamParticipants!,
-                                         teamParticipantIds: winningTeamParticipantIdentities!)
-
-                                Divider()
-
-                                HStack {
-                                    Text("LOSING TEAM")
-                                        .font(.system(size: 20)).bold()
-                                        .foregroundColor(.red)
-                                    Spacer()
-                                    BansView(bans: losingTeam!.bans)
-                                }
-                                .padding(.bottom, -3)
-
-                                TeamView(team: losingTeam!,
-                                         teamParticipants: losingTeamParticipants!,
-                                         teamParticipantIds: losingTeamParticipantIdentities!)
-                            }
-
-                            Divider()
-
-                            if model.chartData != nil {
-                                ChartView(winningTeamParticipants: winningTeamParticipants!,
-                                          losingTeamParticipants: losingTeamParticipants!,
-                                          chartData: model.chartData!,
-                                          model: self.model,
-                                          visiblePlayers: self.$chart_shownPlayers)
-                            }
+                        if model.chartData != nil {
+                            ChartView(winningTeamParticipants: winningTeamParticipants!,
+                                      losingTeamParticipants: losingTeamParticipants!,
+                                      chartData: model.chartData!,
+                                      model: self.model,
+                                      visiblePlayers: self.$chart_shownPlayers)
                         }
                     }
                     .padding(15)
@@ -94,21 +72,21 @@ struct MatchDetailsPage: View {
     }
 }
 
-struct MatchDetailsPage_Previews: PreviewProvider {
-    static var previews: some View {
-        let decoder = JSONDecoder()
-        guard
-            let url_match = Bundle.main.url(forResource: "MatchExample",
-                                                  withExtension: "json"),
-            let url_matchDetails = Bundle.main.url(forResource: "MatchDetailsExample",
-                                                        withExtension: "json")
-            else { fatalError() }
+extension MatchDetailsPage {
+    struct ColorPalette {
+        static let winningTeamHeader = Color("winningTeam_Header")
+        static let winningTeamPlayerRow = Color("winningTeam_PlayerRow")
 
-        let match = try! decoder.decode(Match.self, from: Data(contentsOf: url_match))
-        let matchDetails = try! decoder.decode(MatchDetails.self, from: Data(contentsOf: url_matchDetails))
+        static let losingTeamHeader = Color("losingTeam_Header")
+        static let losingTeamPlayerRow = Color("losingTeam_PlayerRow")
 
-        match.details = matchDetails
+        static let selectedFilter = Color("selectedFilter")
+        static let selectedFilterUIColor = UIColor(named: "selectedFilter")!
 
-        return MatchDetailsPage(match: match)
+        static let chartAreaBackground = Color("chartAreaBackground")
+        static let chartContainerBackground = Color("chartContainerBackground")
+        static let chartFilterOptionsContainer = Color("chartFilterOptionsContainer")
+
+        static let timelineTitle = Color("timelineTitle")
     }
 }

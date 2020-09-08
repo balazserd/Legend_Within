@@ -21,7 +21,7 @@ struct WelcomePage: View {
                 .bold()
                 .minimumScaleFactor(0.01)
                 .lineLimit(1)
-                .foregroundColor(.white)
+                .foregroundColor(Color.blue.opacity(0.8))
                 .multilineTextAlignment(.center)
 
             Text("Legend Within")
@@ -29,22 +29,20 @@ struct WelcomePage: View {
                 .bold()
                 .minimumScaleFactor(0.01)
                 .lineLimit(1)
-                .foregroundColor(.white)
+                .foregroundColor(.blue)
                 .padding(.bottom, 25.0)
                 .multilineTextAlignment(.center)
 
             Text("We will need some initial info to look up the rest that'll help to configure the app for you.")
                 .font(.system(size: 15))
                 .italic()
-                .foregroundColor(Color.white.opacity(0.9))
+                .foregroundColor(Color.gray)
                 .multilineTextAlignment(.center)
+                .padding(.horizontal, 15)
 
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        .padding()
-        .background(LinearGradient(gradient: Gradient(colors: [.blue2, .blue5]),
-                                   startPoint: .topLeading, endPoint: .bottomTrailing))
         .edgesIgnoringSafeArea(.all)
     }
 }

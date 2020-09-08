@@ -17,29 +17,54 @@ extension MatchDetailsPage {
         @Binding var visiblePlayers: [Bool]
 
         var body: some View {
-            HStack(spacing: 4) {
-                ForEach(participants, id: \.participantId) { participant in
-                    VStack(spacing: 3) {
-                        KFImage(FilePaths.championIcon(fileName: self.gameData.champions[participant.championId]!.onlyData().image.full).path)
-                            .championImageStyle(width: 32)
-                            .opacity(self.visiblePlayers[participant.participantId] ? 1 : 0.5)
-                            .onTapGesture {
-                                self.visiblePlayers[participant.participantId].toggle()
+            GeometryReader { proxy in
+                VStack(spacing: 4) {
+                    HStack(spacing: 4) {
+                        ForEach(self.participants, id: \.participantId) { participant in
+                            VStack {
+                                KFImage(FilePaths.championIcon(fileName: self.gameData.champions[participant.championId]!.onlyData().image.full).path)
+                                    .championImageStyle(width: 32)
+                                    .opacity(self.visiblePlayers[participant.participantId] ? 1 : 0.5)
+                                    .onTapGesture {
+                                        self.visiblePlayers[participant.participantId].toggle()
+                                    }
                             }
-
-                        if self.model.chart_currentValuesForDragGesture[participant.participantId] != nil {
-                            self.valueText(for: self.model.chart_currentValuesForDragGesture[participant.participantId]!)
-                                .frame(width: 32, height: 18)
-                                .foregroundColor(self.model.colorForParticipantId(participant.participantId))
-                        } else {
-                            Text(" ")
-                                .font(.system(size: 14))
-                                .frame(width: 32, height: 18)
+                            .frame(width: self.calculateImageWidthInImageRow(for: proxy))
                         }
                     }
-                    .frame(width: 34)
+
+                    HStack(spacing: 4) {
+                        if self.model.requestedSumType == .playerBased {
+                            ForEach(self.participants, id: \.participantId) { participant in
+                                VStack {
+                                    if self.model.chart_currentValuesForDragGesture[participant.participantId] != nil {
+                                        self.valueText(for: self.model.chart_currentValuesForDragGesture[participant.participantId]!)
+                                            .frame(width: 32, height: 18)
+                                            .foregroundColor(self.model.colorForParticipantId(participant.participantId))
+                                    } else {
+                                        Text(" ")
+                                            .font(.system(size: 14))
+                                            .frame(width: 32, height: 18)
+                                    }
+                                }
+                            }
+                        } else {
+                            Spacer()
+                            if self.model.chart_currentValuesForDragGesture.filter { $0 != nil }.count > 0 {
+                                self.valueText(for: self.model.chart_currentValuesForDragGesture[self.participants[0].teamId / 100]!)
+                                    .frame(height: 18)
+                                    .foregroundColor(self.model.colorForTeamId(self.participants[0].teamId))
+                            } else {
+                                Text(" ")
+                                .font(.system(size: 14))
+                                .frame(height: 18)
+                            }
+                            Spacer()
+                        }
+                    }
                 }
             }
+            .frame(height: 54) //32 + 4 + 18 
         }
 
         private func valueText(for value: Double) -> some View {
@@ -70,6 +95,11 @@ extension MatchDetailsPage {
                         .minimumScaleFactor(0.7).lineLimit(1)
                 }
             }
+        }
+
+        private func calculateImageWidthInImageRow(for proxy: GeometryProxy) -> CGFloat {
+            let playerCountAsCGFloat = CGFloat(self.participants.count)
+            return (proxy.size.width - (playerCountAsCGFloat - 1) * 4) / playerCountAsCGFloat //4 is the HStack spacing.
         }
 
         private let tinyNumberFormatter: NumberFormatter = {

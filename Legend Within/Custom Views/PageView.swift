@@ -15,6 +15,7 @@ struct PageView : UIViewControllerRepresentable {
     var pages: [UIViewController]
 
     @Binding var currentPage: Int
+    @Binding var highestAllowedPage: Int
 
     func makeUIViewController(context: Context) -> UIPageViewController {
         let pageVC = UIPageViewController(transitionStyle: .scroll,
@@ -65,7 +66,11 @@ struct PageView : UIViewControllerRepresentable {
                 return nil
             }
 
-            return parent.pages[index + 1]
+            if parent.highestAllowedPage - 1 < index + 1 {
+                return nil
+            } else {
+                return parent.pages[index + 1]
+            }
         }
 
         //MARK: UIPageViewControllerDelegate
