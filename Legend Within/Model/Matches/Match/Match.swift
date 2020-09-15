@@ -19,7 +19,7 @@ final class Match: Codable, ObservableObject {
     let lane: String
     @Published var details: MatchDetails?
 
-    func details(for summoner: Summoner?) -> MatchDetails.Participant? {
+    func participantDetails(for summoner: Summoner?) -> MatchDetails.Participant? {
         guard
             let summoner = summoner,
             let details = self.details

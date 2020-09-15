@@ -13,44 +13,49 @@ struct MatchHistoryPage: View {
     @ObservedObject var model = MatchHistoryModel()
 
     var body: some View {
-        NavigationView {
-            VStack {
-                List {
-                    ForEach(model.matchHistory?.matches ?? [], id: \.gameId) { match in
-                        ZStack {
-                            NavigationLink(destination: MatchDetailsPage(match: match)) {
-                                MatchHistoryItem(match: match)
-                            }
+        ZStack {
+            NavigationView {
+                VStack {
+                    List {
+                        ForEach(model.matchHistory?.matches ?? [], id: \.gameId) { match in
+                            MatchHistoryItem(match: match)
                         }
-                    }
 
-                    HStack {
-                        Spacer()
-                        if model.isLoadingFirstSetOfMatches || model.isLoadingFurtherSetsOfMatches {
-                            LoadingIndicator()
-                        } else {
-                            Button(action: {
-                                self.model.requestMatches()
-                            }) {
+                        VStack(spacing: 12) {
+                            Divider()
+
+                            Button(action: { self.model.requestMatches() }) {
                                 Text("Load more")
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 7)
+                                    .background(RoundedRectangle(cornerRadius: 5)
+                                        .fill(ColorPalette.loadMoreButtonBackground)
+                                        .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 1.5))
                             }
                         }
-                        Spacer()
+                        .padding(.bottom, 10)
                     }
-                    .padding(.vertical, 5)
+                    .introspectTableView { tableView in
+                        tableView.tableFooterView = UIView()
+                        tableView.separatorStyle = .none
+                        UITableViewCell.appearance().selectionStyle = .none
+                    }
                 }
-                .introspectTableView { tableView in
-                    tableView.tableFooterView = UIView()
-                }
+                .navigationBarItems(trailing:
+                    HStack {
+                        NavigationLink(destination: MatchHistoryFilterPage(model: model)) {
+                            Text("Filter")
+                        }
+                    }
+                )
+                .navigationBarTitle(Text("Match History"))
             }
-            .navigationBarItems(trailing:
-                HStack {
-                    NavigationLink(destination: MatchHistoryFilterPage(model: model)) {
-                        Text("Filter")
-                    }
-                }
-            )
-            .navigationBarTitle(Text("Match History"))
+
+            if model.isLoadingFirstSetOfMatches || model.isLoadingFurtherSetsOfMatches {
+                LoadingIndicator()
+            }
         }
         .onAppear {
             if self.model.matchHistory?.matches == nil
@@ -62,13 +67,34 @@ struct MatchHistoryPage: View {
 
     private struct LoadingIndicator: View {
         var body: some View {
-            HStack {
-                Text("Loading matches...")
-                    .font(.system(size: 15))
+            ZStack {
+                HStack {
+                    Text("Loading matches...")
+                        .bold()
+                        .font(.system(size: 15))
 
-                ActivityIndicator(isSpinning: .constant(true))
+                    ActivityIndicator(isSpinning: .constant(true))
+                }
+                .padding(15)
+                .background(RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.white))
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.black.opacity(0.2))
+            .edgesIgnoringSafeArea(.all)
         }
+    }
+}
+
+extension MatchHistoryPage {
+    struct ColorPalette {
+        static let winningTeamHeader = Color("winningTeam_Header")
+        static let winningTeamPlayerRow = Color("winningTeam_PlayerRow")
+
+        static let losingTeamHeader = Color("losingTeam_Header")
+        static let losingTeamPlayerRow = Color("losingTeam_PlayerRow")
+
+        static let loadMoreButtonBackground = Color("loadMoreButtonBackground")
     }
 }
 

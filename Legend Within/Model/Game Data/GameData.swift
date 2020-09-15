@@ -33,9 +33,10 @@ final class GameData : ObservableObject {
         self.summonerSpells = [:]
 
         leagueApi.$newVersionExists
+            .compactMap { $0 }
             .sink { [weak self] exists in
                 //When a new version's download is finished, this will receive a "false" value. That's when this should run.
-                if exists == nil || exists! { return }
+                if exists { return }
                 DispatchQueue.global(qos: .userInteractive).async {
                     self?.loadData()
                 }

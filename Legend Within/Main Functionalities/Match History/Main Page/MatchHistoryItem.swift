@@ -10,194 +10,77 @@ import SwiftUI
 import KingfisherSwiftUI
 import Combine
 
-struct MatchHistoryItem: View {
-    @EnvironmentObject var gameData: GameData
-    var match: Match
+extension MatchHistoryPage {
+    struct MatchHistoryItem: View {
+        @EnvironmentObject var gameData: GameData
 
-    let dateFormatter: DateFormatter = {
-        var formatter = DateFormatter()
-        formatter.dateFormat = "MMM dd, HH:mm"
-        return formatter
-    }()
+        var match: Match // DO NOT MAKE THIS AN OBSERVABLEOBJECT OR YOU WILL SUFFER! (it will call NavigationLink destination a second time, which cannot and should not trigger a new timeline request)
 
-    var body: some View {
-        let participant = match.details(for: Summoner.getCurrent())
+        @GestureState private var pressed: Bool = false
+        @State private var showingDetails: Bool = false
 
-        let itemIdsFirstRow = participant?.firstThreeItemIds
-        let itemIdsSecondRow = participant?.secondThreeItemIds
-        let trinketItemId = participant?.stats.item6
+        var body: some View {
+            let participant = match.participantDetails(for: Summoner.getCurrent())
 
-        let gameTime = dateFormatter.string(from: Date(timeIntervalSince1970: Double(match.timestamp / 1000)))
-        let gameDuration = match.details?.gameDuration.toHoursMinutesAndSecondsText()
+            return ZStack {
+                NavigationLink(destination: MatchDetailsPage(match: match), isActive: $showingDetails) {
+                    HStack(spacing: 3) {
+                        if !gameDataIsReady() {
+                            EmptyView()
+                        } else {
+                            if match.details != nil {
+                                LeftSide(participant: participant!)
+                                    .padding(.trailing, 5)
 
-        let championIconName = gameData.champions[(match.champion)]!.onlyData().image.full
+                                VStack(spacing: 0) {
+                                    Header(participant: participant!, match: match)
 
-        return HStack(spacing: 3) {
-            if gameData.champions.count == 0
+                                    Divider()
+                                        .opacity(0.7)
+                                        .padding(.top, 2).padding(.bottom, 5)
+
+                                    HStack {
+                                        MiddlePart(participant: participant!, match: match)
+                                            .padding(.top, -1)
+
+                                        Spacer()
+
+                                        RightSide(participant: participant!)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(5)
+                    .background(RoundedRectangle(cornerRadius: 8)
+                        .fill(participant?.stats.win ?? true ? ColorPalette.winningTeamPlayerRow : ColorPalette.losingTeamPlayerRow)
+                        .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 1.5))
+                    .padding(.trailing, -15)
+                    .zIndex(.infinity)
+                }
+
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.black.opacity(showingDetails ? 0.1 : 0.0))
+            }
+            .gesture(tapToDetailsGesture)
+        }
+
+        private var tapToDetailsGesture: some Gesture {
+            TapGesture().onEnded {
+                self.showingDetails = true
+            }
+        }
+
+        private func gameDataIsReady() -> Bool {
+            let isLoadingAnyPart =
+                gameData.champions.count == 0
                 || gameData.items.count == 0
                 || gameData.runePaths.count == 0
                 || gameData.maps.count == 0
                 || gameData.queues.count == 0
-                || gameData.summonerSpells.count == 0 {
-                EmptyView()
-            } else {
-                if participant != nil {
-                    VStack(spacing: 3.5) {
-                        KFImage(FilePaths.championIcon(fileName: championIconName).path)
-                            .championImageStyle(width: 55)
+                || gameData.summonerSpells.count == 0
 
-                        HStack(spacing: 4) {
-                            KFImage(FilePaths.summonerSpellIcon(fileName: gameData.summonerSpells[participant!.spell1Id]!.image.full).path)
-                                .summonerSpellImageStyle(width: 25)
-
-                            KFImage(FilePaths.summonerSpellIcon(fileName: gameData.summonerSpells[participant!.spell2Id]!.image.full).path)
-                                .summonerSpellImageStyle(width: 25)
-                        }
-                        .padding(.leading, -0.5)
-                    }
-                    .padding(.trailing, 5)
-
-                    VStack(spacing: 0) {
-                        HStack {
-                            HStack(alignment: .bottom, spacing: 3) {
-                                Text(participant!.stats.win ? "VICTORY" : "DEFEAT")
-                                    .font(.system(size: 18))
-                                    .bold()
-                                    .foregroundColor(participant!.stats.win ? Color.green5 : Color.red3)
-
-                                Text("in \(gameDuration!)")
-                                    .font(.system(size: 13))
-                                    .foregroundColor(.gray)
-                                    .alignmentGuide(.bottom, computeValue: { d in d[.bottom] + 1 })
-
-                                Spacer()
-                            }
-
-                            HStack(alignment: .center) {
-                                Text(gameTime)
-                                    .font(.system(size: 13, design: .monospaced))
-                            }
-                        }
-
-                        Divider()
-                            .opacity(0.7)
-                            .padding(.top, 2).padding(.bottom, 5)
-
-                        HStack {
-                            VStack(spacing: 0) {
-                                HStack {
-                                    Text(gameData.queues[match.queue]!.map)
-                                        .font(.system(size: 13))
-                                        .foregroundColor(.gray)
-                                    Spacer()
-                                }
-
-                                HStack {
-                                    Text(gameData.queues[match.queue]!.transformedDescription ?? "")
-                                        .font(.system(size: 15))
-                                    Spacer()
-                                }
-
-                                Spacer(minLength: 5)
-
-                                HStack(spacing: 0) {
-                                    HStack(spacing: 0) {
-                                        Image("MatchHistoryIcon_Kill")
-                                            .resizable()
-                                            .frame(width: 15, height: 15)
-                                            .padding(.trailing, 3)
-                                        Text("\(participant!.stats.kills)")
-                                            .font(.system(size: 15))
-                                            .lineLimit(1)
-                                        Spacer(minLength: 0.5)
-                                    }
-                                    .frame(width: 40)
-                                    .padding(.trailing, 3)
-
-                                    HStack(spacing: 0) {
-                                        Image("MatchHistoryIcon_Death")
-                                            .resizable()
-                                            .frame(width: 15, height: 15)
-                                            .padding(.trailing, 3)
-                                        Text("\(participant!.stats.deaths)")
-                                            .font(.system(size: 15))
-                                            .lineLimit(1)
-                                        Spacer(minLength: 0.5)
-                                    }
-                                    .frame(width: 40)
-                                    .padding(.trailing, 3)
-
-                                    HStack(spacing: 0) {
-                                        Image("MatchHistoryIcon_Assist")
-                                            .resizable()
-                                            .frame(width: 15, height: 15)
-                                            .padding(.trailing, 3)
-                                        Text("\(participant!.stats.assists)")
-                                            .font(.system(size: 15))
-                                            .lineLimit(1)
-                                        Spacer(minLength: 0.5)
-                                    }
-                                    .frame(width: 40)
-
-                                    Spacer()
-                                }
-                            }
-                            .padding(.top, -1)
-
-                            Spacer()
-
-                            VStack {
-                                HStack(spacing: 3) {
-                                    VStack {
-                                        Spacer()
-                                        if trinketItemId != nil {
-                                            KFImage(FilePaths.itemIcon(id: trinketItemId!).path)
-                                                .trinketImageStyle(width: 25)
-                                        }
-                                        Spacer()
-                                    }
-
-                                    VStack(spacing: 3) {
-                                        HStack(spacing: 3) {
-                                            if itemIdsFirstRow != nil {
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![0]).path).itemImageStyle(width: 25)
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![1]).path).itemImageStyle(width: 25)
-                                                KFImage(FilePaths.itemIcon(id: itemIdsFirstRow![2]).path).itemImageStyle(width: 25)
-                                            }
-                                        }
-                                        HStack(spacing: 3) {
-                                            if itemIdsSecondRow != nil {
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![0]).path).itemImageStyle(width: 25)
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![1]).path).itemImageStyle(width: 25)
-                                                KFImage(FilePaths.itemIcon(id: itemIdsSecondRow![2]).path).itemImageStyle(width: 25)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            return !isLoadingAnyPart
         }
-    }
-}
-
-struct MatchHistoryItem_Previews: PreviewProvider {
-    static var previews: some View {
-        let decoder = JSONDecoder()
-        guard
-            let url_match = Bundle.main.url(forResource: "MatchExample",
-                                                  withExtension: "json"),
-            let url_matchDetails = Bundle.main.url(forResource: "MatchDetailsExample",
-                                                        withExtension: "json")
-            else { fatalError() }
-
-        let match = try! decoder.decode(Match.self, from: Data(contentsOf: url_match))
-        let matchDetails = try! decoder.decode(MatchDetails.self, from: Data(contentsOf: url_matchDetails))
-
-        match.details = matchDetails
-
-        return MatchHistoryItem(match: match)
     }
 }

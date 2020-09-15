@@ -53,8 +53,7 @@ struct LineChart: View {
                 .gesture(DragGesture(coordinateSpace: .local)
                     .onChanged { value in
                         self.isDragging = true
-                        self.gestureXValue = value.location.x //Gestures don't want to coordinate...
-                        print(self.gestureXValue)
+                        self.gestureXValue = value.location.x
                         self.dragGestureHandlers.forEach { $0.requestedCoordinate.send(value.location) }
                     }
                     .onEnded { _ in

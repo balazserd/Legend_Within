@@ -45,9 +45,11 @@ public class LeagueApi : ObservableObject {
 
         //When a new version exists, begin update cycle.
         $newVersionExists
+            .compactMap { $0 }
             .sink { [weak self] exists in
-                guard exists != nil && exists! else { return }
-                self?.beginUpdateData()
+                if exists {
+                    self?.beginUpdateData()
+                }
             }
             .store(in: &cancellableBag)
 

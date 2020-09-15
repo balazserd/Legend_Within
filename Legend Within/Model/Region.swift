@@ -16,12 +16,9 @@ public enum Region : Int, CustomStringConvertible, CaseIterable {
 
     static let userDefaultKey = "SelectedRegion"
 
-    public func saveAsSelected() {
-        UserDefaults.standard.set(self.rawValue, forKey: Region.userDefaultKey)
-    }
-
     public static func getCurrentlySelected() -> Region {
-        Region(rawValue: UserDefaults.standard.integer(forKey: Region.userDefaultKey)) ?? .euw
+        let savedRegionRaw = UserDefaults.standard.integer(forKey: Settings.regionKey)
+        return Region(rawValue: savedRegionRaw) ?? .euw
     }
 
     public var description: String {

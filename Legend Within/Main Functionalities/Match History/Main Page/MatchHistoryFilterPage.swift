@@ -8,26 +8,22 @@
 
 import SwiftUI
 
-struct MatchHistoryFilterPage: View {
-    @ObservedObject var model: MatchHistoryModel
+extension MatchHistoryPage {
+    struct MatchHistoryFilterPage: View {
+        @ObservedObject var model: MatchHistoryModel
 
-    var body: some View {
-        Form {
-            Section {
-                Picker(selection: $model.matchTypesToFetch,
-                       label: Text("Match types")) {
-                    ForEach(MatchHistoryModel.MatchTypesToFetch.allCases, id: \.hashValue) { option in
-                        Text(option.description).tag(option)
+        var body: some View {
+            Form {
+                Section {
+                    Picker(selection: $model.matchTypesToFetch,
+                           label: Text("Match types")) {
+                        ForEach(MatchHistoryModel.MatchTypesToFetch.allCases, id: \.hashValue) { option in
+                            Text(option.description).tag(option)
+                        }
                     }
                 }
             }
+            .navigationBarTitle("Filter", displayMode: .inline)
         }
-        .navigationBarTitle("Filter", displayMode: .inline)
-    }
-}
-
-struct MatchHistoryFilterPage_Previews: PreviewProvider {
-    static var previews: some View {
-        MatchHistoryFilterPage(model: MatchHistoryModel())
     }
 }

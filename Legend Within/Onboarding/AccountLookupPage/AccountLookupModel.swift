@@ -43,6 +43,12 @@ public class AccountLookupModel : ObservableObject {
         self.setupSoloQueueEntryQuerySubscription()
         self.setupSoloQueueDivisionQuerySubscription()
         self.setupCanProgressToNextStepSubscription()
+
+        self.summoner = Summoner.getCurrent()
+        if let savedSummoner = self.summoner {
+            self.summonerName = savedSummoner.name
+            self.region = Region.getCurrentlySelected()
+        }
     }
 
     private func setupSummonerQuerySubscription() {
@@ -56,9 +62,6 @@ public class AccountLookupModel : ObservableObject {
                     let self = self,
                     newSummonerName != ""
                 else { return }
-
-                UserDefaults.standard.set(newRegion.rawValue, forKey: Settings.regionKey)
-
                 self.isQuerying = true
 
                 var cancellable: AnyCancellable? = nil
@@ -97,6 +100,7 @@ public class AccountLookupModel : ObservableObject {
                         self.summoner = summoner
                         let summonerJson = try? JSONEncoder().encode(summoner)
                         UserDefaults.standard.set(summonerJson, forKey: Settings.summonerKey)
+                        UserDefaults.standard.set(self.region.rawValue, forKey: Settings.regionKey)
                     })
                 cancellable!.store(in: &self.cancellableBag)
             }
@@ -113,15 +117,14 @@ public class AccountLookupModel : ObservableObject {
 
                 var cancellable: AnyCancellable? = nil
                 cancellable = self.leagueEntrySearchProvider.requestPublisher(.byEncryptedSummonerId(region: self.region, encryptedSummonerId: newSummoner.id))
+                    .retry(3)
+                    .map { try! $0.map([LeagueEntry].self) }
+                    .map { $0.first { $0.queueType == .rankedSolo } }
                     .receive(on: DispatchQueue.main)
                     .sink(receiveCompletion: { [weak self] completion in
                         self?.cancellableBag.remove(cancellable!)
-                    }, receiveValue: { [weak self] response in
-                        guard let self = self else { return }
-
-                        let entries = try! response.map([LeagueEntry].self)
-                        let soloQueueEntry = entries.first { $0.queueType == .rankedSolo }
-                        self.soloQueueEntry = soloQueueEntry
+                    }, receiveValue: { [weak self] soloQueueEntry in
+                        self?.soloQueueEntry = soloQueueEntry
                     })
                 cancellable!.store(in: &self.cancellableBag)
             }
@@ -138,13 +141,13 @@ public class AccountLookupModel : ObservableObject {
 
                 var cancellable: AnyCancellable? = nil
                 cancellable = self.leagueEntrySearchProvider.requestPublisher(.leagues(region: self.region, leagueId: newLeagueEntry.leagueId))
+                    .retry(3)
+                    .map { try! $0.map(League.self) }
                     .receive(on: DispatchQueue.main)
                     .sink(receiveCompletion: { [weak self] completion in
                         self?.cancellableBag.remove(cancellable!)
-                    }, receiveValue: { [weak self] response in
-                        guard let self = self else { return }
-                        let division = try! response.map(League.self)
-                        self.soloQueueDivision = division
+                    }, receiveValue: { [weak self] division in
+                        self?.soloQueueDivision = division
                     })
                 cancellable!.store(in: &self.cancellableBag)
             }
@@ -164,7 +167,9 @@ public class AccountLookupModel : ObservableObject {
 
         $canProgressToNextStep
             .sink { [weak self] canProgress in
-                self?.onboardingModel.highestAllowedPage = canProgress ? 3 : 2 //This is the 2nd page.
+                if canProgress {
+                    self?.onboardingModel.didFinishOnboardingPage(number: 2)
+                } 
             }
             .store(in: &cancellableBag)
     }

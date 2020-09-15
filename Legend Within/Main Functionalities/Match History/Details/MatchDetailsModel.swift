@@ -17,6 +17,7 @@ final class MatchDetailsModel : ObservableObject {
     typealias GestureValueHandler = LineChart.DragGestureHandler
 
     @Published var timeline: MatchTimeline? = nil
+    @Published var canReceiveTimelineValues: Bool = false
     @Published var roles: [Int : Role?]? = nil
     @Published var lanes: [Int : Lane?]? = nil
     @Published var participants: [MatchDetails.Participant]? = nil
@@ -74,15 +75,24 @@ final class MatchDetailsModel : ObservableObject {
     //MARK: - Subscriptions and Request Pipelines
 
     private func setupTimelineSubscription() {
+        $canReceiveTimelineValues
+            .filter { $0 } //only true values
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.requestTimeline(for: self.initialMatchParameter)
+            }
+            .store(in: &cancellableBag)
+
         $timeline
             .receive(on: DispatchQueue.global(qos: .userInteractive))
+            .compactMap { $0 }
             .sink { [weak self] timeline in
                 guard
                     let self = self,
-                    let timeline = timeline
+                    let participants = self.participants
                 else { return }
 
-                let newRoleClassifier = RoleClassifier(from: self.participants!, with: timeline)
+                let newRoleClassifier = RoleClassifier(from: participants, with: timeline)
                 DispatchQueue.main.async {
                     self.roleClassifier = newRoleClassifier
                 }
@@ -104,13 +114,9 @@ final class MatchDetailsModel : ObservableObject {
     private func setupMatchDetailsSubscription(for match: Match) {
         match.$details
             .removeDuplicates(by: { $0?.participants.map { $0.participantId } == $1?.participants.map { $0.participantId } })
+            .compactMap { $0 }
             .sink { [weak self] details in
-                guard
-                    let self = self,
-                    let details = details
-                else { return }
-
-                self.participants = details.participants
+                self?.participants = details.participants
             }
             .store(in: &cancellableBag)
     }
@@ -119,9 +125,7 @@ final class MatchDetailsModel : ObservableObject {
         Publishers.CombineLatest($requestedSumType.compactMap { $0 }, $requestedStatType.compactMap { $0 }) //removing nils
             .receive(on: DispatchQueue.global(qos: .userInitiated))
             .sink { [weak self] sumType, statType in
-                guard let self = self else { return }
-
-                self.needsNewChartData.send((sumType, statType))
+                self?.needsNewChartData.send((sumType, statType))
             }
             .store(in: &cancellableBag)
 
@@ -166,7 +170,7 @@ final class MatchDetailsModel : ObservableObject {
     //MARK:- private accessory functions
 
     private func reshuffleParticipantsToMatchLaneOrder() {
-        guard roles?.count == 10 && lanes?.count == 10 else { return } //only reshuffle on summoner's rift.
+        guard roles?.count == 10 && lanes?.count == 10 else { return } //only reshuffle in 5v5.
 
         let newParticipantOrder = self.participants!.sorted(by: { p1, p2 in
             if lanes![p1.participantId]!!.rankedPosition != lanes![p2.participantId]!!.rankedPosition {

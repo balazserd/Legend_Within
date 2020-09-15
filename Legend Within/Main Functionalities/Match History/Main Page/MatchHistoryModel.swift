@@ -76,13 +76,10 @@ final class MatchHistoryModel : ObservableObject {
     private func setupMatchDetailsSubcription() {
         $matchHistory
             .receive(on: self.operationQueue)
-            .sink { [weak self] matchHistory in
-                guard
-                    let self = self,
-                    matchHistory != nil
-                else { return }
-
-                let matchesToGetDetailsFor = matchHistory!.matches.filter { $0.details == nil }
+            .compactMap { $0 }
+            .map { $0.matches.filter { $0.details == nil }}
+            .sink { [weak self] matchesToGetDetailsFor in
+                guard let self = self else { return }
 
                 let dpGroup = DispatchGroup()
                 DispatchQueue.concurrentPerform(iterations: matchesToGetDetailsFor.count) { i in

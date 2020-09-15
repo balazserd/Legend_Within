@@ -10,14 +10,18 @@ import SwiftUI
 
 struct StartScreen: View {
     @ObservedObject private var leagueApi = LeagueApi.shared
+    @ObservedObject private var onboardingModel = OnboardingModel.shared
 
     var body: some View {
         ZStack {
             if leagueApi.newVersionExists == nil || leagueApi.newVersionExists! {
                 NewVersionDownloadingView()
             } else {
-//                MainWindow()
-                OnboardingPage()
+                if onboardingModel.onboardingStatus == .finished {
+                    MainWindow()
+                } else {
+                    OnboardingPage()
+                }
             }
         }
     }
