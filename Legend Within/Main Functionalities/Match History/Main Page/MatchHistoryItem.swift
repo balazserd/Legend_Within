@@ -51,11 +51,12 @@ extension MatchHistoryPage {
                             }
                         }
                     }
+                    .foregroundColor(.black) //needed because iOS14.0 is buggy as fuck
                     .padding(5)
                     .background(RoundedRectangle(cornerRadius: 8)
                         .fill(participant?.stats.win ?? true ? ColorPalette.winningTeamPlayerRow : ColorPalette.losingTeamPlayerRow)
                         .shadow(color: Color.gray.opacity(0.3), radius: 3, x: 0, y: 1.5))
-                    .padding(.trailing, -15)
+//                    .padding(.trailing, -15)
                     .zIndex(.infinity)
                 }
 

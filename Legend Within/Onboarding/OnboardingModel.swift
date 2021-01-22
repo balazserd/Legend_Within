@@ -17,7 +17,7 @@ extension OnboardingModel {
 final class OnboardingModel : ObservableObject {
     @Published var currentPage: Int
     @Published var onboardingStatus: OnboardingModel.Phase
-    @Published var highestAllowedPage: Int = 0
+    var highestAllowedPage: Int = 0
 
     private var cancellableBag = Set<AnyCancellable>()
 
@@ -28,7 +28,7 @@ final class OnboardingModel : ObservableObject {
         self.onboardingStatus = .firstPage
     }
 
-    public func didFinishOnboardingPage(number: Int, enforced: Bool = false) {
+    public func didFinishOnboardingPage(number: Int) {
         guard number >= self.onboardingStatus.rawValue else { return }
         self.setNewHighestAllowedPage(afterPage: number)
     }
@@ -45,9 +45,7 @@ final class OnboardingModel : ObservableObject {
         self.onboardingStatus = phase
         self.currentPage = max(phase.rawValue - 1, 0) //CurrentPage is 0-based, phase is not.
 
-        if phase.rawValue > Phase.firstPage.rawValue {
-            self.setNewHighestAllowedPage(afterPage: self.currentPage)
-        }
+        self.setNewHighestAllowedPage(afterPage: self.currentPage + 1)
 
         self.setUpOnboardingSubscriptions()
     }

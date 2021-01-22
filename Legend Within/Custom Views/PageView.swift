@@ -66,7 +66,7 @@ struct PageView : UIViewControllerRepresentable {
                 return nil
             }
 
-            if parent.highestAllowedPage - 1 < index + 1 {
+            if parent.highestAllowedPage - 1 < index + 1 { //highestAllowedPage is 1-based
                 return nil
             } else {
                 return parent.pages[index + 1]

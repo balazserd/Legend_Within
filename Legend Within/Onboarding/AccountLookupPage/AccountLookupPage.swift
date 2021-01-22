@@ -46,9 +46,9 @@ struct AccountLookupPage: View {
                             .frame(width: 35, height: 35)
 
                         ZStack {
-                            TextField("Summoner name", text: $accountLookupModel.summonerName) {
+                            TextField("Summoner name", text: $accountLookupModel.summonerName, onCommit: {
                                 self.dismissKeyboard()
-                            }
+                            })
                             .foregroundColor(ColorPalette.accentBlue)
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .frame(height: 32)

@@ -22,7 +22,7 @@ public class AccountLookupModel : ObservableObject {
     @Published public var isQuerying: Bool = false
     @Published public var soloQueueEntry: LeagueEntry? = nil
     @Published public var soloQueueDivision: League? = nil //if soloQueueEntry is not nil, it is fatal that this results in nil.
-    @Published public var canProgressToNextStep: Bool = false
+    public var canProgressToNextStep = CurrentValueSubject<Bool, Never>(false)
 
     private var cancellableBag = Set<AnyCancellable>()
 
@@ -39,16 +39,16 @@ public class AccountLookupModel : ObservableObject {
         self.leagueEntrySearchProviderQueue = DispatchQueue(label: "accountLookupModel.leagueEntrySearchProviderQueue", qos: .userInitiated, attributes: .concurrent)
         self.leagueEntrySearchProvider = MoyaProvider<LeagueApi.LeagueEntries>(callbackQueue: self.leagueEntrySearchProviderQueue)
 
-        self.setupSummonerQuerySubscription()
-        self.setupSoloQueueEntryQuerySubscription()
-        self.setupSoloQueueDivisionQuerySubscription()
-        self.setupCanProgressToNextStepSubscription()
-
         self.summoner = Summoner.getCurrent()
         if let savedSummoner = self.summoner {
             self.summonerName = savedSummoner.name
             self.region = Region.getCurrentlySelected()
         }
+
+        self.setupSummonerQuerySubscription()
+        self.setupSoloQueueEntryQuerySubscription()
+        self.setupSoloQueueDivisionQuerySubscription()
+        self.setupCanProgressToNextStepSubscription()
     }
 
     private func setupSummonerQuerySubscription() {
@@ -158,14 +158,14 @@ public class AccountLookupModel : ObservableObject {
         Publishers.CombineLatest($summoner, $errorCode)
             .sink { [weak self] values in
                 if values.0 != nil && values.1 == nil {
-                    self?.canProgressToNextStep = true
+                    self?.canProgressToNextStep.send(true)
                 } else {
-                    self?.canProgressToNextStep = false
+                    self?.canProgressToNextStep.send(false)
                 }
             }
             .store(in: &cancellableBag)
 
-        $canProgressToNextStep
+        canProgressToNextStep
             .sink { [weak self] canProgress in
                 if canProgress {
                     self?.onboardingModel.didFinishOnboardingPage(number: 2)

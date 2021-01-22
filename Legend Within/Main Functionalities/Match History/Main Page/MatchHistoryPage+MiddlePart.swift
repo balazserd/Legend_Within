@@ -38,26 +38,30 @@ extension MatchHistoryPage {
                 Spacer(minLength: 5)
 
                 HStack(spacing: 0) {
-                    ForEach(statIconNames, id: \.self) { iconName in
-                        HStack(spacing: 0) {
-                            Image(iconName)
-                                .resizable()
-                                .frame(width: 15, height: 15)
-                                .padding(.trailing, 3)
-
-                            Text("\(self.participant.stats.kills)")
-                                .font(.system(size: 15))
-                                .lineLimit(1)
-
-                            Spacer(minLength: 0.5)
-                        }
-                        .frame(width: 40)
-                        .padding(.trailing, 3)
-                    }
+                    statWithIcon(iconName: "MatchHistoryIcon_Kill", stat: self.participant.stats.kills)
+                    statWithIcon(iconName: "MatchHistoryIcon_Death", stat: self.participant.stats.deaths)
+                    statWithIcon(iconName: "MatchHistoryIcon_Assist", stat: self.participant.stats.assists)
 
                     Spacer()
                 }
             }
+        }
+
+        private func statWithIcon(iconName: String, stat: Int) -> some View {
+            HStack(spacing: 0) {
+                Image(iconName)
+                    .resizable()
+                    .frame(width: 15, height: 15)
+                    .padding(.trailing, 3)
+
+                Text("\(stat)")
+                    .font(.system(size: 15))
+                    .lineLimit(1)
+
+                Spacer(minLength: 0.5)
+            }
+            .frame(width: 40)
+            .padding(.trailing, 3)
         }
     }
 

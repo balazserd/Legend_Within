@@ -10,7 +10,7 @@ import SwiftUI
 
 extension MatchHistoryPage {
     struct MatchHistoryFilterPage: View {
-        @ObservedObject var model: MatchHistoryModel
+        @EnvironmentObject var model: MatchHistoryModel
 
         var body: some View {
             Form {

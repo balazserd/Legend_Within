@@ -15,6 +15,8 @@ final class MatchHistoryModel : ObservableObject {
     @Published var isLoadingFirstSetOfMatches: Bool = false
     @Published var isLoadingFurtherSetsOfMatches: Bool = false
     @Published var matchTypesToFetch: MatchTypesToFetch = .all
+    @Published var errorCode: Int? = nil
+    @Published var localizedErrorDescription: String? = nil
 
     private let matchProviderQueue: DispatchQueue
     private let matchProvider: MoyaProvider<LeagueApi.Matches>
@@ -30,7 +32,12 @@ final class MatchHistoryModel : ObservableObject {
         setupMatchDetailsSubcription()
     }
 
-    public func requestMatches(shouldOverwriteCurrentInstance: Bool = false) {
+    public func requestMatches(shouldOverwriteCurrentInstance: Bool = false,
+                               summoner: Summoner? = nil,
+                               region: Region? = nil) {
+        self.errorCode = nil
+        self.localizedErrorDescription = nil
+
         let queryParams: LeagueApi.Matches.ByAccountQueryParameters = {
             var params = LeagueApi.Matches.ByAccountQueryParameters()
             params.beginIndex = self.matchHistory?.matches.count ?? 0
@@ -46,15 +53,37 @@ final class MatchHistoryModel : ObservableObject {
             self.isLoadingFurtherSetsOfMatches = true
         }
 
-        matchProvider.requestPublisher(.byAccount(region: .euw,
-                                                  encryptedAccountId: "nnK1yvPQltAH9yNP81T9R_iT0hhdt2fk8RBHSEQtEnmubS4",
+        guard let actualSummoner = summoner ?? Summoner.getCurrent() else { return }
+        let actualRegion = region ?? Region.getCurrentlySelected()
+
+        matchProvider.requestPublisher(.byAccount(region: actualRegion,
+                                                  encryptedAccountId: actualSummoner.accountId,
                                                   queryParams: queryParams))
             .map { $0.data }
             .decode(type: MatchHistory.self, decoder: JSONDecoder())
             .mapError(NetworkRequestError.transformDecodableNetworkErrorStream(error:))
-            .sink(receiveCompletion: { completionType in
-                //TODO error handling
-                print(completionType)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completionType in
+                guard let self = self else { return }
+
+                switch completionType {
+                    case .failure(let error):
+                        if case .requestFailedError(let moyaError) = error {
+                            self.errorCode = moyaError.response?.statusCode
+
+                            if case .underlying(let underlyingError, _) = moyaError {
+                                let afError = underlyingError.asAFError
+                                if case .sessionTaskFailed(let sessionError) = afError {
+                                    self.localizedErrorDescription = sessionError.localizedDescription
+                                } else {
+                                    self.localizedErrorDescription = afError?.localizedDescription ?? Texts.unknownErrorDescription
+                                }
+                            }
+                        }
+
+                    case .finished:
+                        self.errorCode = nil
+                }
             }) { [weak self] newMatchHistory in
                 guard let self = self else { return }
 

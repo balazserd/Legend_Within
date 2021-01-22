@@ -81,7 +81,8 @@ final class GameData : ObservableObject {
             let mapListObject = try! decoder.decode([Map].self, from: mapListData)
 
             DispatchQueue.main.async {
-                self.maps = Dictionary(uniqueKeysWithValues: mapListObject.map { ($0.mapId, $0) })
+                self.maps = Dictionary(mapListObject.map { ($0.mapId, $0) },
+                                       uniquingKeysWith: { (first, _) in first })
             }
         }
 
@@ -91,7 +92,8 @@ final class GameData : ObservableObject {
             let queueListObject = try! decoder.decode([Queue].self, from: queueListData)
 
             DispatchQueue.main.async {
-                self.queues = Dictionary(uniqueKeysWithValues: queueListObject.map { ($0.queueId, $0) })
+                self.queues = Dictionary(queueListObject.map { ($0.queueId, $0) },
+                                         uniquingKeysWith: { (first, _) in first })
             }
         }
 
@@ -101,7 +103,8 @@ final class GameData : ObservableObject {
             let runePathListObject = try! decoder.decode([RunePath].self, from: runePathListData)
 
             DispatchQueue.main.async {
-                self.runePaths = Dictionary(uniqueKeysWithValues: runePathListObject.map { ($0.id, $0) })
+                self.runePaths = Dictionary(runePathListObject.map { ($0.id, $0) },
+                                            uniquingKeysWith: { (first, _) in first })
             }
         }
 
@@ -111,7 +114,8 @@ final class GameData : ObservableObject {
             let summonerSpellListObject = try! decoder.decode(SummonerSpellsJSON.self, from: summonerSpellListData)
 
             DispatchQueue.main.async {
-                self.summonerSpells = Dictionary(uniqueKeysWithValues: summonerSpellListObject.data.map { (Int($0.value.key)!, $0.value) })
+                self.summonerSpells = Dictionary(summonerSpellListObject.data.map { (Int($0.value.key)!, $0.value) },
+                                                 uniquingKeysWith: { (first, _) in first })
             }
         }
     }
