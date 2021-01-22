@@ -7,22 +7,39 @@ Screenshots:
 
 <table>
   <tr>
-    <td>
-      <img src="Match_History.PNG" width="250">
+    <td width="250">
+      <h4>Patch check on every start</h4>
+      <img src="Screenshots/Interactive_Patch_Fetching.PNG" width="250">
     </td>
-    <td>
-      <img src="Endgame_Statistics.PNG" width="250">
+    <td width="250">
+      <h4>Summoner search</h4>
+      <img src="Screenshots/Onboarding_SummonerSearch.jpg" width="250">
     </td>
-    <td>
-      <img src="Chart_DefaultView.PNG" width="250">
+    <td width="250">
+      <h4>UI Sample (just concept)</h4>
+      <img src="Screenshots/Onboarding_UI(not working yet).PNG" width="250">
     </td>
   </tr>
   <tr>
     <td>
-      <img src="Chart_CheckNumbers.PNG" width="250">
+      <h4>Match History</h4>
+      <img src="Screenshots/MatchHistory.PNG" width="250">
     </td>
     <td>
-      <img src="Chart_Filter.PNG" width="250">
+      <h4>Chart - default view</h4>
+      <img src="Screenshots/Chart_DefaultView.PNG" width="250">
+    </td>
+    <td>
+      <h4>Chart - number check</h4>
+      <img src="Screenshots/Chart_CheckNumbers.PNG" width="250">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h4>Chart - filtering</h4>
+      <img src="Screenshots/Chart_Filter.PNG" width="250">
+    </td>
+    <td>
     </td>
     <td>
     </td>
