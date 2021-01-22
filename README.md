@@ -5,8 +5,26 @@ Mainly displays knowledge of Combine, SwiftUI and Moya+WebAPIs in general.
 
 Screenshots:
 
-<img src="Match_History.PNG" width="20" height="40">
-<img src="Endgame_Statistics.PNG width="20" height="40">
-<img src="Chart_DefaultView.PNG width="20" height="40">
-<img src="Chart_CheckNumbers.PNG width="20" height="40">
-<img src="Chart_Filter.PNG width="20" height="40">
+<table>
+  <tr>
+    <td>
+      <img src="Match_History.PNG" width="250">
+    </td>
+    <td>
+      <img src="Endgame_Statistics.PNG" width="250">
+    </td>
+    <td>
+      <img src="Chart_DefaultView.PNG" width="250">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="Chart_CheckNumbers.PNG" width="250">
+    </td>
+    <td>
+      <img src="Chart_Filter.PNG" width="250">
+    </td>
+    <td>
+    </td>
+  </tr>
+  </table>
