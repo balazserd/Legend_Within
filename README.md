@@ -26,20 +26,22 @@ Screenshots:
       <img src="Screenshots/MatchHistory.PNG" width="250">
     </td>
     <td>
-      <h4>Chart - default view</h4>
-      <img src="Screenshots/Chart_DefaultView.PNG" width="250">
+      <h4>End game statistics</h4>
+      <img src="Screenshots/Endgame_Statistics.PNG" width="250">
     </td>
     <td>
-      <h4>Chart - number check</h4>
-      <img src="Screenshots/Chart_CheckNumbers.PNG" width="250">
+      <h4>Chart - default view</h4>
+      <img src="Screenshots/Chart_DefaultView.PNG" width="250">
     </td>
   </tr>
   <tr>
     <td>
-      <h4>Chart - filtering</h4>
-      <img src="Screenshots/Chart_Filter.PNG" width="250">
+      <h4>Chart - number check</h4>
+      <img src="Screenshots/Chart_CheckNumbers.PNG" width="250">
     </td>
     <td>
+      <h4>Chart - filtering</h4>
+      <img src="Screenshots/Chart_Filter.PNG" width="250">
     </td>
     <td>
     </td>
