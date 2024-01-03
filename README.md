@@ -2,7 +2,7 @@
 <h3>Smart League of Legends game pre and post analysis app. (Work in Progress)</h3>
 
 Mainly displays knowledge of Combine, SwiftUI and Moya+WebAPIs in general.
-Oh, and as an extra, <i>the project uses a machine learning model with CoreML to determine player lane positions</i> (top/mid/bottom or jungle).
+As an extra, <i>the project uses a machine learning model with CoreML to determine player lane positions</i> (top/mid/bottom or jungle).
 
 <hr>
 
